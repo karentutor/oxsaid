@@ -29,47 +29,25 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/funding" element={<Fundnig />} />
-            <Route path="/messages" element={<Messages />} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/business" element={<Business />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/funding" element={<Fundnig />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/business" element={<Business />} />
 
-            {/* Advisor & User Routes */}
-            {/* <Route element={<RequireAuth allowedRoles={["Advisor", "User"]} />}>
-              <Route
-                path="/my-consulting-services"
-                element={<MyConsultingServices />}
-              />
+            {/* Protected Routes */}
+            {/* <Route element={<RequireAuth allowedRoles={["User"]} />}>
               <Route path="/profile" element={<Profile />} />
-              <Route path="/consulting-services" element={<Consulting />} />
-              <Route path="/executive-services" element={<Executive />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:courseId" element={<Course />} />
-              <Route
-                path="/my-executive-services"
-                element={<MyExecutiveServices />}
-              />
-              <Route path="/my-courses" element={<MyCourses />} />
-            </Route>
-            <Route element={<RequireAuth allowedRoles={["Advisor"]} />}>
-              <Route
-                path="/my-consulting-order"
-                element={<MyConsultingOrder />}
-              />
             </Route> */}
           </Route>
 
           <Route element={<Outlet />}>
-            <Route path="/login" element={<Signin />} />
+            <Route path="/signin" element={<Signin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
-            {/* <Route path="/account/reset-password" element={<ResetPassword />} />
-            <Route path="/endorsement" element={<Endorsement />} />
-            <Route path="/account/verify-email" element={<Verified />} /> */}
           </Route>
         </Routes>
       </Router>
