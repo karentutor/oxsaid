@@ -19,16 +19,29 @@ import Groups from "./pages/groups";
 import Fundnig from "./pages/fundnig";
 import Messages from "./pages/messages";
 import Business from "./pages/business";
-import About from "./pages/about";
-import Services from "./pages/services";
+import Landing from "./pages/landing";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 export default function App() {
   return (
     <div className="font-rubik">
       <Router>
         <Routes>
+          <Route
+            element={
+              <ThemeProvider>
+                <Outlet />
+              </ThemeProvider>
+            }
+          >
+            <Route path="/" element={<Landing />} />
+            {/* <Route path="/signin" element={<Signin />} /> */}
+            {/* <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} /> */}
+          </Route>
           <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/search" element={<Search />} />
@@ -41,13 +54,6 @@ export default function App() {
             {/* <Route element={<RequireAuth allowedRoles={["User"]} />}>
               <Route path="/profile" element={<Profile />} />
             </Route> */}
-          </Route>
-
-          <Route element={<Outlet />}>
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
           </Route>
         </Routes>
       </Router>
