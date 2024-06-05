@@ -20,7 +20,7 @@ const stats = [
 export default function About() {
   return (
     <section id="about" className="container py-16">
-      <div className="bg-secondary border border-gray-200 rounded-xl p-5 lg:p-10">
+      <div className="bg-primary/10 border border-gray-200 rounded-xl p-5 lg:p-10">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8 md:gap-12">
           <img
             src="/imgs/about.jpg"
@@ -31,7 +31,7 @@ export default function About() {
             <h2 className="text-3xl md:text-4xl font-bold">
               About <span className="text-accent">Oxsaid </span>
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -15,38 +16,7 @@ import {
 import { buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
 import ModeToggle from "./ModeToggle";
-import { Link, NavLink } from "react-router-dom";
-
-const routeList = [
-  {
-    href: "#about",
-    label: "About",
-  },
-  {
-    href: "#services",
-    label: "Services",
-  },
-  {
-    href: "#business",
-    label: "Business",
-  },
-  {
-    href: "#jobs",
-    label: "Jobs",
-  },
-  {
-    href: "#funding",
-    label: "Funding",
-  },
-  {
-    href: "#events",
-    label: "Events",
-  },
-  {
-    href: "#groups",
-    label: "Groups",
-  },
-];
+import { navLinks } from "@/data";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +32,7 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full ${
+      className={`fixed top-0 z-40 w-full ${
         isHeaderScrolled
           ? "bg-background shadow-[0_2px_12px_-10px_rgba(0,0,0,0.3)] border-b border-gray-200"
           : "bg-transparent"
@@ -71,9 +41,9 @@ export default function Header() {
       <NavigationMenu className="mx-auto py-2 overflow-hidden">
         <NavigationMenuList className="container h-14 w-screen flex justify-between">
           <NavigationMenuItem className="font-bold flex">
-            <Link to="/" className="font-bold text-2xl lg:text-3xl text-accent">
+            <a href="#" className="font-bold text-2xl lg:text-3xl text-accent">
               OXSAID
-            </Link>
+            </a>
           </NavigationMenuItem>
 
           {/* mobile */}
@@ -95,7 +65,7 @@ export default function Header() {
                   <SheetTitle className="font-bold text-xl">OXSAID</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-4">
-                  {routeList.map(({ href, label }) => (
+                  {navLinks.map(({ href, label }) => (
                     <NavLink
                       key={label}
                       to={href}
@@ -122,7 +92,7 @@ export default function Header() {
 
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
-            {routeList.map((route, i) => (
+            {navLinks.map((route, i) => (
               <a
                 href={route.href}
                 key={i}
