@@ -1,4 +1,4 @@
-import { ChartIcon, MagnifierIcon, WalletIcon } from "@/components/icons";
+import { ChartIcon, WalletIcon } from "@/components/icons";
 import { DrawingPinIcon, LightningBoltIcon, PersonIcon, RocketIcon, RulerSquareIcon, Share1Icon } from "@radix-ui/react-icons";
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
@@ -202,22 +202,22 @@ export const events = [
 ];
 
 export const fundingServices = [
-  {
-    title: "Seed Funding",
-    description:
-      "Get initial capital to kickstart your innovative projects and ideas.",
-    icon: ChartIcon,
-  },
+  // {
+  //   title: "Seed Funding",
+  //   description:
+  //     "Get initial capital to kickstart your innovative projects and ideas.",
+  //   icon: ChartIcon,
+  // },
   {
     title: "Venture Capital",
     description:
-      "Access significant investment to scale your business and reach new heights.",
+      "Coming Soon - Access significant investment to scale your business and reach new heights.",
     icon: WalletIcon,
   },
   {
     title: "Grants and Scholarships",
     description:
-      "Apply for grants and scholarships to support your business without repayment obligations.",
-    icon: MagnifierIcon,
+      "Coming Soon - Apply for grants and scholarships to support your business without repayment obligations.",
+    icon: ChartIcon,
   },
 ];

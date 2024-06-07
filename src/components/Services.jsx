@@ -18,7 +18,7 @@ export default function Services() {
           <div className="grid grid-cols-1 gap-x-3 gap-y-8 md:grid-cols-3">
             {services.map((service) => (
               <div
-                className="rounded-xl border border-background bg-card p-5"
+                className="rounded-xl border border-background bg-card p-5 hover:-translate-y-2 hover:shadow-[0_2px_8px_2px_rgba(14,85,124,.16)] transition"
                 key={service.id}
               >
                 <div className="size-12 rounded-lg bg-accent p-1.5 shadow flex items-center justify-center">

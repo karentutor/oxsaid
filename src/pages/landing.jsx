@@ -4,7 +4,6 @@ import About from "@/components/About";
 import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 import Events from "@/components/Events";
-import { Team } from "@/components/Team";
 import { Business } from "@/components/Business";
 import { Funding } from "@/components/Funding";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -19,7 +18,7 @@ export default function Landing() {
       </div>
       <Services />
       <Events />
-      <Team />
+      {/* <Team /> */}
       <Funding />
       <Business />
       <Footer />
