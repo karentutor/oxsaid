@@ -1,5 +1,5 @@
 import { navLinks, socialMediaLinks } from "@/data";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 
 export default function Footer() {
   return (

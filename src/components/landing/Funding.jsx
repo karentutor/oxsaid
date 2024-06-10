@@ -1,7 +1,7 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { ChartIcon, WalletIcon } from "./icons";
+import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { ChartIcon, WalletIcon } from "../icons";
 
-export const Funding = () => {
+export default function Funding() {
   return (
     <section className="container py-16" id="funding">
       <div className="grid lg:grid-cols-[2fr_1fr] gap-8 place-items-center">
@@ -16,7 +16,7 @@ export const Funding = () => {
           </p>
 
           <div className="flex flex-col gap-8">
-            <Card>
+            <Card className="bg-transparent">
               <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
                 <div className="mt-1 bg-secondary p-1 rounded-2xl">
                   <WalletIcon />
@@ -33,7 +33,7 @@ export const Funding = () => {
                 </div>
               </CardHeader>
             </Card>
-            <Card>
+            <Card className="bg-transparent">
               <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
                 <div className="mt-1 bg-secondary p-1 rounded-2xl">
                   <ChartIcon />
@@ -61,4 +61,4 @@ export const Funding = () => {
       </div>
     </section>
   );
-};
+}

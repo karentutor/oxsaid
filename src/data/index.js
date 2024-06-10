@@ -1,5 +1,6 @@
 import { ChartIcon, WalletIcon } from "@/components/icons";
 import { DrawingPinIcon, LightningBoltIcon, PersonIcon, RocketIcon, RulerSquareIcon, Share1Icon } from "@radix-ui/react-icons";
+import { BriefcaseBusiness, Building2, CalendarCheck2, CircleDollarSign, Home, MessagesSquare, Users } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 
@@ -53,6 +54,44 @@ export const navLinks = [
   {
     href: "#groups",
     label: "Groups",
+  },
+];
+
+export const dashboardNavLinks = [
+  {
+    href: "/home",
+    label: "Home",
+    icon: Home
+  },
+  {
+    href: "/business",
+    label: "Business",
+    icon: Building2
+  },
+  {
+    href: "/jobs",
+    label: "Jobs",
+    icon: BriefcaseBusiness
+  },
+  {
+    href: "/funding",
+    label: "Funding",
+    icon: CircleDollarSign
+  },
+  {
+    href: "/events",
+    label: "Events",
+    icon: CalendarCheck2
+  },
+  {
+    href: "/groups",
+    label: "Groups",
+    icon: Users
+  },
+  {
+    href: "/messages",
+    label: "Messages",
+    icon: MessagesSquare
   },
 ];
 

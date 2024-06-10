@@ -1,9 +1,9 @@
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 
-export const Business = () => {
+export default function Business() {
   return (
     <section className="px-6 w-full md:my-28" id="business">
-      <div className="max-w-7xl mx-auto lg:h-[300px] rounded-2xl bg-[url('/imgs/blob-shape.png')] bg-contain bg-right bg-no-repeat flex gap-10 border border-gray-200">
+      <div className="max-w-7xl mx-auto lg:h-[300px] rounded-2xl flex gap-10 border border-gray-200">
         {/* Content */}
         <div className="flex flex-col gap-4 flex-1 p-8">
           <h2 className="text-3xl md:text-4xl font-bold">
@@ -47,4 +47,4 @@ export const Business = () => {
       </div>
     </section>
   );
-};
+}

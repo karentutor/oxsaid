@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -6,9 +6,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+} from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 

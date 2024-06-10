@@ -4,18 +4,18 @@ import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
-} from "./ui/navigation-menu";
+} from "../ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet";
+} from "../ui/sheet";
 
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 import { Menu } from "lucide-react";
-import ModeToggle from "./ModeToggle";
+import ModeToggle from "../ModeToggle";
 import { navLinks } from "@/data";
 
 export default function Header() {

@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineArrowUp } from "react-icons/ai";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "../ui/button";
 
 export default function ScrollToTop() {
   const [scrollTop, setScrollTop] = useState(false);
