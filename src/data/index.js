@@ -260,3 +260,54 @@ export const fundingServices = [
     icon: ChartIcon,
   },
 ];
+
+export const businesses = [
+  {
+    id: 1,
+    name: 'b1',
+    description: 'b1 description',
+    size: 'test',
+    occupation: 'occupation',
+    subOccupation: 'subOccupation',
+    visibility: 'visibility',
+    address: 'address',
+    phone: '15353113541853',
+    email: 'example@email.com',
+    less_than: true,
+    almuni_share: true,
+    date: 'Thu Jun 13 2024',
+    labels: ['label1', 'label2']
+  },
+  {
+    id: 2,
+    name: 'b2',
+    description: 'b2 description',
+    size: 'size',
+    occupation: 'occupation',
+    subOccupation: 'subOccupation',
+    visibility: 'visibility',
+    address: 'address',
+    phone: '15353113541853',
+    email: 'example@email.com',
+    less_than: true,
+    almuni_share: true,
+    date: 'Thu Jun 13 2024',
+    labels: ['label1', 'label2']
+  },
+  {
+    id: 3,
+    name: 'b3',
+    description: 'b3 description',
+    size: 'size',
+    occupation: 'occupation',
+    subOccupation: 'subOccupation',
+    visibility: 'visibility',
+    address: 'address',
+    phone: '15353113541853',
+    email: 'example@email.com',
+    less_than: true,
+    almuni_share: true,
+    date: 'Thu Jun 13 2024',
+    labels: ['label1', 'label2']
+  },
+]

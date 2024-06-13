@@ -80,7 +80,7 @@ const WriteNewPostDialog = ({ onClose }) => {
           />
           <PostBottomActions />
         </div>
-        <Separator className="pt-0 mt-0 bg-gray-200" />
+        <Separator className="pt-0 mt-0" />
         <div className="flex flex-row p-3 pt-0">
           <div className="w-full" />
           <Button
@@ -125,7 +125,7 @@ export const NewPostCard = () => {
         <Button
           size="sm"
           variant="outline"
-          className="border-gray-200 text-primary rounded-full"
+          className="text-primary rounded-full"
         >
           POST
         </Button>

@@ -126,44 +126,6 @@ export const Main = () => {
           reposts: 503,
         }}
       />
-      <FeedItem
-        type="post"
-        content="Really proud of the team for our continued advancements in VR technology. The future of communication is exciting!"
-        link={{
-          title: "Facebook's new VR tech is pushing the boundaries",
-          thumbnail:
-            "https://media.licdn.com/dms/image/D4D22AQHylkJCC7URHg/feedshare-shrink_2048_1536/0/1686151922450?e=1690416000&v=beta&t=LCeNcO66GfzqmebCRioVKXrlXFNPxvhRxPyChwE-DE8",
-          href: "https://www.facebook.com/tech/news/tab/new-vr-tech",
-        }}
-        author={{
-          name: "Mark Zuckerberg",
-          subtext: "CEO at Facebook",
-          imageUrl:
-            "https://www.californiamuseum.org/sites/main/files/imagecache/medium/main-images/screen_shot_2012-07-27_at_6.32.28_pm.png?1632975955",
-          connectionDegree: "3rd",
-        }}
-        stats={{
-          likes: 3254,
-          comments: 97,
-          reposts: 213,
-        }}
-      />
-      <FeedItem
-        type="post"
-        content="Exciting to see SpaceX push the boundaries of space technology once more. The successful launch of Falcon Heavy was a sight to behold."
-        thumbnail="https://media.licdn.com/dms/image/sync/D4E27AQHqMUKIczW0Tg/articleshare-shrink_800/0/1687502422250?e=1688234400&v=beta&t=_Y664YQRh3cSwDds-TYv8P4otlJ-KTWA2nSysvwOStw"
-        author={{
-          name: "Elon Musk",
-          subtext: "CEO of SpaceX and Tesla, Entrepreneur",
-          imageUrl: "https://ichef.bbci.co.uk/images/ic/640x360/p03c84wz.jpg",
-          connectionDegree: "2nd",
-        }}
-        stats={{
-          likes: 18537,
-          comments: 839,
-          reposts: 1247,
-        }}
-      />
     </div>
   );
 };

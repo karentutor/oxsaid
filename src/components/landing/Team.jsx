@@ -97,7 +97,7 @@ export const Team = () => {
         {teamList.map(({ imageUrl, name, position, socialNetworks }) => (
           <Card
             key={name}
-            className="bg-primary/10 border-gray-200 relative mt-8 flex flex-col justify-center items-center"
+            className="bg-primary/10 relative mt-8 flex flex-col justify-center items-center"
           >
             <CardHeader className="mt-8 flex justify-center items-center pb-2">
               <img

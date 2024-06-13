@@ -31,7 +31,7 @@ export default function Events() {
               key={event.id}
               className="basis-full lg:basis-1/2 xl:basis-1/3"
             >
-              <div className="flex flex-col gap-4 transition min-h-80 p-4 rounded-xl border border-gray-200 hover:shadow-[0_2px_8px_2px_rgba(14,85,124,.16)]">
+              <div className="flex flex-col gap-4 transition min-h-80 p-4 rounded-xl border hover:shadow-[0_2px_8px_2px_rgba(14,85,124,.16)]">
                 <div className="relative">
                   <img
                     className="rounded-lg object-cover w-full h-48"

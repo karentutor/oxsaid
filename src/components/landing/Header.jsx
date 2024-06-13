@@ -34,7 +34,7 @@ export default function Header() {
     <header
       className={`fixed top-0 z-40 w-full ${
         isHeaderScrolled
-          ? "bg-background shadow-[0_2px_12px_-10px_rgba(0,0,0,0.3)] border-b border-gray-200"
+          ? "bg-background shadow-[0_2px_12px_-10px_rgba(0,0,0,0.3)] border-b"
           : "bg-transparent"
       }`}
     >

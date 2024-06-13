@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 
 export default function Home() {
   return (
-    <main className="pt-4 grid gap-6" id="index-grid">
+    <main className="pt-4 grid gap-6 index-grid">
       <Sidebar />
       <Main />
       <Aside />

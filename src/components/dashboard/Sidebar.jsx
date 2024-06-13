@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookmarkIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -28,7 +28,7 @@ const MyProfileHeader = () => {
 const MyProfileProfession = () => {
   return (
     <a
-      className="flex justify-center items-center flex-col mt-4 pb-4 border-b border-slate-200"
+      className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
       href="https://www.linkedin.com/in/ozgurgul35/"
       target="_blank"
     >
@@ -91,7 +91,7 @@ const Discover = () => {
       <Link to="/funding" className={discoverItem}>
         Funding
       </Link>
-      <div className="border-t border-zinc-200 hover:bg-zinc-100 text-sm font-semibold text-zinc-500 p-3 text-center cursor-pointer transition-all">
+      <div className="border-t hover:bg-zinc-100 text-sm font-semibold text-zinc-500 p-3 text-center cursor-pointer transition-all">
         Discover more
       </div>
     </Card>
@@ -105,7 +105,7 @@ const SidebarDesktopLayout = () => {
         <MyProfileHeader />
         <MyProfileProfession />
         <div>
-          <div className="py-3 border-b border-slate-200">
+          <div className="py-3 border-b">
             <MyProfileStats text="Who's viewed your profile" count={50} />
             <MyProfileStats text="Impressions of your post" count={9195} />
           </div>
@@ -128,7 +128,7 @@ const SidebarMobileLayout = () => {
         <MyProfileProfession />
         {isShowingAllMobile && (
           <div>
-            <div className="py-3 border-b border-slate-200">
+            <div className="py-3 border-b">
               <MyProfileStats text="Who's viewed your profile" count={50} />
               <MyProfileStats text="Impressions of your post" count={9195} />
             </div>

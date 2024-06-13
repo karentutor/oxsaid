@@ -1,4 +1,3 @@
-import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Layout from "./components/Layout";
@@ -12,6 +11,7 @@ import Fundnig from "./pages/fundnig";
 import Landing from "./pages/landing";
 import Messages from "./pages/messages";
 import Business from "./pages/business";
+import { Toaster } from "./components/ui/toaster";
 
 export default function App() {
   return (
