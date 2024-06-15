@@ -16,11 +16,11 @@ import ModeToggle from "../ModeToggle";
 
 export default function Header() {
   return (
-    <header className="sticky z-10 top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 md:px-6">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:justify-between md:w-full md:items-center md:gap-5 md:text-sm lg:gap-6">
+    <header className="sticky z-10 top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 lg:px-6">
+      <nav className="hidden flex-col gap-6 text-lg font-medium max-w-[1600px] mx-auto lg:flex lg:flex-row lg:justify-between lg:w-full lg:items-center md:gap-5 lg:text-sm lg:gap-6">
         <Link
           to="/"
-          className="flex items-center gap-2 text-lg font-semibold md:text-2xl text-accent"
+          className="flex items-center gap-2 text-lg font-semibold lg:text-2xl text-accent"
         >
           OXSAID
           <span className="sr-only">Oxsaid</span>
@@ -43,10 +43,39 @@ export default function Header() {
             </NavLink>
           ))}
         </div>
+        <div className="hidden md:flex items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="rounded-full">
+                <CircleUser className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-44" align="end">
+              <DropdownMenuLabel className="flex flex-col gap-1.5">
+                <p className="font-medium">Yousef Omar</p>
+                <span className="text-gray-500 text-xs">@Yousefomar724</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-gray-200" />
+              <DropdownMenuItem>
+                <Link to="/profile">My Account</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/contact">Contact Us</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-gray-200" />
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <ModeToggle />
+        </div>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+          <Button variant="outline" size="icon" className="shrink-0 lg:hidden">
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
@@ -76,33 +105,35 @@ export default function Header() {
           </nav>
         </SheetContent>
       </Sheet>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="min-w-44" align="end">
-          <DropdownMenuLabel className="flex flex-col gap-1.5">
-            <p className="font-medium">Yousef Omar</p>
-            <span className="text-gray-500 text-xs">@Yousefomar724</span>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator className="bg-gray-200" />
-          <DropdownMenuItem>
-            <Link to="/profile">My Account</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to="/settings">Settings</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to="/contact">Contact Us</Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-gray-200" />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <ModeToggle />
+      <div className="flex lg:hidden items-center gap-3">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser className="h-5 w-5" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="min-w-44" align="end">
+            <DropdownMenuLabel className="flex flex-col gap-1.5">
+              <p className="font-medium">Yousef Omar</p>
+              <span className="text-gray-500 text-xs">@Yousefomar724</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-gray-200" />
+            <DropdownMenuItem>
+              <Link to="/profile">My Account</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/settings">Settings</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/contact">Contact Us</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-gray-200" />
+            <DropdownMenuItem>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <ModeToggle />
+      </div>
     </header>
   );
 }
