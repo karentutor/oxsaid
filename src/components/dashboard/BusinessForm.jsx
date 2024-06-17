@@ -83,7 +83,7 @@ export default function BusinessForm() {
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
-        <ScrollArea className="h-[calc(100vh-100px)]">
+        <ScrollArea className="max-h-[calc(100vh-100px)]">
           <CardHeader>
             <CardTitle>Add Business</CardTitle>
             <CardDescription>Elevate Your Business with Us</CardDescription>

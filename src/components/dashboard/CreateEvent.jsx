@@ -110,7 +110,7 @@ export default function CreateEvent() {
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
-        <ScrollArea className="h-[calc(100vh-100px)]">
+        <ScrollArea className="max-h-[calc(100vh-100px)]">
           <CardHeader>
             <CardTitle>Create Event</CardTitle>
             <CardDescription>
