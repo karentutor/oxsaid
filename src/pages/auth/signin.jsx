@@ -45,10 +45,10 @@ export default function Signin() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <Button variant="outline">
-              <Link to="/about">About us</Link>
+              <Link to="/#about">About us</Link>
             </Button>
             <Button variant="outline">
-              <Link to="/services">Oxsaid Services</Link>
+              <Link to="/#services">Oxsaid Services</Link>
             </Button>
             <a
               href="mailto:admin@nanoosedev.com"
@@ -59,12 +59,6 @@ export default function Signin() {
                 <EnvelopeOpenIcon className="mr-2 h-4 w-4" /> Contact us
               </Button>
             </a>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link to="/register" className="underline">
-              Register
-            </Link>
           </div>
         </div>
       </div>

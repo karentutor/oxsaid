@@ -24,6 +24,7 @@ import UpdateProfile from "./pages/profile/update-profile";
 import ChangePassword from "./pages/profile/change-password";
 import Contact from "./pages/contact";
 import Register from "./pages/auth/register";
+import Signin from "./pages/auth/signin";
 
 export default function App() {
   return (
@@ -32,6 +33,8 @@ export default function App() {
         <Routes>
           {/* Landing page (Login) */}
           <Route path="/" element={<Landing />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Dashboard */}
           <Route element={<Layout />}>
@@ -44,7 +47,7 @@ export default function App() {
             <Route path="/messages" element={<Messages />} />
             <Route path="/business" element={<Business />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/register" element={<Register />} />
+
             <Route path="profile" element={<ProfileLayout />}>
               <Route index element={<ProfilePosts />} />
               <Route path="posts" element={<ProfilePosts />} />
