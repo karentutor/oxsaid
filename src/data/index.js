@@ -378,6 +378,45 @@ export const fundings = [
   },
 ]
 
+export const sidebarNavItems = [
+  {
+    title: "Posts",
+    href: "/profile/posts",
+  },
+  {
+    title: "Connection List",
+    href: "/profile/connection-list",
+  },
+  {
+    title: "Business",
+    href: "/profile/business",
+  },
+  {
+    title: "Jobs",
+    href: "/profile/jobs",
+  },
+  {
+    title: "Funding",
+    href: "/profile/funding",
+  },
+  {
+    title: "Events",
+    href: "/profile/events",
+  },
+  {
+    title: "Groups",
+    href: "/profile/groups",
+  },
+  {
+    title: "Update Profile",
+    href: "/profile/update-profile",
+  },
+  {
+    title: "Change Password",
+    href: "/profile/change-password",
+  },
+]
+
 export const companysizeData = [
   {
     id: 1,

@@ -12,6 +12,18 @@ import Landing from "./pages/landing";
 import Messages from "./pages/messages";
 import Business from "./pages/business";
 import { Toaster } from "./components/ui/toaster";
+import ProfileLayout from "./pages/profile/layout";
+import ProfilePosts from "./pages/profile/posts";
+import ProfileConnectionList from "./pages/profile/connection-list";
+import ProfileJobs from "./pages/profile/jobs";
+import ProfileGroups from "./pages/profile/groups";
+import ProfileEvents from "./pages/profile/events";
+import ProfileFunding from "./pages/profile/funding";
+import ProfileBusiness from "./pages/profile/business";
+import UpdateProfile from "./pages/profile/update-profile";
+import ChangePassword from "./pages/profile/change-password";
+import Contact from "./pages/contact";
+import Register from "./pages/auth/register";
 
 export default function App() {
   return (
@@ -31,6 +43,23 @@ export default function App() {
             <Route path="/funding" element={<Fundnig />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/business" element={<Business />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="profile" element={<ProfileLayout />}>
+              <Route index element={<ProfilePosts />} />
+              <Route path="posts" element={<ProfilePosts />} />
+              <Route path="jobs" element={<ProfileJobs />} />
+              <Route
+                path="connection-list"
+                element={<ProfileConnectionList />}
+              />
+              <Route path="business" element={<ProfileBusiness />} />
+              <Route path="funding" element={<ProfileFunding />} />
+              <Route path="events" element={<ProfileEvents />} />
+              <Route path="groups" element={<ProfileGroups />} />
+              <Route path="update-profile" element={<UpdateProfile />} />
+              <Route path="change-password" element={<ChangePassword />} />
+            </Route>
           </Route>
         </Routes>
       </Router>

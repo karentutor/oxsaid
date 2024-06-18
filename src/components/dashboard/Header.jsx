@@ -61,9 +61,6 @@ export default function Header() {
                 <Link to="/profile">My Account</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link to="/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
                 <Link to="/contact">Contact Us</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-gray-200" />
@@ -121,9 +118,6 @@ export default function Header() {
             <DropdownMenuSeparator className="bg-gray-200" />
             <DropdownMenuItem>
               <Link to="/profile">My Account</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/settings">Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link to="/contact">Contact Us</Link>
