@@ -7,11 +7,12 @@ import Business from "@/components/landing/Business";
 import Funding from "@/components/landing/Funding";
 import ScrollToTop from "@/components/landing/ScrollToTop";
 import Services from "@/components/landing/Services";
+import { Groups } from "@/components/landing/Groups";
 
 export default function Landing() {
   return (
     <main>
-      <div className="bg-[url('/imgs/blob.png')] bg-no-repeat bg-[140%_-100px] bg-contain">
+      <div className="lg:bg-[url('/imgs/blob.png')] bg-no-repeat bg-[140%_-100px] bg-contain">
         <Header />
         <Hero />
         <About />
@@ -19,6 +20,7 @@ export default function Landing() {
       <Services />
       <Events />
       {/* <Team /> */}
+      <Groups />
       <Funding />
       <div className=" bg-[url('/imgs/blob.png')] bg-no-repeat bg-contain bg-right-top">
         <Business />

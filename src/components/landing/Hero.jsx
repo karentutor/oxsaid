@@ -1,20 +1,67 @@
+import { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Button, buttonVariants } from "../ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { ArrowDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import { axiosBase } from "@/services/BaseService";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
 export default function Hero() {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const { mutateAsync: login, isPending } = useMutation({
+    mutationFn: (data) => axiosBase.post("/auth/login", data),
+    onSuccess: ({ data }) => {
+      if (data.isError) {
+        toast.error("Invalid Credentials", { richColors: true });
+      } else {
+        setAuth({ user: data.user, access_token: data.token });
+        toast.success("Login Success", { richColors: true });
+        navigate("/home", { replace: true });
+      }
+    },
+    onError: (err) => {
+      toast.error("Invalid Credentials", { richColors: true });
+      console.log("error", err);
+    },
+  });
+
   return (
-    <section className="container grid lg:grid-cols-2 place-items-center grid-cols-1 py-10 md:py-32 gap-10">
+    <section className="container grid lg:grid-cols-2 place-items-center grid-cols-1 py-24 md:py-32 gap-10">
       <div className="text-center lg:text-start space-y-6">
         <h1 className="inline bg-gradient-to-r from-primary to-accent text-transparent bg-clip-text lg:text-lg">
           Empower Your Future
@@ -56,23 +103,47 @@ export default function Hero() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(login)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="m@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full flex items-center gap-2"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                ) : null}
+                Login
+              </Button>
+            </form>
+          </Form>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">Sign in</Button>
-        </CardFooter>
       </Card>
 
       {/* Shadow effect */}

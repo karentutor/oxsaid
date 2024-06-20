@@ -39,6 +39,10 @@ export const navLinks = [
     label: "Events",
   },
   {
+    href: "#groups",
+    label: "Groups",
+  },
+  {
     href: "#funding",
     label: "Funding",
   },
@@ -49,11 +53,6 @@ export const navLinks = [
   {
     href: "#jobs",
     label: "Jobs",
-  },
-
-  {
-    href: "#groups",
-    label: "Groups",
   },
 ];
 

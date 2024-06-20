@@ -1,11 +1,59 @@
-import { Link } from "react-router-dom";
+import { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
 import { EnvelopeOpenIcon } from "@radix-ui/react-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import { axiosBase } from "@/services/BaseService";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
 export default function Signin() {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const { mutateAsync: login, isPending } = useMutation({
+    mutationFn: (data) => axiosBase.post("/auth/login", data),
+    onSuccess: ({ data }) => {
+      if (data.isError) {
+        toast.error("Invalid Credentials", { richColors: true });
+      } else {
+        setAuth({ user: data.user, access_token: data.token });
+        toast.success("Login Success", { richColors: true });
+        navigate("/home", { replace: true });
+      }
+    },
+    onError: (err) => {
+      toast.error("Invalid Credentials", { richColors: true });
+      console.log("error", err);
+    },
+  });
+
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="hidden bg-muted lg:block">
@@ -25,24 +73,46 @@ export default function Signin() {
               Enter your email below to login to your account
             </p>
           </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(login)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="m@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full flex items-center gap-2"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                ) : null}
+                Login
+              </Button>
+            </form>
+          </Form>
           <div className="flex items-center gap-4 text-sm">
             <Button variant="outline">
               <Link to="/#about">About us</Link>

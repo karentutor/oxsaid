@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import Layout from "./components/Layout";
 
@@ -11,7 +12,6 @@ import Fundnig from "./pages/fundnig";
 import Landing from "./pages/landing";
 import Messages from "./pages/messages";
 import Business from "./pages/business";
-import { Toaster } from "./components/ui/toaster";
 import ProfileLayout from "./pages/profile/layout";
 import ProfilePosts from "./pages/profile/posts";
 import ProfileConnectionList from "./pages/profile/connection-list";
@@ -66,7 +66,7 @@ export default function App() {
           </Route>
         </Routes>
       </Router>
-      <Toaster />
+      <Toaster richColors closeButton />
     </div>
   );
 }
