@@ -52,6 +52,8 @@ export default function Hero() {
         setAuth({ user: data.user, access_token: data.token });
         toast.success("Login Success", { richColors: true });
         navigate("/home", { replace: true });
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
       }
     },
     onError: (err) => {

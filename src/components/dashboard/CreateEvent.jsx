@@ -190,9 +190,7 @@ export default function CreateEvent() {
                           type="number"
                           placeholder="Max Registrants"
                           {...field}
-                          onChange={(event) =>
-                            field.onChange(+event.target.value)
-                          }
+                          onChange={(e) => field.onChange(+e.target.value)}
                         />
                       </FormControl>
                       <FormMessage />

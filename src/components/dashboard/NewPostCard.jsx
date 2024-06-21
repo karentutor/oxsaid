@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { MyAvatar } from "./UserAvatar";
 import { Image } from "lucide-react";
 import { useState } from "react";
@@ -14,6 +15,10 @@ import {
 } from "../ui/tooltip";
 import { Textarea } from "../ui/textarea";
 import { cn } from "@/lib/utils";
+import { Label } from "../ui/label";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
 
 const WriteNewPostCardButtonContainer = ({ children }) => {
   return (
@@ -56,7 +61,38 @@ const PostBottomActions = () => {
 
 const WriteNewPostDialog = ({ onClose }) => {
   const [text, setText] = useState("");
+  const [postPic, setPostPic] = useState(null);
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
   const isPostButtonDisabled = text === "";
+
+  // Comment
+  const { mutate: createPost } = useMutation({
+    mutationFn: () =>
+      axiosBase.post(
+        `/posts`,
+        {
+          userId: auth.user._id,
+          description: text,
+          picture: postPic,
+          picturePath: postPic?.name || "",
+        },
+        {
+          headers: {
+            Authorization: auth.access_token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+    onSettled: () => {
+      setText("");
+      setPostPic(null);
+      onClose();
+    },
+  });
+
+  console.log(postPic);
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -78,7 +114,15 @@ const WriteNewPostDialog = ({ onClose }) => {
             rows={2}
             onChange={(e) => setText(e.target.value)}
           />
-          <PostBottomActions />
+          <Label htmlFor="postPic">
+            <PostBottomActions />
+          </Label>
+          <Input
+            id="postPic"
+            onChange={(e) => setPostPic(e.target.files?.[0])}
+            type="file"
+            className="hidden"
+          />
         </div>
         <Separator className="pt-0 mt-0" />
         <div className="flex flex-row p-3 pt-0">
@@ -88,6 +132,7 @@ const WriteNewPostDialog = ({ onClose }) => {
               "rounded-3xl font-semibold",
               !isPostButtonDisabled && "bg-accent"
             )}
+            onClick={createPost}
             disabled={isPostButtonDisabled}
           >
             Post

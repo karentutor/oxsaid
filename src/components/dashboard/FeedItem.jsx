@@ -1,66 +1,61 @@
+/* eslint-disable react/prop-types */
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "../ui/card";
 import { UserAvatar } from "./UserAvatar";
+import { Heart, MessageSquareIcon } from "lucide-react";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
+import { HeartIcon, HeartFilledIcon } from "@radix-ui/react-icons";
 import {
-  ArrowLeftRight,
-  LightbulbIcon,
-  MessageSquareIcon,
-  SendIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import { useState } from "react";
 
 function extractDomain(url) {
   const urlObj = new URL(url);
   return urlObj.hostname;
 }
 
-const LikesCountRow = ({ stats }) => {
-  if (!stats) {
-    return null;
-  }
-  return (
-    <div className="text-zinc-500 text-xs p-2 px-4 flex flex-row items-center border-b">
-      {stats.likes && (
-        <div className="w-full flex flex-row items-center hover:text-blue-600 hover:underline cursor-pointer">
-          <LightbulbIcon size={15} />
-          <span className="ml-1">{stats.likes}</span>
-        </div>
-      )}
-      {stats.comments && (
-        <div className="hover:text-blue-600 hover:underline cursor-pointer shrink-0">
-          {stats.comments} comments
-        </div>
-      )}
-      {stats.reposts && (
-        <div className="hover:text-blue-600 hover:underline cursor-pointer shrink-0 ml-2">
-          <span className="mr-1 text-muted-foreground">•</span> {stats.reposts}{" "}
-          reposts
-        </div>
-      )}
-    </div>
-  );
-};
+export const FeedItem = ({
+  id,
+  likes,
+  content,
+  thumbnail,
+  link,
+  author,
+  stats,
+}) => {
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+  const [comment, setComment] = useState("");
 
-const Action = ({ text, icon }) => {
-  return (
-    <div className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all">
-      <span>{icon}</span>
-      <span className="font-semibold ml-2 hidden sm:inline">{text}</span>
-    </div>
-  );
-};
+  // Like
+  const { mutate: likePost } = useMutation({
+    mutationFn: () =>
+      axiosBase.put(
+        `/posts/${id}/like`,
+        { userId: auth.user._id },
+        { headers: { Authorization: auth.access_token } }
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
 
-const ActionsRow = () => {
-  return (
-    <div className="flex flex-row justify-between items-center py-2 px-4">
-      <Action text="Link" icon={<ThumbsUpIcon />} />
-      <Action text="Comment" icon={<MessageSquareIcon />} />
-      <Action text="Repost" icon={<ArrowLeftRight />} />
-      <Action text="Send" icon={<SendIcon />} />
-    </div>
-  );
-};
+  // Comment
+  const { mutate: commentOnPost } = useMutation({
+    mutationFn: () =>
+      axiosBase.put(
+        `/posts/${id}/comment`,
+        { userId: auth.user._id, text: comment },
+        { headers: { Authorization: auth.access_token } }
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+    onSettled: () => setComment(""),
+  });
 
-export const FeedItem = ({ type, content, thumbnail, link, author, stats }) => {
   return (
     <Card className="p-0 mt-2">
       <div className="flex flex-row p-4">
@@ -68,7 +63,7 @@ export const FeedItem = ({ type, content, thumbnail, link, author, stats }) => {
         <div className="pl-4">
           <div className="flex flex-row items-center">
             <div className="font-semibold">{author.name}</div>
-            <div className="ml-2 text-muted-foreground text-sm">
+            <div className="ml-2 text-muted text-xs">
               • {author.connectionDegree}
             </div>
           </div>
@@ -88,8 +83,58 @@ export const FeedItem = ({ type, content, thumbnail, link, author, stats }) => {
           </div>
         </>
       )}
-      <LikesCountRow stats={stats} />
-      <ActionsRow />
+      {stats ? (
+        <div className="text-zinc-500 text-xs p-2 px-4 flex flex-row items-center border-b">
+          {stats.likes ? (
+            <div className="w-full flex flex-row items-center hover:text-blue-600 hover:underline cursor-pointer">
+              <Heart size={15} />
+              <span className="ml-1">{stats.likes}</span>
+            </div>
+          ) : null}
+          {stats.comments ? (
+            <div className="hover:text-blue-600 hover:underline cursor-pointer shrink-0">
+              {stats.comments} comments
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+      <Collapsible>
+        <div className="flex flex-row justify-between items-center py-2 px-4">
+          <button
+            onClick={likePost}
+            className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all"
+          >
+            <span>
+              {Object.keys(likes)?.includes(auth.user._id) ? (
+                <HeartFilledIcon />
+              ) : (
+                <HeartIcon />
+              )}
+            </span>
+            <span className="font-semibold ml-2 hidden sm:inline">Like</span>
+          </button>
+          <CollapsibleTrigger>
+            <button className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all">
+              <span>{<MessageSquareIcon />}</span>
+              <span className="font-semibold ml-2 hidden sm:inline">
+                Comment
+              </span>
+            </button>
+          </CollapsibleTrigger>
+        </div>
+        <CollapsibleContent>
+          <div className="flex flex-col gap-2 items-start px-4 pb-4">
+            <Textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="give your thoughts"
+            />
+            <Button disabled={comment.length < 2} onClick={commentOnPost}>
+              Submit
+            </Button>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };

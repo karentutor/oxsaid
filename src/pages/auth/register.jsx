@@ -22,88 +22,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { COLLEGE_DATA, MATRICULATION_YEAR_DATA, OCCUPATION_DATA } from "@/data";
 import { geoData } from "@/data/geoData";
+import useAuth from "@/hooks/useAuth";
+import { axiosBase } from "@/services/BaseService";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { EyeIcon, EyeOffIcon, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
-
-const MAX_FILE_SIZE = 2000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
 
 const formSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
   college: z.string(),
-  graduationYear: z.string(),
-  country: z.string(),
+  matriculationYear: z.string(),
+  location: z.string(),
   city: z.string(),
   occupation: z.string(),
   subOccupation: z.string(),
   password: z.string(),
-  img: z
-    .any()
-    .optional()
-    .refine(
-      (file) =>
-        file.length == 1
-          ? ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type)
-            ? true
-            : false
-          : true,
-      "Invalid file. choose either JPEG or PNG image"
-    )
-    .refine(
-      (file) =>
-        file.length == 1
-          ? file[0]?.size <= MAX_FILE_SIZE
-            ? true
-            : false
-          : true,
-      "Max file size allowed is 8MB."
-    ),
+  picture: z.instanceof(File).refine((file) => file.size < 7000000, {
+    message: "Your Picture must be less than 7MB.",
+  }),
 });
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
-      country: "",
+      location: "",
       city: "",
       occupation: "",
       subOccupation: "",
       college: "",
-      graduationYear: "",
-      img: null,
+      matriculationYear: "",
+      picture: null,
       password: "",
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const { mutateAsync: register, isPending } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post("/auth/register", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+    onSuccess: ({ data }) => {
+      if (data.isError) {
+        toast.error(data.msg, { richColors: true });
+      } else {
+        setAuth({ user: data.user, access_token: data.token });
+        toast.success("Register Success", { richColors: true });
+        navigate("/home", { replace: true });
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+      }
+    },
+    onError: (err) => {
+      toast.error("Invalid Credentials", { richColors: true });
+      console.log("error", err);
+    },
+  });
+
+  const onSubmit = async (values) => {
+    const newUser = { ...values, picturePath: values.picture.name };
+    await register(newUser);
+  };
 
   return (
     <main className="relative">
@@ -180,10 +174,10 @@ export default function Register() {
                   />
                   <FormField
                     control={form.control}
-                    name="graduationYear"
+                    name="matriculationYear"
                     render={({ field }) => (
                       <FormItem className="space-y-0 w-full">
-                        <FormLabel>Graduation Year</FormLabel>
+                        <FormLabel>Matriculation Year</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -191,7 +185,7 @@ export default function Register() {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select Graduation Year" />
+                              <SelectValue placeholder="Select Matriculation Year" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -210,17 +204,17 @@ export default function Register() {
                 <div className="flex items-center gap-2">
                   <FormField
                     control={form.control}
-                    name="country"
+                    name="location"
                     render={({ field }) => (
                       <FormItem className="space-y-0 w-full">
-                        <FormLabel>Country</FormLabel>
+                        <FormLabel>Location</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select Country" />
+                              <SelectValue placeholder="Select Location" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -244,7 +238,7 @@ export default function Register() {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={!form.watch("country")}
+                          disabled={!form.watch("location")}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -252,7 +246,7 @@ export default function Register() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {geoData[form.watch("country")]?.map((item) => (
+                            {geoData[form.watch("location")]?.map((item) => (
                               <SelectItem value={item} key={item}>
                                 {item}
                               </SelectItem>
@@ -325,15 +319,22 @@ export default function Register() {
                 </div>
                 <FormField
                   control={form.control}
-                  name="img"
-                  render={({ field }) => (
+                  name="picture"
+                  // eslint-disable-next-line no-unused-vars
+                  render={({ field: { value, onChange, ...fieldProps } }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>Image</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Pick Image"
                           type="file"
-                          {...field}
+                          {...fieldProps}
+                          accept="image/*"
+                          onChange={(event) =>
+                            onChange(
+                              event.target.files && event.target.files[0]
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -385,7 +386,14 @@ export default function Register() {
                     </FormItem>
                   )}
                 />
-                <Button className="w-full uppercase" type="submit">
+                <Button
+                  className="w-full uppercase flex items-center gap-2"
+                  type="submit"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                  ) : null}
                   Register
                 </Button>
               </form>

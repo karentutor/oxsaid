@@ -4,8 +4,10 @@ import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const MyProfileHeader = () => {
+  const { auth } = useAuth();
   return (
     <div>
       <div
@@ -18,25 +20,11 @@ const MyProfileHeader = () => {
       <div className="flex justify-center">
         <img
           className="w-16 h-16 rounded-full overflow-hidden border-white border-2 mt-[-32px] z-1"
-          src="https://images.pexels.com/photos/1546912/pexels-photo-1546912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          // src="https://images.pexels.com/photos/1546912/pexels-photo-1546912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          src={auth.user.picturePath}
         />
       </div>
     </div>
-  );
-};
-
-const MyProfileProfession = () => {
-  return (
-    <a
-      className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
-      href="https://www.linkedin.com/in/ozgurgul35/"
-      target="_blank"
-    >
-      <div className="text-md font-medium hover:underline cursor-pointer">
-        Yousef Omar
-      </div>
-      <div className="text-xs text-zinc-500 mt-1">Frontend Developer</div>
-    </a>
   );
 };
 
@@ -99,15 +87,34 @@ const Discover = () => {
 };
 
 const SidebarDesktopLayout = () => {
+  const { auth } = useAuth();
   return (
     <>
       <Card className="overflow-hidden">
         <MyProfileHeader />
-        <MyProfileProfession />
+        <a
+          className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
+          href="https://www.linkedin.com/in/ozgurgul35/"
+          target="_blank"
+        >
+          <div className="text-md font-medium hover:underline cursor-pointer">
+            {auth.user.firstName} {auth.user.lastName}
+          </div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {auth.user.subOccupation}
+          </div>
+          <div className="text-xs mt-1">{auth.user.location}</div>
+        </a>
         <div>
           <div className="py-3 border-b">
-            <MyProfileStats text="Who's viewed your profile" count={50} />
-            <MyProfileStats text="Impressions of your post" count={9195} />
+            <MyProfileStats
+              text="Who's viewed your profile"
+              count={auth.user.viewedProfile}
+            />
+            <MyProfileStats
+              text="Impressions of your post"
+              count={auth.user.impressions}
+            />
           </div>
           <MyItems />
         </div>
@@ -121,16 +128,35 @@ const SidebarDesktopLayout = () => {
 
 const SidebarMobileLayout = () => {
   const [isShowingAllMobile, setShowingAllMobile] = useState(false);
+  const { auth } = useAuth();
   return (
     <>
       <Card className="overflow-hidden">
         <MyProfileHeader />
-        <MyProfileProfession />
+        <a
+          className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
+          href="https://www.linkedin.com/in/ozgurgul35/"
+          target="_blank"
+        >
+          <div className="text-md font-medium hover:underline cursor-pointer">
+            {auth.user.firstName} {auth.user.lastName}
+          </div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {auth.user.subOccupation}
+          </div>
+          <div className="text-xs mt-1">{auth.user.location}</div>
+        </a>
         {isShowingAllMobile && (
           <div>
             <div className="py-3 border-b">
-              <MyProfileStats text="Who's viewed your profile" count={50} />
-              <MyProfileStats text="Impressions of your post" count={9195} />
+              <MyProfileStats
+                text="Who's viewed your profile"
+                count={auth.user.viewedProfile}
+              />
+              <MyProfileStats
+                text="Impressions of your post"
+                count={auth.user.impressions}
+              />
             </div>
             <MyItems />
           </div>
