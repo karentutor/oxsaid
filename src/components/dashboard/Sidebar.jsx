@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card } from "../ui/card";
@@ -5,6 +6,20 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import { UserAvatar } from "./UserAvatar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { useMutation } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
 
 const MyProfileHeader = () => {
   const { auth } = useAuth();
@@ -18,10 +33,9 @@ const MyProfileHeader = () => {
         }}
       ></div>
       <div className="flex justify-center">
-        <img
+        <UserAvatar
           className="w-16 h-16 rounded-full overflow-hidden border-white border-2 mt-[-32px] z-1"
-          // src="https://images.pexels.com/photos/1546912/pexels-photo-1546912.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          src={auth.user.picturePath}
+          imageUrl={auth.user.picturePath}
         />
       </div>
     </div>
@@ -37,30 +51,99 @@ const MyProfileStats = ({ text, count }) => {
   );
 };
 
+const FormSchema = z.object({
+  email: z.string().email({ message: "Invalid Email" }),
+});
+const Form2Schema = z.object({
+  email: z.string().email({ message: "Invalid Email" }),
+});
+
 const MyItems = () => {
+  const domainName = window.location.origin;
+  const { auth } = useAuth();
+  // Invite a Friend
+  const { mutate: inviteFriend } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        `/auth/invite-friend`,
+        { userId: auth.user._id, email: data.email, domainName },
+        { headers: { Authorization: auth.access_token } }
+      ),
+    onSuccess: () => toast.success("Invite send"),
+    onError: () => toast.error("Something went wrong"),
+  });
+
+  const form = useForm({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const form2 = useForm({
+    resolver: zodResolver(Form2Schema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
   return (
     <div className="flex flex-col gap-3 text-xs font-semibold p-3 text-zinc-500">
       <h5 className="">Invite SBS Alums</h5>
-      <div className="flex w-full max-w-sm text-sm items-center space-x-2">
-        <Input
-          type="email"
-          placeholder="Email"
-          className="h-8 placeholder:text-xs placeholder:font-light"
-        />
-        <Button type="submit" size="sm" className="h-8 text-xs">
-          send
-        </Button>
-      </div>
-      <div className="flex w-full max-w-sm text-sm items-center space-x-2">
-        <Input
-          type="email"
-          placeholder="Email"
-          className="h-8 placeholder:text-xs placeholder:font-light"
-        />
-        <Button type="submit" size="sm" className="h-8 text-xs">
-          send
-        </Button>
-      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(inviteFriend)}
+          className="flex items-center gap-2"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem size="sm" className="w-full">
+                <FormControl>
+                  <Input
+                    size="sm"
+                    placeholder="Email"
+                    className="h-8 placeholder:text-xs placeholder:font-light"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" size="sm" className="h-8 text-xs">
+            Send
+          </Button>
+        </form>
+      </Form>
+      <Form {...form2}>
+        <form
+          onSubmit={form2.handleSubmit(inviteFriend)}
+          className="flex items-center gap-2"
+        >
+          <FormField
+            control={form2.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem size="sm" className="w-full">
+                <FormControl>
+                  <Input
+                    size="sm"
+                    placeholder="Email"
+                    className="h-8 placeholder:text-xs placeholder:font-light"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" size="sm" className="h-8 text-xs">
+            Send
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
@@ -129,6 +212,7 @@ const SidebarDesktopLayout = () => {
 const SidebarMobileLayout = () => {
   const [isShowingAllMobile, setShowingAllMobile] = useState(false);
   const { auth } = useAuth();
+  console.log("auth", auth);
   return (
     <>
       <Card className="overflow-hidden">
