@@ -30,66 +30,77 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "../ui/checkbox";
-import { toast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
+import { OCCUPATION_DATA, VISIBILITY_DATA, companysizeData } from "@/data";
+import useAuth from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string(),
   address: z.string(),
   phone: z.string(),
   email: z.string().email(),
-  url: z.string(),
+  websiteUrl: z.string(),
   description: z.string(),
   occupation: z.string(),
   subOccupation: z.string(),
-  size: z.string(),
+  size: z.number(),
   visibility: z.string(),
-  more_than_half_alumni_owned: z.boolean(),
-  less_than_2years_old: z.boolean(),
+  isAlumniOwned: z.boolean(),
+  isLessThanTwoYears: z.boolean(),
+  yearFounded: z.number(),
 });
 
 export default function BusinessForm() {
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-      size: "",
       occupation: "",
       subOccupation: "",
       address: "",
       description: "",
-      url: "",
+      websiteUrl: "",
       visibility: "",
-      more_than_half_alumni_owned: false,
-      less_than_2years_old: false,
+      isAlumniOwned: false,
+      isLessThanTwoYears: false,
     },
   });
-
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { mutate: createBusiness, isPending: isCreating } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/businesses",
+        { ...data, userId: auth.user._id },
+        { headers: { Authorization: auth.access_token } }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => {
+      toast.success("Business Created 🎉");
+      queryClient.invalidateQueries({ queryKey: ["businesses"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => form.reset(),
+  });
 
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
-        <ScrollArea className="max-h-[calc(100vh-100px)]">
+        <ScrollArea className="h-[calc(100vh-100px)]">
           <CardHeader>
             <CardTitle>Add Business</CardTitle>
             <CardDescription>Elevate Your Business with Us</CardDescription>
           </CardHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(createBusiness)}
+              className="space-y-4"
+            >
               <CardContent className="grid gap-3">
                 <FormField
                   control={form.control}
@@ -161,7 +172,7 @@ export default function BusinessForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="url"
+                  name="websiteUrl"
                   render={({ field }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>Business Url</FormLabel>
@@ -177,7 +188,7 @@ export default function BusinessForm() {
                   name="occupation"
                   render={({ field }) => (
                     <FormItem className="space-y-0">
-                      <FormLabel>occupation</FormLabel>
+                      <FormLabel>Occupation</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -188,13 +199,11 @@ export default function BusinessForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="team">Team</SelectItem>
-                          <SelectItem value="billing">Billing</SelectItem>
-                          <SelectItem value="account">Account</SelectItem>
-                          <SelectItem value="deployments">
-                            Deployments
-                          </SelectItem>
-                          <SelectItem value="support">Support</SelectItem>
+                          {OCCUPATION_DATA.map((item) => (
+                            <SelectItem value={item.name} key={item.name}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -210,20 +219,21 @@ export default function BusinessForm() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={!form.watch("occupation")}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Sub Occupation" />
+                            <SelectValue placeholder="Select SubOccupation" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="team">Team</SelectItem>
-                          <SelectItem value="billing">Billing</SelectItem>
-                          <SelectItem value="account">Account</SelectItem>
-                          <SelectItem value="deployments">
-                            Deployments
-                          </SelectItem>
-                          <SelectItem value="support">Support</SelectItem>
+                          {OCCUPATION_DATA.find(
+                            (item) => item.name === form.watch("occupation")
+                          )?.sublist.map((item) => (
+                            <SelectItem value={item.name} key={item.name}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -237,7 +247,7 @@ export default function BusinessForm() {
                     <FormItem className="space-y-0">
                       <FormLabel>Business Size</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(val) => field.onChange(+val)}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -246,13 +256,11 @@ export default function BusinessForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="team">Team</SelectItem>
-                          <SelectItem value="billing">Billing</SelectItem>
-                          <SelectItem value="account">Account</SelectItem>
-                          <SelectItem value="deployments">
-                            Deployments
-                          </SelectItem>
-                          <SelectItem value="support">Support</SelectItem>
+                          {companysizeData.map((item, index) => (
+                            <SelectItem value={`${index}`} key={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -275,13 +283,11 @@ export default function BusinessForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="team">Team</SelectItem>
-                          <SelectItem value="billing">Billing</SelectItem>
-                          <SelectItem value="account">Account</SelectItem>
-                          <SelectItem value="deployments">
-                            Deployments
-                          </SelectItem>
-                          <SelectItem value="support">Support</SelectItem>
+                          {VISIBILITY_DATA.map((item) => (
+                            <SelectItem value={item} key={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -290,7 +296,7 @@ export default function BusinessForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="more_than_half_alumni_owned"
+                  name="isAlumniOwned"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
@@ -307,7 +313,7 @@ export default function BusinessForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="less_than_2years_old"
+                  name="isLessThanTwoYears"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
@@ -322,10 +328,49 @@ export default function BusinessForm() {
                     </FormItem>
                   )}
                 />
+                {form.watch("isLessThanTwoYears") ? (
+                  <FormField
+                    control={form.control}
+                    name="yearFounded"
+                    render={({ field }) => (
+                      <FormItem className="space-y-0">
+                        <FormLabel>Year Founded</FormLabel>
+                        <Select
+                          onValueChange={(v) => field.onChange(+v)}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Year founded" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from(
+                              { length: 4 },
+                              (_, i) => `${new Date().getFullYear() - i}`
+                            ).map((item) => (
+                              <SelectItem value={item} key={item}>
+                                {item}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : null}
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
-                  <Button className="w-full" type="submit">
+                  <Button
+                    disabled={isCreating}
+                    className="w-full flex items-center gap-2"
+                    type="submit"
+                  >
+                    {isCreating ? (
+                      <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                    ) : null}
                     Submit
                   </Button>
                 </div>
