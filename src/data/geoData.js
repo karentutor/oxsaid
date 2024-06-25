@@ -2782,7 +2782,6 @@ export const geoData = {
     'Higashi-takadama',
     'Azuchi',
     'Higashiura',
-    'Nakanoshima',
     'Nakahai',
     'Tamachi',
     'Nara',

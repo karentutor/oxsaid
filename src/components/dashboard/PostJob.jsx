@@ -29,27 +29,46 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import { geoData } from "@/data/geoData";
 import { OCCUPATION_DATA } from "@/data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
-  title: z.string(),
+  jobTitle: z.string(),
   country: z.string(),
   city: z.string(),
   salary: z.string(),
   description: z.string(),
   occupation: z.string(),
   subOccupation: z.string(),
-  bussiness: z.string(),
+  businessId: z.string(),
 });
 
 export default function PostJob() {
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: businesses } = useQuery({
+    queryKey: ["businesses"],
+    queryFn: () =>
+      axiosBase.get("/businesses", {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) =>
+      data.data.business.map((item) => ({
+        label: item.name.name,
+        value: item._id,
+      })),
+  });
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      jobTitle: "",
       country: "",
       city: "",
       salary: "",
@@ -60,39 +79,68 @@ export default function PostJob() {
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { mutate: postJob, isPending: isPosting } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/jobs",
+        { ...data, userId: auth.user._id },
+        { headers: { Authorization: auth.access_token } }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => {
+      toast.success("Job Created 🎉");
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => form.reset(),
+  });
 
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
-        <ScrollArea className="max-h-[calc(100vh-100px)]">
+        <ScrollArea className="h-[calc(100vh-100px)]">
           <CardHeader>
             <CardTitle>Post Job</CardTitle>
             <CardDescription>Find Your Perfect Candidate</CardDescription>
           </CardHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(postJob)} className="space-y-4">
               <CardContent className="grid gap-3">
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="jobTitle"
                   render={({ field }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>Job title</FormLabel>
                       <FormControl>
                         <Input placeholder="Job title" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="businessId"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Business</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Business" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {businesses?.map((item) => (
+                            <SelectItem value={item.value} key={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -238,7 +286,14 @@ export default function PostJob() {
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
-                  <Button className="w-full" type="submit">
+                  <Button
+                    disabled={isPosting}
+                    className="w-full flex items-center gap-2"
+                    type="submit"
+                  >
+                    {isPosting ? (
+                      <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                    ) : null}
                     Submit
                   </Button>
                 </div>

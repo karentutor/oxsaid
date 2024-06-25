@@ -682,35 +682,6 @@ export const OCCUPATION_DATA = [
     ]
   },
   {
-    name: 'health and fitness',
-    sublist: [
-      {
-        name: 'personal training'
-      },
-      {
-        name: 'yoga instruction'
-      },
-      {
-        name: 'group fitness instruction'
-      },
-      {
-        name: 'pilates instruction'
-      },
-      {
-        name: 'physical therapy'
-      },
-      {
-        name: 'nutrition counseling'
-      },
-      {
-        name: 'sports coaching'
-      },
-      {
-        name: 'massage therapy'
-      }
-    ]
-  },
-  {
     name: 'arts and entertainment',
     sublist: [
       {
