@@ -89,7 +89,7 @@ const MyItems = () => {
 
   return (
     <div className="flex flex-col gap-3 text-xs font-semibold p-3 text-zinc-500">
-      <h5 className="">Invite SBS Alums</h5>
+      <h5>Invite SBS Alums</h5>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(inviteFriend)}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,331 +30,219 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { geoData } from "@/data/geoData";
 import { OCCUPATION_DATA } from "@/data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useAuth from "@/hooks/useAuth";
+import { axiosBase } from "@/services/BaseService";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   amount: z.string(),
   description: z.string(),
   occupation: z.string(),
   subOccupation: z.string(),
-  bussiness: z.string(),
+  businessNameId: z.string(),
 });
 
-export default function FundingForms() {
+export default function FundingForms({ isGetFunding }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: "",
       occupation: "",
       subOccupation: "",
-      business: "",
       description: "",
+      businessNameId: "",
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: businesses } = useQuery({
+    queryKey: ["businesses"],
+    queryFn: () =>
+      axiosBase.get("/businesses", {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) =>
+      data.data.business.map((item) => ({
+        label: item.name.name,
+        value: item._id,
+      })),
+  });
+
+  const { mutate: getFunding, isPending } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/fundings",
+        {
+          ...data,
+          userId: auth.user._id,
+          isSeeking: isGetFunding,
+          isOffering: !isGetFunding,
+        },
+        { headers: { Authorization: auth.access_token } }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => {
+      toast.success("Funding Created 🎉");
+      queryClient.invalidateQueries({ queryKey: ["fundings"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => form.reset(),
+  });
 
   return (
     <section className="[grid-area:sidebar]">
-      <Tabs defaultValue="get" className="">
-        <TabsList className="grid w-full grid-cols-2 bg-gray-200 dark:bg-slate-800 text-gray-600 dark:text-gray-200">
-          <TabsTrigger value="get">Get Funding</TabsTrigger>
-          <TabsTrigger value="offer">Offer Funding</TabsTrigger>
-        </TabsList>
-        <TabsContent value="get">
-          <Card className="overflow-hidden py-4">
-            <ScrollArea className="h-[calc(100vh-200px)]">
-              <CardHeader>
-                <CardTitle>Get Funding</CardTitle>
-                <CardDescription>
-                  Fuel Your Dreams with Financial Support
-                </CardDescription>
-              </CardHeader>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <CardContent className="grid gap-3">
-                    <FormField
-                      control={form.control}
-                      name="business"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>business</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={!form.watch("country")}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Business" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {geoData[form.watch("country")]?.map((item) => (
-                                <SelectItem value={item} key={item}>
-                                  {item}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="occupation"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Occupation</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Occupation" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {OCCUPATION_DATA.map((item) => (
-                                <SelectItem value={item.name} key={item.name}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="subOccupation"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>subOccupation</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={!form.watch("occupation")}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select SubOccupation" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {OCCUPATION_DATA.find(
-                                (item) => item.name === form.watch("occupation")
-                              )?.sublist.map((item) => (
-                                <SelectItem value={item.name} key={item.name}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="amount"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Amount</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Amount" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Description" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                  <CardFooter className="p-0 bg-background border-t sticky bottom-0">
-                    <div className="py-2 px-6 w-full">
-                      <Button className="w-full" type="submit">
-                        Submit
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </form>
-              </Form>
-            </ScrollArea>
-          </Card>
-        </TabsContent>
-        <TabsContent value="offer">
-          <Card className="overflow-hidden py-4">
-            <ScrollArea className="h-[calc(100vh-200px)]">
-              <CardHeader>
-                <CardTitle>Offer Funding</CardTitle>
-                <CardDescription>
-                  Invest in Tomorrow’s Success Stories
-                </CardDescription>
-              </CardHeader>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <CardContent className="grid gap-3">
-                    <FormField
-                      control={form.control}
-                      name="business"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>business</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={!form.watch("country")}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Business" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {geoData[form.watch("country")]?.map((item) => (
-                                <SelectItem value={item} key={item}>
-                                  {item}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="occupation"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Occupation</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Occupation" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {OCCUPATION_DATA.map((item) => (
-                                <SelectItem value={item.name} key={item.name}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="subOccupation"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>subOccupation</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={!form.watch("occupation")}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select SubOccupation" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {OCCUPATION_DATA.find(
-                                (item) => item.name === form.watch("occupation")
-                              )?.sublist.map((item) => (
-                                <SelectItem value={item.name} key={item.name}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="amount"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Amount</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Amount" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem className="space-y-0">
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Description" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                  <CardFooter className="p-0 bg-background border-t sticky bottom-0">
-                    <div className="py-2 px-6 w-full">
-                      <Button className="w-full" type="submit">
-                        Submit
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </form>
-              </Form>
-            </ScrollArea>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <Card className="overflow-hidden py-4">
+        <ScrollArea className="h-[calc(100vh-200px)]">
+          <CardHeader>
+            <CardTitle>
+              {isGetFunding ? "Get Funding" : "Offer Funding"}
+            </CardTitle>
+            <CardDescription>
+              {isGetFunding
+                ? "Fuel Your Dreams with Financial Support"
+                : "Invest in Tomorrow’s Success Stories"}
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(getFunding)}
+              className="space-y-4"
+            >
+              <CardContent className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="businessNameId"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Business</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Business" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {businesses?.map((item) => (
+                            <SelectItem value={item.value} key={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="occupation"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Occupation</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Occupation" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {OCCUPATION_DATA.map((item) => (
+                            <SelectItem value={item.name} key={item.name}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subOccupation"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>subOccupation</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={!form.watch("occupation")}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select SubOccupation" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {OCCUPATION_DATA.find(
+                            (item) => item.name === form.watch("occupation")
+                          )?.sublist.map((item) => (
+                            <SelectItem value={item.name} key={item.name}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Amount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Description" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+              <CardFooter className="p-0 bg-background border-t sticky bottom-0">
+                <div className="py-2 px-6 w-full">
+                  <Button
+                    disabled={isPending}
+                    className="w-full flex items-center gap-2"
+                    type="submit"
+                  >
+                    {isPending ? (
+                      <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                    ) : null}
+                    Submit
+                  </Button>
+                </div>
+              </CardFooter>
+            </form>
+          </Form>
+        </ScrollArea>
+      </Card>
     </section>
   );
 }
