@@ -9,8 +9,11 @@ import useAuth from "@/hooks/useAuth";
 import { Skeleton } from "../ui/skeleton";
 import { Card } from "../ui/card";
 import moment from "moment";
+import { useEffect, useState } from "react";
 
 export default function BusinessMain() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const { auth } = useAuth();
   const { data: businesses, isPending } = useQuery({
     queryKey: ["businesses"],
@@ -18,10 +21,21 @@ export default function BusinessMain() {
       axiosBase.get("/businesses", {
         headers: { Authorization: auth.access_token },
       }),
-    select: (data) => data.data?.business,
+    select: (data) =>
+      data.data?.business.filter((item) =>
+        item?.name?.name.includes(debouncedSearchTerm)
+      ),
   });
 
-  console.log("businesses", businesses);
+  useEffect(() => {
+    const debounceId = setTimeout(
+      () => setDebouncedSearchTerm(searchTerm),
+      1000
+    );
+
+    return () => clearTimeout(debounceId);
+  }, [searchTerm]);
+
   return (
     <section className="[grid-area:main]">
       <h1 className="text-2xl lg:text-3xl font-semibold text-center py-3">
@@ -31,7 +45,12 @@ export default function BusinessMain() {
         <form>
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted" />
-            <Input placeholder="Search" className="pl-8" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search"
+              className="pl-8"
+            />
           </div>
         </form>
       </div>
