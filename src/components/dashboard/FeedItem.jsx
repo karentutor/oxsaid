@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-function ConfirmDelete({ open, setOpen, onDelete }) {
+export function ConfirmDelete({ open, setOpen, onDelete }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
