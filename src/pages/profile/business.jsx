@@ -18,6 +18,7 @@ export default function ProfileBusiness() {
     enabled: !!id,
     select: (data) => data.data?.business,
   });
+
   return (
     <div className="space-y-6">
       <div>

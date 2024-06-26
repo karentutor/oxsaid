@@ -1,6 +1,22 @@
+import JobCard from "@/components/dashboard/JobCard";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import useAuth from "@/hooks/useAuth";
+import { axiosBase } from "@/services/BaseService";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProfileJobs() {
+  const { auth } = useAuth();
+  const { data: jobs, isPending } = useQuery({
+    queryKey: ["jobs"],
+    queryFn: () =>
+      axiosBase.get(`/jobs`, {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) =>
+      data.data?.jobs?.filter((j) => j.userId._id === auth.user._id),
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -8,6 +24,28 @@ export default function ProfileJobs() {
         <p className="text-sm text-muted">Manage your active/inactive jobs.</p>
       </div>
       <Separator />
+      {isPending ? (
+        <div className="flex flex-col gap-6 p-6">
+          <div className="flex items-center space-x-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-60" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+          </div>
+          <div className="flex flex-col space-y-3">
+            <Skeleton className="h-[225px]  rounded-xl" />
+            <div className="space-y-2">
+              <Skeleton className="h-4" />
+              <Skeleton className="h-4" />
+            </div>
+          </div>
+        </div>
+      ) : jobs?.length > 0 ? (
+        jobs.map((item) => <JobCard key={item._id} item={item} myJob />)
+      ) : (
+        <h3 className="text-center text-xl mt-10">No Jobs Found</h3>
+      )}
     </div>
   );
 }

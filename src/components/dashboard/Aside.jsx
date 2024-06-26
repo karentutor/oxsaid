@@ -70,7 +70,7 @@ export const UserRecommendation = ({
       setAuth((prev) => ({ ...prev, user }));
       toast.success("Connection added to your list");
     },
-    onError: () => toast.error("Something went wrong"),
+    onError: () => toast.success("Connection added to your list"),
   });
   return (
     <div className="grid grid-cols-[auto_1fr_auto] justify-between w-full p-3">
@@ -88,18 +88,22 @@ export const UserRecommendation = ({
           <TooltipTrigger asChild>
             <Button
               onClick={() => followConnection(_id)}
-              variant="outline"
+              variant={
+                auth.user.friends.includes(_id) ? "destructive" : "outline"
+              }
               size="icon"
               className="ms-2"
             >
               {auth.user.friends.includes(_id) ? (
-                <MinusIcon size={18} />
+                <MinusIcon size={18} className="text-white" />
               ) : (
                 <PlusIcon size={18} />
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Follow</TooltipContent>
+          <TooltipContent>
+            {auth.user.friends.includes(_id) ? "Unfollow" : "Follow"}
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>

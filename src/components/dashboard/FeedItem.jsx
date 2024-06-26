@@ -26,7 +26,14 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-export function ConfirmDelete({ open, setOpen, onDelete }) {
+export function ConfirmDelete({
+  open,
+  setOpen,
+  onDelete,
+  isClose = false,
+  isClosed = false,
+  Icon = Trash,
+}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -34,15 +41,16 @@ export function ConfirmDelete({ open, setOpen, onDelete }) {
           variant="destructive"
           className="text-white ms-4 mr-auto"
           size="icon"
+          disabled={isClosed}
         >
-          <Trash size={14} />
+          <Icon size={14} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Post</DialogTitle>
+          <DialogTitle>{isClose ? "Close" : "Delete"} Item</DialogTitle>
         </DialogHeader>
-        Are you sure you want to delete this post?
+        Are you sure you want to {isClose ? "close" : "delete"} this Item?
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" type="submit">
@@ -55,7 +63,7 @@ export function ConfirmDelete({ open, setOpen, onDelete }) {
             className="text-white"
             type="submit"
           >
-            Delete
+            {isClose ? "Close" : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -26,9 +26,11 @@ export default function BusinessCard({ item, myBusiness = false }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
       toast.success("Business deleted successfully");
+      setOpen(false);
     },
     onError: () => toast.error("Something went wrong"),
   });
+
   return (
     <Card
       className={cn(

@@ -1,15 +1,13 @@
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { Badge } from "../ui/badge";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { Skeleton } from "../ui/skeleton";
-import moment from "moment";
+import GroupCard from "./GroupCard";
 
 export default function AllGroups() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,52 +73,7 @@ export default function AllGroups() {
               </Card>
             ))
           ) : groups?.length > 0 ? (
-            groups.map((item) => (
-              <Card key={item._id}>
-                <CardHeader className="relative p-2">
-                  <img
-                    src={item.groupCoverImage || "/imgs/about.jpg"}
-                    alt={item.title}
-                    className="rounded-lg object-cover border"
-                  />
-                  <div
-                    className={cn(
-                      "ml-auto text-xs text-accent hover:!text-primary absolute top-2 right-4 bg-background py-0.5 px-2 rounded-2xl"
-                    )}
-                  >
-                    {moment(item.createdAt).startOf().fromNow()}
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <div className="flex w-full flex-col items-start gap-2">
-                    <h4 className="font-semibold">{item.name}</h4>
-                    <p className="text-xs font-medium text-accent">
-                      {item.type}
-                    </p>
-                    <p className="text-xs text-muted font-semibold">
-                      members:{" "}
-                      <span className="font-medium">
-                        {item.groupMembers?.length}
-                      </span>
-                    </p>
-                    <p className="text-xs text-muted font-semibold">
-                      created by:{" "}
-                      <span className="font-medium">
-                        {item.userId.firstName} {item.userId.lastName}
-                      </span>
-                    </p>
-                    <p className="line-clamp-2 text-xs text-muted">
-                      {item.description.substring(0, 300)}
-                    </p>
-                    {item.isPrivate ? (
-                      <Badge>Private</Badge>
-                    ) : (
-                      <Badge>Public</Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+            groups.map((item) => <GroupCard key={item._id} item={item} />)
           ) : (
             <h3 className="text-center text-xl mt-10 col-span-2">
               No Groups Found

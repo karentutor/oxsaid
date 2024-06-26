@@ -395,10 +395,6 @@ export const sidebarNavItems = [
     href: "jobs",
   },
   {
-    title: "Funding",
-    href: "funding",
-  },
-  {
     title: "Events",
     href: "events",
   },

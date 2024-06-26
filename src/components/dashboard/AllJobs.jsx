@@ -1,15 +1,13 @@
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
-import moment from "moment";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
+import JobCard from "./JobCard";
 
 export default function AllJobs() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,60 +75,7 @@ export default function AllJobs() {
               </div>
             </Card>
           ) : (
-            jobs.map((item) => (
-              <Card
-                key={item.id}
-                className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10"
-              >
-                <div className="flex w-full flex-col gap-1">
-                  <div className="flex items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="font-semibold">{item.jobTitle}</div>
-                    </div>
-                    <div
-                      className={cn(
-                        "ml-auto text-xs text-accent hover:!text-primary flex items-center gap-2"
-                      )}
-                    >
-                      {item.isClosed ? (
-                        <Badge
-                          variant="destructive"
-                          className="text-white font-light"
-                        >
-                          Closed
-                        </Badge>
-                      ) : (
-                        <Badge variant="" className="font-light">
-                          Open
-                        </Badge>
-                      )}
-                      {moment(item.createdAt).startOf().fromNow()}
-                    </div>
-                  </div>
-                  <div className="text-xs font-semibold">
-                    Location:{" "}
-                    <span className="font-medium">
-                      {item.country} | {item.city}
-                    </span>
-                  </div>
-                  <div className="text-xs font-semibold">
-                    Field:{" "}
-                    <span className="font-medium">
-                      {item.occupation} | {item.subOccupation}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-xs text-muted font-semibold">
-                  Description:{" "}
-                  <span className="font-medium">
-                    {item.description.substring(0, 300)}
-                  </span>
-                </div>
-                <div className="text-xs text-muted font-semibold">
-                  Salary: <span className="font-medium">{item.salary}$</span>
-                </div>
-              </Card>
-            ))
+            jobs.map((item) => <JobCard key={item._id} item={item} />)
           )}
         </div>
       </ScrollArea>

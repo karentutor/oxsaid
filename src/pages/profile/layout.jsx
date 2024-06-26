@@ -16,7 +16,7 @@ export default function ProfileLayout() {
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-1 text-sm text-muted">
           <h3 className="font-semibold">Manage Preferences</h3>
-          {sidebarNavItems.slice(0, 7).map((item) => (
+          {sidebarNavItems.slice(0, 6).map((item) => (
             <Link
               key={item.href}
               to={item.href}
@@ -32,7 +32,7 @@ export default function ProfileLayout() {
             </Link>
           ))}
           <h3 className="font-semibold mt-3">Settings</h3>
-          {sidebarNavItems.slice(7, sidebarNavItems.length).map((item) => (
+          {sidebarNavItems.slice(6, sidebarNavItems.length).map((item) => (
             <Link
               key={item.href}
               to={item.href}

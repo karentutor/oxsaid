@@ -120,9 +120,7 @@ export default function CreateGroup() {
         value: item._id,
       })),
   });
-  const selectables = users?.filter(
-    (framework) => !selected.includes(framework)
-  );
+  let selectables = users?.filter((framework) => !selected.includes(framework));
 
   const { mutate: createGroup, isPending: isCreating } = useMutation({
     mutationFn: (data) =>
@@ -149,6 +147,7 @@ export default function CreateGroup() {
     onSettled: () => {
       form.reset();
       inputRef.current.reset();
+      selectables = [];
     },
   });
 

@@ -73,9 +73,9 @@ export default function Header() {
                 <span className="text-gray-500 text-xs">{auth.user.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem>
-                <Link to={`/profile/${auth.user._id}`}>My Account</Link>
-              </DropdownMenuItem>
+              <Link ink to={`/profile/${auth.user._id}`}>
+                <DropdownMenuItem>Account</DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <Link to="/contact">Contact Us</Link>
               </DropdownMenuItem>
