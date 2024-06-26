@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Command,
@@ -35,6 +34,10 @@ import { Command as CommandPrimitive } from "cmdk";
 import { useCallback, useRef, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
+import useAuth from "@/hooks/useAuth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import { toast } from "sonner";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -45,44 +48,32 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const formSchema = z.object({
-  title: z.string(),
-  members: z.array(),
-  maxRegistrants: z.number(),
-  img: z
+  name: z.string(),
+  groupMembers: z.array(),
+  description: z.string(),
+  groupCoverImage: z
     .any()
     .optional()
     .refine(
       (file) =>
-        file.length == 1
+        file?.length === 1
           ? ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type)
-            ? true
-            : false
           : true,
       "Invalid file. choose either JPEG or PNG image"
     )
     .refine(
-      (file) =>
-        file.length == 1
-          ? file[0]?.size <= MAX_FILE_SIZE
-            ? true
-            : false
-          : true,
+      (file) => (file?.length === 1 ? file[0]?.size <= MAX_FILE_SIZE : true),
       "Max file size allowed is 8MB."
     ),
 });
-
-const options = [
-  { label: "user1", value: "user1" },
-  { label: "user2", value: "user2" },
-];
 
 export default function CreateGroup() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      members: [],
-      img: null,
+      name: "",
+      groupMembers: [],
+      groupCoverImage: null,
       description: "",
     },
   });
@@ -114,22 +105,52 @@ export default function CreateGroup() {
     }
   }, []);
 
-  const selectables = options?.filter(
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: () =>
+      axiosBase.get("/users", {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) =>
+      data.data.map((item) => ({
+        label: item.email,
+        value: item._id,
+      })),
+  });
+  const selectables = users?.filter(
     (framework) => !selected.includes(framework)
   );
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { mutate: createGroup, isPending: isCreating } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/groups",
+        {
+          ...data,
+          userId: auth.user._id,
+          isPrivate: false,
+          groupMembers: selectables?.map((item) => item.value).join(","),
+        },
+        {
+          headers: {
+            Authorization: auth.access_token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => {
+      toast.success("Group Created 🎉");
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => {
+      form.reset();
+      inputRef.current.reset();
+    },
+  });
 
   return (
     <section className="[grid-area:sidebar]">
@@ -142,7 +163,10 @@ export default function CreateGroup() {
             </CardDescription>
           </CardHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(createGroup)}
+              className="space-y-4"
+            >
               <CardContent className="grid gap-3">
                 <FormField
                   control={form.control}
@@ -242,15 +266,22 @@ export default function CreateGroup() {
                 </Command>
                 <FormField
                   control={form.control}
-                  name="img"
-                  render={({ field }) => (
+                  name="groupCoverImage"
+                  // eslint-disable-next-line no-unused-vars
+                  render={({ field: { value, onChange, ...fieldProps } }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>Image</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Pick Image"
                           type="file"
-                          {...field}
+                          {...fieldProps}
+                          accept="image/*"
+                          onChange={(event) =>
+                            onChange(
+                              event.target.files && event.target.files[0]
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -260,8 +291,19 @@ export default function CreateGroup() {
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
-                  <Button className="w-full" type="submit">
-                    Submit
+                  <Button
+                    disabled={isCreating}
+                    className="w-full flex items-center gap-2"
+                    type="submit"
+                  >
+                    {isCreating ? (
+                      <>
+                        <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                        Creating...
+                      </>
+                    ) : (
+                      "Create"
+                    )}
                   </Button>
                 </div>
               </CardFooter>

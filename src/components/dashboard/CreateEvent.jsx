@@ -29,7 +29,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "../ui/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -40,6 +39,7 @@ import { TimePickerDemo } from "./DatetimePicker/time-picker-demo";
 import useAuth from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
+import { toast } from "sonner";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [

@@ -57,7 +57,7 @@ export default function AllEvents() {
       <ScrollArea className="h-[calc(100vh-200px)]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 pt-0">
           {isPending
-            ? Array.from(Array(4).keys()).map((item) => (
+            ? Array.from(Array(2).keys()).map((item) => (
                 <Card key={item}>
                   <div className="flex flex-col gap-6 p-6">
                     <div className="flex items-center justify-between space-x-4">
