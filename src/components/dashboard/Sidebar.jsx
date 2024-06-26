@@ -212,7 +212,6 @@ const SidebarDesktopLayout = () => {
 const SidebarMobileLayout = () => {
   const [isShowingAllMobile, setShowingAllMobile] = useState(false);
   const { auth } = useAuth();
-  console.log("auth", auth);
   return (
     <>
       <Card className="overflow-hidden">

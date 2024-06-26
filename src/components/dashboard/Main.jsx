@@ -4,7 +4,6 @@ import { NewPostCard } from "./NewPostCard";
 import { useQuery } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { Skeleton } from "@/components/ui/skeleton";
-import moment from "moment";
 
 export const Main = () => {
   const { auth } = useAuth();
@@ -17,7 +16,7 @@ export const Main = () => {
     select: (data) => data.data,
   });
   return (
-    <div style={{ gridArea: "main" }}>
+    <div className="[grid-area:main] mb-20">
       <NewPostCard />
       {isPending ? (
         <div className="flex flex-col gap-6 p-6">
@@ -37,27 +36,7 @@ export const Main = () => {
           </div>
         </div>
       ) : (
-        posts.map((item) => (
-          <FeedItem
-            key={item._id}
-            type="post"
-            id={item._id}
-            likes={item.likes}
-            thumbnail={item?.picturePath}
-            content={item?.description}
-            author={{
-              name: `${item.firstName} ${item.lastName}`,
-              subtext: moment(item.createdAt).startOf().fromNow(),
-              imageUrl: item.userPicturePath,
-              connectionDegree: item.location,
-            }}
-            stats={{
-              likes: Object.keys(item.likes)?.length,
-              comments: item.comments.length,
-              reposts: 593,
-            }}
-          />
-        ))
+        posts.map((item) => <FeedItem key={item._id} {...item} />)
       )}
     </div>
   );

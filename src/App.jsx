@@ -48,20 +48,29 @@ export default function App() {
             <Route path="/business" element={<Business />} />
             <Route path="/contact" element={<Contact />} />
 
-            <Route path="profile" element={<ProfileLayout />}>
+            <Route path="/profile/:id" element={<ProfileLayout />}>
               <Route index element={<ProfilePosts />} />
-              <Route path="posts" element={<ProfilePosts />} />
-              <Route path="jobs" element={<ProfileJobs />} />
+              <Route path="/profile/:id/posts" element={<ProfilePosts />} />
+              <Route path="/profile/:id/jobs" element={<ProfileJobs />} />
               <Route
-                path="connection-list"
+                path="/profile/:id/connection-list"
                 element={<ProfileConnectionList />}
               />
-              <Route path="business" element={<ProfileBusiness />} />
-              <Route path="funding" element={<ProfileFunding />} />
-              <Route path="events" element={<ProfileEvents />} />
-              <Route path="groups" element={<ProfileGroups />} />
-              <Route path="update-profile" element={<UpdateProfile />} />
-              <Route path="change-password" element={<ChangePassword />} />
+              <Route
+                path="/profile/:id/business"
+                element={<ProfileBusiness />}
+              />
+              <Route path="/profile/:id/funding" element={<ProfileFunding />} />
+              <Route path="/profile/:id/events" element={<ProfileEvents />} />
+              <Route path="/profile/:id/groups" element={<ProfileGroups />} />
+              <Route
+                path="/profile/:id/update-profile"
+                element={<UpdateProfile />}
+              />
+              <Route
+                path="/profile/:id/change-password"
+                element={<ChangePassword />}
+              />
             </Route>
           </Route>
         </Routes>

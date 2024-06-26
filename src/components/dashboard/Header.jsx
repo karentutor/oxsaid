@@ -13,8 +13,13 @@ import { Button, buttonVariants } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { dashboardNavLinks } from "@/data";
 import ModeToggle from "../ModeToggle";
+import useAuth from "@/hooks/useAuth";
+import useLogout from "@/hooks/useLogout";
+import { UserAvatar } from "./UserAvatar";
 
 export default function Header() {
+  const { auth } = useAuth();
+  const logout = useLogout();
   return (
     <header className="sticky z-10 top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 lg:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium max-w-[1600px] mx-auto lg:flex lg:flex-row lg:justify-between lg:w-full lg:items-center md:gap-5 lg:text-sm lg:gap-6">
@@ -47,24 +52,35 @@ export default function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
+                {auth.user.picturePath ? (
+                  <UserAvatar
+                    imageUrl={auth.user.picturePath}
+                    className="border"
+                  />
+                ) : (
+                  <>
+                    <CircleUser className="h-5 w-5" />
+                    <span className="sr-only">Toggle user menu</span>
+                  </>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-44" align="end">
               <DropdownMenuLabel className="flex flex-col gap-1.5">
-                <p className="font-medium">Yousef Omar</p>
-                <span className="text-gray-500 text-xs">@Yousefomar724</span>
+                <p className="font-medium">
+                  {auth?.user?.firstName} {auth?.user?.lastName}
+                </p>
+                <span className="text-gray-500 text-xs">{auth.user.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-200" />
               <DropdownMenuItem>
-                <Link to="/profile">My Account</Link>
+                <Link to={`/profile/${auth.user._id}`}>My Account</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to="/contact">Contact Us</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <ModeToggle />

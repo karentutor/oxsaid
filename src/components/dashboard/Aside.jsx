@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import {
   ChevronDown,
   ChevronRightIcon,
   InfoIcon,
+  MinusIcon,
   PlusIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { UserAvatar } from "./UserAvatar";
 import {
   DropdownMenu,
@@ -19,47 +20,89 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useState } from "react";
+import { Skeleton } from "../ui/skeleton";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
-const UserRecommendation = ({ name, subtext, imageUrl }) => {
+export const UserRecommendation = ({
+  firstName,
+  lastName,
+  picturePath,
+  occupation,
+  location,
+  _id,
+}) => {
+  const { auth, setAuth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: () =>
+      axiosBase.get(`/users/${auth.user._id}`, {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) => data.data.user,
+  });
+
+  // Follow
+  const { mutate: followConnection } = useMutation({
+    mutationFn: (connectionId) =>
+      axiosBase.patch(
+        `/users/${auth.user._id}/${connectionId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${auth.access_token}`,
+          },
+        }
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      setAuth((prev) => ({ ...prev, user }));
+      toast.success("Connection added to your list");
+    },
+    onError: () => toast.error("Something went wrong"),
+  });
   return (
-    <div className="flex flex-row p-3">
-      <UserAvatar imageUrl={imageUrl} />
-      <div className="w-full ml-2">
-        <div className="font-semibold text-sm">{name}</div>
-        <div className="text-xs text-zinc-500 mb-2">{subtext}</div>
-        <span
-          className={cn(
-            "rounded-2xl font-semibold text-zinc-500 border-zinc-500 hover:border-zinc-700 text-sm w-24 p-1",
-            "flex flex-row items-center border justify-center hover:bg-zinc-200 cursor-pointer transition-all"
-          )}
-        >
-          <PlusIcon size={18} /> <span className="ml-1">Follow</span>
-        </span>
+    <div className="grid grid-cols-[auto_1fr_auto] justify-between w-full p-3">
+      <UserAvatar imageUrl={picturePath} />
+      <div className="ml-2">
+        <div className="font-semibold text-sm">
+          {firstName} {lastName}
+        </div>
+        <div className="text-xs text-zinc-500 mb-2">
+          {location}, {occupation}
+        </div>
       </div>
-    </div>
-  );
-};
-
-const AsideHeader = () => {
-  return (
-    <>
-      <div className="font-semibold w-full">Add to your feed</div>
-      <TooltipProvider>
+      <TooltipProvider delayDuration={0}>
         <Tooltip>
-          <TooltipTrigger asChild className="cursor-pointer">
-            <InfoIcon size={16} />
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => followConnection(_id)}
+              variant="outline"
+              size="icon"
+              className="ms-2"
+            >
+              {auth.user.friends.includes(_id) ? (
+                <MinusIcon size={18} />
+              ) : (
+                <PlusIcon size={18} />
+              )}
+            </Button>
           </TooltipTrigger>
-          <TooltipContent>
-            <p className="w-48">
-              Follow things that interest you to personalize your feed.{" "}
-              <span className="text-underline font-semibold text-blue-600">
-                Learn more.
-              </span>
-            </p>
-          </TooltipContent>
+          <TooltipContent>Follow</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </>
+    </div>
   );
 };
 
@@ -128,30 +171,72 @@ const AsideFooter = () => {
 };
 
 export const Aside = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { auth } = useAuth();
+
+  const { data: users, isPending } = useQuery({
+    queryKey: ["users"],
+    queryFn: () =>
+      axiosBase.get(`/users`, {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) => data.data?.filter((u) => u._id !== auth.user._id),
+  });
+
   return (
-    <aside style={{ gridArea: "aside" }}>
+    <aside className="[grid-area:aside]">
       <Card>
         <CardHeader className="p-3 flex flex-row">
-          <AsideHeader />
+          <div className="font-semibold w-full">Connection List</div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild className="cursor-pointer">
+                <InfoIcon size={16} />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="w-48">
+                  Follow connections that interest you to personalize your feed.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </CardHeader>
-        <UserRecommendation
-          name="Bill Gates"
-          imageUrl="https://media.licdn.com/dms/image/D5603AQFxd6snfB-80w/profile-displayphoto-shrink_100_100/0/1686850028795?e=1692835200&v=beta&t=rcGox-VIihouJsvoqyR_9wMH_cu9QNZpICsWyVUVajA"
-          subtext="Co-chair, Bill & Melinda Gates Foundation"
-        />
-        <UserRecommendation
-          name="Satya Nadella"
-          imageUrl="https://media.licdn.com/dms/image/C5603AQHHUuOSlRVA1w/profile-displayphoto-shrink_100_100/0/1579726624860?e=1692835200&v=beta&t=m5EDtXZALcLc9SM6BNRsfbid9cEUxfN8B_LYhdwFwGo"
-          subtext="Chairman and CEO at Microsoft"
-        />
-        <UserRecommendation
-          name="Clara Shih"
-          imageUrl="https://media.licdn.com/dms/image/D5603AQGVuircu90KUw/profile-displayphoto-shrink_100_100/0/1677475762784?e=1692835200&v=beta&t=zTH1P27U-lV_I_2hT74hDcqk-fhgg7wHrhx8W8a5xio"
-          subtext="CEO of Salesforce AI, Board Director & Entrepreneur"
-        />
-        <div className="mt-1 ml-3 text-zinc-500 flex flex-row text-sm p-2 items-center font-semibold cursor-pointer">
-          View all recommendations <ChevronRightIcon size={18} />
-        </div>
+        <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="space-y-2"
+        >
+          {isPending ? (
+            <div className="flex flex-col gap-6 p-6">
+              {Array.from(Array(2).keys()).map((item) => (
+                <div key={item} className="grid grid-cols-[auto_1fr] space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-56" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            users
+              ?.slice(0, 2)
+              .map((user) => <UserRecommendation key={user._id} {...user} />)
+          )}
+          <CollapsibleContent className="space-y-2">
+            {users?.slice(2, 7).map((user) => (
+              <UserRecommendation key={user._id} {...user} />
+            ))}
+          </CollapsibleContent>
+          <CollapsibleTrigger asChild>
+            <div className="mt-1 ml-3 text-zinc-500 flex flex-row text-sm p-2 items-center font-semibold cursor-pointer">
+              {isOpen
+                ? "View less recommendations"
+                : "View all recommendations"}{" "}
+              <ChevronRightIcon size={18} />
+            </div>
+          </CollapsibleTrigger>
+        </Collapsible>
       </Card>
       <AsideFooter />
     </aside>
