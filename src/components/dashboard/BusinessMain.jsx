@@ -23,7 +23,7 @@ export default function BusinessMain() {
       }),
     select: (data) =>
       data.data?.business.filter((item) =>
-        item?.name?.name.includes(debouncedSearchTerm)
+        item?.name?.name.toLowerCase().includes(debouncedSearchTerm)
       ),
   });
 

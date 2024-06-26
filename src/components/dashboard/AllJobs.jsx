@@ -23,7 +23,7 @@ export default function AllJobs() {
       }),
     select: (data) =>
       data.data?.jobs.filter((item) =>
-        item?.jobTitle.includes(debouncedSearchTerm)
+        item?.jobTitle.toLowerCase().includes(debouncedSearchTerm)
       ),
   });
 

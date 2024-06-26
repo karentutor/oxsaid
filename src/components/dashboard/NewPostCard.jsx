@@ -92,8 +92,6 @@ const WriteNewPostDialog = ({ onClose }) => {
     },
   });
 
-  console.log(postPic);
-
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="top-44 p-0 m-0">

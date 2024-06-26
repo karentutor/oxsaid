@@ -32,7 +32,7 @@ export default function Fundnig() {
         <TabsContent value="get" className="grid gap-6 two-column-grid">
           <FundingForms isGetFunding={isGetFunding} />
           <AllFundings
-            fundings={fundings.filter((f) => f.isSeeking)}
+            fundings={fundings?.filter((f) => f.isSeeking)}
             isPending={isPending}
             isGetFunding={isGetFunding}
           />
@@ -40,7 +40,7 @@ export default function Fundnig() {
         <TabsContent value="offer" className="grid gap-6 two-column-grid">
           <FundingForms isGetFunding={isGetFunding} />
           <AllFundings
-            fundings={fundings.filter((f) => f.isOffering)}
+            fundings={fundings?.filter((f) => f.isOffering)}
             isPending={isPending}
             isGetFunding={isGetFunding}
           />

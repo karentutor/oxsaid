@@ -34,9 +34,12 @@ import { ScrollArea } from "../ui/scroll-area";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, LoaderCircle } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { TimePickerDemo } from "./DatetimePicker/time-picker-demo";
+import useAuth from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -48,33 +51,26 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const formSchema = z.object({
   title: z.string(),
-  datetime: z.date({
+  date: z.date({
     required_error: "A date of event is required.",
   }),
   maxRegistrants: z.number(),
   description: z.string(),
-  type: z.string(),
-  location: z.string(),
-  zoomLink: z.string(),
-  img: z
+  eventFormat: z.string(),
+  eventLocation: z.string(),
+  zoomMeetingInvite: z.string(),
+  eventCoverImage: z
     .any()
     .optional()
     .refine(
       (file) =>
         file.length == 1
           ? ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type)
-            ? true
-            : false
           : true,
       "Invalid file. choose either JPEG or PNG image"
     )
     .refine(
-      (file) =>
-        file.length == 1
-          ? file[0]?.size <= MAX_FILE_SIZE
-            ? true
-            : false
-          : true,
+      (file) => (file.length == 1 ? file[0]?.size <= MAX_FILE_SIZE : true),
       "Max file size allowed is 8MB."
     ),
 });
@@ -84,33 +80,43 @@ export default function CreateEvent() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      datetime: null,
+      date: null,
       maxRegistrants: 0,
-      eventType: "",
-      location: "",
-      zoomLink: "",
-      img: null,
+      eventFormat: "",
+      eventLocation: "",
+      zoomMeetingInvite: "",
+      eventCoverImage: null,
       description: "",
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { mutate: createEvent, isPending } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/events",
+        { ...data, time: data.date, userId: auth.user._id },
+        {
+          headers: {
+            Authorization: auth.access_token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => {
+      toast.success("Event Created 🎉");
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    // onSettled: () => form.reset(),
+  });
 
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
-        <ScrollArea className="max-h-[calc(100vh-100px)]">
+        <ScrollArea className="h-[calc(100vh-100px)]">
           <CardHeader>
             <CardTitle>Create Event</CardTitle>
             <CardDescription>
@@ -118,7 +124,10 @@ export default function CreateEvent() {
             </CardDescription>
           </CardHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(createEvent)}
+              className="space-y-4"
+            >
               <CardContent className="grid gap-3">
                 <FormField
                   control={form.control}
@@ -135,7 +144,7 @@ export default function CreateEvent() {
                 />
                 <FormField
                   control={form.control}
-                  name="datetime"
+                  name="date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="text-left">
@@ -199,7 +208,7 @@ export default function CreateEvent() {
                 />
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="eventFormat"
                   render={({ field }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>type</FormLabel>
@@ -213,7 +222,7 @@ export default function CreateEvent() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {["In Person", "Remote"]?.map((item) => (
+                          {["inPerson", "remote"]?.map((item) => (
                             <SelectItem value={item} key={item}>
                               {item}
                             </SelectItem>
@@ -224,10 +233,10 @@ export default function CreateEvent() {
                     </FormItem>
                   )}
                 />
-                {form.watch("type") === "In Person" && (
+                {form.watch("eventFormat") === "inPerson" && (
                   <FormField
                     control={form.control}
-                    name="location"
+                    name="eventLocation"
                     render={({ field }) => (
                       <FormItem className="space-y-0">
                         <FormLabel>Location</FormLabel>
@@ -239,10 +248,10 @@ export default function CreateEvent() {
                     )}
                   />
                 )}
-                {form.watch("type") === "Remote" && (
+                {form.watch("eventFormat") === "remote" && (
                   <FormField
                     control={form.control}
-                    name="zoomLink"
+                    name="zoomMeetingInvite"
                     render={({ field }) => (
                       <FormItem className="space-y-0">
                         <FormLabel>Zoom Link</FormLabel>
@@ -269,15 +278,22 @@ export default function CreateEvent() {
                 />
                 <FormField
                   control={form.control}
-                  name="img"
-                  render={({ field }) => (
+                  name="eventCoverImage"
+                  // eslint-disable-next-line no-unused-vars
+                  render={({ field: { value, onChange, ...fieldProps } }) => (
                     <FormItem className="space-y-0">
                       <FormLabel>Image</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Pick Image"
                           type="file"
-                          {...field}
+                          {...fieldProps}
+                          accept="image/*"
+                          onChange={(event) =>
+                            onChange(
+                              event.target.files && event.target.files[0]
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -287,7 +303,14 @@ export default function CreateEvent() {
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
-                  <Button className="w-full" type="submit">
+                  <Button
+                    disabled={isPending}
+                    className="w-full flex items-center gap-2"
+                    type="submit"
+                  >
+                    {isPending ? (
+                      <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                    ) : null}
                     Submit
                   </Button>
                 </div>
