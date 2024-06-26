@@ -18,7 +18,6 @@ import ProfileConnectionList from "./pages/profile/connection-list";
 import ProfileJobs from "./pages/profile/jobs";
 import ProfileGroups from "./pages/profile/groups";
 import ProfileEvents from "./pages/profile/events";
-import ProfileFunding from "./pages/profile/funding";
 import ProfileBusiness from "./pages/profile/business";
 import UpdateProfile from "./pages/profile/update-profile";
 import ChangePassword from "./pages/profile/change-password";
@@ -60,7 +59,6 @@ export default function App() {
                 path="/profile/:id/business"
                 element={<ProfileBusiness />}
               />
-              <Route path="/profile/:id/funding" element={<ProfileFunding />} />
               <Route path="/profile/:id/events" element={<ProfileEvents />} />
               <Route path="/profile/:id/groups" element={<ProfileGroups />} />
               <Route
