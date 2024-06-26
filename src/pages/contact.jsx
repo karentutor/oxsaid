@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,14 +22,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
+import useAuth from "@/hooks/useAuth";
+import { axiosBase } from "@/services/BaseService";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { LoaderCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string(),
-  email: z.string().email(),
   reason: z.string(),
   message: z.string(),
 });
@@ -44,25 +45,28 @@ export default function Contact() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
       reason: "",
       message: "",
     },
   });
 
-  function onSubmit(values) {
-    // Do something with the form values.
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+  const { auth } = useAuth();
+
+  const { mutate: sendMessage, isPending: isSending } = useMutation({
+    mutationFn: (data) =>
+      axiosBase.post(
+        "/users/contact",
+        {
+          ...data,
+          name: `${auth.user.firstName} ${auth.user.lastName}`,
+          email: auth.user.email,
+        },
+        { headers: { Authorization: auth.access_token } }
       ),
-    });
-    console.log(values);
-  }
+    onSuccess: () => toast.success("Message Sent Successfully"),
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => form.reset(),
+  });
 
   return (
     <main className="max-w-xl w-full mx-auto py-20 px-4">
@@ -75,33 +79,10 @@ export default function Contact() {
         </CardHeader>
         <CardContent className="grid gap-3">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="space-y-0">
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="space-y-0">
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form
+              onSubmit={form.handleSubmit(sendMessage)}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="reason"
@@ -142,8 +123,19 @@ export default function Contact() {
                   </FormItem>
                 )}
               />
-              <Button className="w-full" type="submit">
-                Submit
+              <Button
+                disabled={isSending}
+                className="w-full flex items-center gap-2"
+                type="submit"
+              >
+                {isSending ? (
+                  <>
+                    <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send"
+                )}
               </Button>
             </form>
           </Form>
