@@ -87,11 +87,11 @@ export const dashboardNavLinks = [
     label: "Groups",
     icon: Users
   },
-  {
-    href: "/messages",
-    label: "Messages",
-    icon: MessagesSquare
-  },
+  // {
+  //   href: "/messages",
+  //   label: "Messages",
+  //   icon: MessagesSquare
+  // },
 ];
 
 export const services = [
