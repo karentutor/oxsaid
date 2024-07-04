@@ -7,8 +7,7 @@ export default function Funding() {
       <div className="grid lg:grid-cols-[2fr_1fr] gap-8 place-items-center">
         <div>
           <h2 className="text-3xl md:text-4xl font-bold">
-            Secure the <span className="text-accent">Funding </span>
-            You Need
+            Secure the <span className="text-accent">Funding</span> You Need
           </h2>
 
           <p className="text-muted text-lg mt-4 mb-8">
@@ -16,6 +15,23 @@ export default function Funding() {
           </p>
 
           <div className="flex flex-col gap-8">
+            <Card className="bg-transparent">
+              <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
+                <div className="mt-1 bg-secondary p-1 rounded-2xl">
+                  <ChartIcon />
+                </div>
+                <div>
+                  <CardTitle>Seed Funding</CardTitle>
+                  <CardDescription className="text-md mt-2">
+                    <span className="font-semibold text-accent">
+                      Coming Soon
+                    </span>{" "}
+                    - Get initial capital to kickstart your innovative projects
+                    and ideas.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
             <Card className="bg-transparent">
               <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
                 <div className="mt-1 bg-secondary p-1 rounded-2xl">
