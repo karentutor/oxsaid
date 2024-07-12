@@ -416,7 +416,7 @@ export function Groups() {
         >
           <p className="text-accent text-sm font-bold text-center">Groups</p>
           <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
-            Collaborative Learning and Innovation
+            Create Groups - Bring People Together
           </h2>
           <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
             Empowering Future Leaders Through Dynamic Group Engagement and
