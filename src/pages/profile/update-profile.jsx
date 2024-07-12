@@ -65,7 +65,7 @@ export default function UpdateProfile() {
     },
   });
 
-  const { mutateAsync: updateProfile, isPending } = useMutation({
+  const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: (data) =>
       axiosBase.put(
         "/auth/update",
@@ -96,11 +96,6 @@ export default function UpdateProfile() {
     },
   });
 
-  const onSubmit = async (values) => {
-    // const newUser = { ...values, picturePath: values.picture.name };
-    await updateProfile(values);
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -108,7 +103,7 @@ export default function UpdateProfile() {
       </div>
       <Separator />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(updateProfile)} className="space-y-4">
           <div className="flex items-center gap-2">
             <FormField
               control={form.control}
