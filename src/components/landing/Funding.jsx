@@ -11,7 +11,7 @@ export default function Funding() {
           </h2>
 
           <p className="text-muted text-lg mt-4 mb-8">
-            Explore a Range of Financial Resources to Fuel Your Business Growth
+            Explore a Range of SBS Alumni Resources to Fuel Your Business Growth
           </p>
 
           <div className="flex flex-col gap-8">
