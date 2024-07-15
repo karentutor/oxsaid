@@ -24,6 +24,7 @@ import ChangePassword from "./pages/profile/change-password";
 import Contact from "./pages/contact";
 import Register from "./pages/auth/register";
 import Signin from "./pages/auth/signin";
+import NotFound from "./pages/not-found";
 
 export default function App() {
   return (
@@ -71,6 +72,7 @@ export default function App() {
               />
             </Route>
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
       <Toaster richColors closeButton />

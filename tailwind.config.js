@@ -1,15 +1,13 @@
-import {
-  default as flattenColorPalette,
-} from "tailwindcss/lib/util/flattenColorPalette"
+import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
 
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -22,7 +20,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        rubik: ['Rubik', 'sans-serif'],
+        rubik: ["Rubik", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -73,15 +71,20 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        astronaut: {
+          from: { transform: "translate3d(0px, -50px, 0px) rotate(0deg)" },
+          to: { transform: "translate3d(30px, 10px, 10px) rotate(2deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        astronaut: "astronaut infinite 3.4s alternate ease-in-out",
       },
     },
   },
   plugins: [import("tailwindcss-animate"), addVariablesForColors],
-}
+};
 
 function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));
