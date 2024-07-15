@@ -84,7 +84,7 @@ export default function Header() {
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-  
+    
         </div>
       </nav>
       <Sheet>
@@ -120,6 +120,7 @@ export default function Header() {
         </SheetContent>
       </Sheet>
       <div className="flex lg:hidden items-center gap-3">
+      <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
@@ -143,7 +144,7 @@ export default function Header() {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <ModeToggle />
+ 
       </div>
     </header>
   );
