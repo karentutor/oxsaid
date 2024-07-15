@@ -49,6 +49,7 @@ export default function Header() {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-3">
+        <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
@@ -83,7 +84,7 @@ export default function Header() {
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <ModeToggle />
+  
         </div>
       </nav>
       <Sheet>

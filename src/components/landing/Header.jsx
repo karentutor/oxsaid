@@ -106,6 +106,7 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex gap-2">
+            <ModeToggle />
             <Link
               to="/signin"
               className={buttonVariants({ variant: "outline" })}
@@ -113,7 +114,7 @@ export default function Header() {
               Sign In
             </Link>
 
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </div>
         </NavigationMenuList>
       </NavigationMenu>

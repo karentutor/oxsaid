@@ -192,11 +192,13 @@ const SidebarDesktopLayout = () => {
           <div className="py-3 border-b">
             <MyProfileStats
               text="Who's viewed your profile"
-              count={auth.user.viewedProfile}
+              // count={auth.user.viewedProfile}
+              count="tbd"
             />
             <MyProfileStats
               text="Impressions of your post"
-              count={auth.user.impressions}
+              // count={auth.user.impressions}
+              count="tbd"
             />
           </div>
           <MyItems />
