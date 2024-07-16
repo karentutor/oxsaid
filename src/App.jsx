@@ -15,6 +15,7 @@ import Jobs from "./pages/jobs";
 import Join from "./pages/auth/join";
 import Landing from "./pages/landing";
 import Messages from "./pages/messages";
+import NotFound from "./pages/not-found";
 import ProfileBusiness from "./pages/profile/business";
 import ProfileConnectionList from "./pages/profile/connection-list";
 import ProfileEvents from "./pages/profile/events";
@@ -76,6 +77,8 @@ export default function App() {
               />
             </Route>
           </Route>
+         {/* Catch-all route for 404 Not Found */}
+        <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
       <Toaster 
