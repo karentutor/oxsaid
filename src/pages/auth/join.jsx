@@ -81,7 +81,17 @@ export default function Join() {
   }, [selectedCountry]);
 
   const { mutateAsync: register, isPending } = useMutation({
-    mutationFn: (data) => axiosBase.post("/auth/register", data),
+    mutationFn: (data) => {
+      const formData = new FormData();
+      for (const key in data) {
+        if (key === 'picture' && data[key]) {
+          formData.append(key, data[key]);
+        } else if (data[key]) {
+          formData.append(key, data[key]);
+        }
+      }
+      return axiosBase.post("/auth/register", formData);
+    },
     onSuccess: ({ data }) => {
       if (data.isError) {
         toast.error("Registration Failed", { richColors: true });
@@ -294,7 +304,6 @@ export default function Join() {
                           ) : (
                             <div className="flex items-center justify-between">
                               <span>{watch("picture").name}</span>
-                              <EyeOpenIcon />
                             </div>
                           )}
                         </div>
