@@ -64,7 +64,7 @@ export const dashboardNavLinks = [
   },
   {
     href: "/user-search",
-    label: "User",
+    label: "Users",
     icon: UserRoundSearch
   },
   {

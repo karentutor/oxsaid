@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { axiosBase } from "@/services/BaseService";
 import {
   Carousel,
   CarouselContent,
@@ -5,20 +7,33 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { events } from "@/data";
 import moment from "moment";
-import { MdLink, MdLocationOn, MdOutlineAccessTime } from "react-icons/md";
+import { MdLocationOn, MdOutlineAccessTime } from "react-icons/md";
 
-export default function Events() {
+export const Events = () => {
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    getEvents();
+  }, []);
+
+  const getEvents = async () => {
+    try {
+      const response = await axiosBase.get("events/get-public-events");
+      if (response.data.isSuccess) {
+        setEvents(response.data.events);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="px-4 py-8 max-w-7xl mx-auto w-full relative" id="events">
       <div className="mx-auto mb-4 max-w-screen-sm w-full text-center">
         <p className="text-accent text-sm font-bold">Events</p>
-
-        <h2 className="mt-1 text-3xl font-bold">
-          Upcoming Events & Activities
-        </h2>
-
+        <h2 className="mt-1 text-3xl font-bold">Upcoming Events & Activities</h2>
         <p className="mt-2 text-lg">
           Join Us for Monthly Gatherings, Workshops, and Networking Sessions,
           Both Virtually and In-Person
@@ -26,9 +41,9 @@ export default function Events() {
       </div>
       <Carousel className="max-w-7xl mx-auto w-full md:px-16">
         <CarouselContent className="py-4">
-          {events.map((event) => (
+          {events.map((event, index) => (
             <CarouselItem
-              key={event.id}
+              key={event._id || index}  // Use `event.id` if unique, otherwise fallback to index
               className="basis-full lg:basis-1/2 xl:basis-1/3"
             >
               <div className="flex flex-col gap-4 transition min-h-80 p-4 rounded-xl border hover:shadow-[0_2px_8px_2px_rgba(14,85,124,.16)]">
@@ -36,10 +51,10 @@ export default function Events() {
                   <img
                     className="rounded-lg object-cover w-full h-48"
                     alt={event.title}
-                    src="/imgs/event.jpg"
+                    src={event.eventCoverImage || "/imgs/default-event.jpg"}  // Use default image if eventCoverImage is not available
                   />
                   <h4 className="absolute top-4 left-4 w-fit py-1 px-2 rounded-full bg-accent text-white">
-                    {event.type}
+                    {event.eventFormat}
                   </h4>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -49,24 +64,10 @@ export default function Events() {
                     <MdOutlineAccessTime size={18} className="text-accent" />
                     {moment(event.date).format("dddd, MMMM Do YYYY")}
                   </div>
-                  {!event.zoom_link ? (
-                    <div className="flex items-center gap-2">
-                      <MdLocationOn size={18} className="text-accent" />
-                      {event.location}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <MdLink size={18} className="text-accent" />
-                      <a
-                        href={event.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: "underline" }}
-                      >
-                        zoom link
-                      </a>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <MdLocationOn size={18} className="text-accent" />
+                    {event.location}
+                  </div>
                 </div>
               </div>
             </CarouselItem>
@@ -77,4 +78,8 @@ export default function Events() {
       </Carousel>
     </div>
   );
+
+  return(<div>hi</div>)
 }
+
+export default Events;

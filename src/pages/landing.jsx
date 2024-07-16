@@ -2,7 +2,7 @@ import Header from "@/components/landing/Header";
 import Hero from "@/components/landing/Hero";
 import About from "@/components/landing/About";
 import Footer from "@/components/landing/Footer";
-import Events from "@/components/landing/Events";
+import Events from "@/components/landing/Events"
 import Business from "@/components/landing/Business";
 import Funding from "@/components/landing/Funding";
 import ScrollToTop from "@/components/landing/ScrollToTop";
