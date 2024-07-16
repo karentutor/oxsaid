@@ -1,4 +1,5 @@
-import { Aside } from "@/components/dashboard/Aside";
+import React from "react";
+import Aside from "@/components/dashboard/Aside";
 import { Main } from "@/components/dashboard/Main";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 

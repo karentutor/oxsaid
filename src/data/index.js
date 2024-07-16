@@ -1,6 +1,6 @@
 import { ChartIcon, WalletIcon } from "@/components/icons";
-import { DrawingPinIcon, LightningBoltIcon, PersonIcon, RocketIcon, RulerSquareIcon, Share1Icon } from "@radix-ui/react-icons";
-import { BriefcaseBusiness, Building2, CalendarCheck2, CircleDollarSign, Home, Users } from "lucide-react";
+import { DrawingPinIcon, LightningBoltIcon, PersonIcon, RocketIcon, RulerSquareIcon, Share1Icon} from "@radix-ui/react-icons";
+import { BriefcaseBusiness, Building2, CalendarCheck2, CircleDollarSign, Home, UserRoundSearch, Users } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 
@@ -61,6 +61,11 @@ export const dashboardNavLinks = [
     href: "/home",
     label: "Home",
     icon: Home
+  },
+  {
+    href: "/user-search",
+    label: "Users",
+    icon: UserRoundSearch
   },
   {
     href: "/business",

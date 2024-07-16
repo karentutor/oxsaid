@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function EventCard({ item }) {
+
   return (
     <Card key={item._id}>
       <CardHeader className="relative p-2">
