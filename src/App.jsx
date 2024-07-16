@@ -10,6 +10,7 @@ import Events from "./pages/events";
 import Fundnig from "./pages/fundnig";
 import Groups from "./pages/groups";
 import Home from "./pages/home";
+import User from "./pages/user";
 import Jobs from "./pages/jobs";
 import Join from "./pages/auth/join";
 import Landing from "./pages/landing";
@@ -40,7 +41,8 @@ export default function App() {
 
           {/* Dashboard */}
           <Route element={<Layout />}>
-            <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/user" element={<User />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/search" element={<Search />} />
