@@ -1,12 +1,15 @@
+// components/User.jsx
 import { useEffect, useState } from 'react';
 import UserSearch from './user-search';
-import axiosHelper from 'utils/axiosHelper'; // Assuming axiosHelper is properly imported
+import useAuth from '@/hooks/useAuth';
+import { axiosBase } from '@/services/BaseService'; // Adjust the import
 
 const User = () => {
   const [isNonMobileScreens, setIsNonMobileScreens] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [user, setUser] = useState(null); // State to store user data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { auth } = useAuth(); // Use context for auth
 
   useEffect(() => {
     const checkScreenWidth = () => {
@@ -24,8 +27,9 @@ const User = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Simulating an API call to fetch user data
-        const response = await axiosHelper.get('/user'); // Replace with your actual API endpoint
+        const response = await axiosBase.get('/user', {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
         setUser(response.data); // Update user state with fetched data
         setLoading(false); // Set loading to false after successful fetch
       } catch (error) {
@@ -35,7 +39,7 @@ const User = () => {
     };
 
     fetchUser(); // Call fetchUser when component mounts
-  }, []);
+  }, [auth.access_token]);
 
   return (
     <div className="pb-16 min-h-screen">
