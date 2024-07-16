@@ -48,7 +48,7 @@ const Aside = () => {
           </CollapsibleTrigger>
         </Collapsible>
       </Card>
-      <AsideFooter />
+      {/* <AsideFooter /> */}
     </aside>
   );
 };

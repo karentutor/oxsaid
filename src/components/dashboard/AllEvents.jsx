@@ -76,8 +76,7 @@ export default function AllEvents() {
                   </div>
                 </Card>
               ))
-               : events?.map((item) => <EventCard key={item._id} item={item} />)}
-
+            : events?.map((item) => <EventCard key={item._id} item={item} />)}
         </div>
       </ScrollArea>
     </section>
