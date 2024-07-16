@@ -22,6 +22,7 @@ export const Events = () => {
     try {
       const response = await axiosBase.get("events/get-public-events");
       if (response.data.isSuccess) {
+        console.log("Fetched Events:", response.data.events); 
         setEvents(response.data.events);
       }
     } catch (error) {
@@ -51,7 +52,7 @@ export const Events = () => {
                   <img
                     className="rounded-lg object-cover w-full h-48"
                     alt={event.title}
-                    src={event.eventCoverImage || "/imgs/default-event.jpg"}  // Use default image if eventCoverImage is not available
+                    src={event.eventCoverImage ? event.eventCoverImage : "/imgs/default-event.jpg"}  // Use default image if eventCoverImage is not available
                   />
                   <h4 className="absolute top-4 left-4 w-fit py-1 px-2 rounded-full bg-accent text-white">
                     {event.eventFormat}
@@ -66,7 +67,7 @@ export const Events = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <MdLocationOn size={18} className="text-accent" />
-                    {event.location}
+                    {event.eventLocation}
                   </div>
                 </div>
               </div>
@@ -78,8 +79,6 @@ export const Events = () => {
       </Carousel>
     </div>
   );
-
-  return(<div>hi</div>)
-}
+};
 
 export default Events;

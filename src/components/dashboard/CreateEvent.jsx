@@ -298,7 +298,7 @@ const CreateEvent = () => {
                       <FormLabel>Image</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Pick Image"
+                          placeholder="Click for Image"
                           type="file"
                           {...fieldProps}
                           accept="image/*"
