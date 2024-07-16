@@ -1,4 +1,5 @@
-import { UserRecommendation } from "@/components/dashboard/Aside";
+import React from "react";
+import UserRecommendation from "./user-recommendation"; // Ensure correct casing and path
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -7,7 +8,7 @@ import { axiosBase } from "@/services/BaseService";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
-export default function ProfileConnectionList() {
+export default function ConnectionList() {
   const { auth } = useAuth();
   const { id } = useParams();
 
@@ -25,7 +26,7 @@ export default function ProfileConnectionList() {
       <div>
         <h3 className="text-lg font-medium">Connection List</h3>
         <p className="text-sm text-muted">
-          Manage you connection list & preferences.
+          Manage your connection list & preferences.
         </p>
       </div>
       <Separator />
@@ -39,7 +40,7 @@ export default function ProfileConnectionList() {
             </div>
           </div>
           <div className="flex flex-col space-y-3">
-            <Skeleton className="h-[225px]  rounded-xl" />
+            <Skeleton className="h-[225px] rounded-xl" />
             <div className="space-y-2">
               <Skeleton className="h-4" />
               <Skeleton className="h-4" />

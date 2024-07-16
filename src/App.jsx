@@ -76,7 +76,11 @@ export default function App() {
           </Route>
         </Routes>
       </Router>
-      <Toaster richColors closeButton />
+      <Toaster 
+      richColors 
+      closeButton   
+      position="top-right" // Set position to top-right
+      />
     </div>
   );
 }
