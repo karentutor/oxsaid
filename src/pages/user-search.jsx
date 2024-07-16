@@ -4,6 +4,7 @@ import { axiosBase } from '@/services/BaseService';
 import { COLLEGE_DATA, MATRICULATION_YEAR_DATA, OCCUPATION_DATA } from '@/data';
 import { getDisplayNames } from '@/utils/helperFunctions';
 import useAuth from '@/hooks/useAuth';
+import { Button } from "@/components/ui/button";
 
 const UserSearch = () => {
   const [search, setSearch] = useState('');
@@ -12,22 +13,8 @@ const UserSearch = () => {
   const [college, setCollege] = useState('');
   const [matriculationYear, setMatriculationYear] = useState('');
   const [industry, setIndustry] = useState('');
-  const [isNonMobileScreens, setIsNonMobileScreens] = useState(false);
   const navigate = useNavigate();
   const { auth } = useAuth();
-
-  useEffect(() => {
-    const checkScreenWidth = () => {
-      setIsNonMobileScreens(window.innerWidth >= 1000);
-    };
-
-    checkScreenWidth();
-    window.addEventListener('resize', checkScreenWidth);
-
-    return () => {
-      window.removeEventListener('resize', checkScreenWidth);
-    };
-  }, []);
 
   useEffect(() => {
     const searchByKeyword = async () => {
@@ -65,14 +52,14 @@ const UserSearch = () => {
   };
 
   return (
-    <div className="pb-16 min-h-screen">
+    <div className="pb-16 min-h-screen flex flex-col items-center">
       <div className="container mx-auto px-6">
-        <div className="mt-8 mb-4 text-3xl font-bold">Search Users</div>
-        <div className={`flex ${isNonMobileScreens ? 'gap-4' : 'flex-col'}`}>
-          <div className={`${isNonMobileScreens ? 'w-2/5' : 'w-full'} mt-4`}>
-            <div className="container mx-auto px-6 py-4">
-              <div className="flex flex-wrap gap-4">
-                {/* Search Input */}
+        <div className="mt-8 mb-4 text-3xl font-bold text-center">Search Users</div>
+        <div className="w-full flex flex-col items-center">
+          <div className="w-full md:w-2/3 mt-4">
+            <div className="px-6 py-4">
+              {/* Search Input and Reset Filters */}
+              <div className="flex justify-between mb-4 w-full">
                 <input
                   type="text"
                   placeholder="Search"
@@ -80,59 +67,57 @@ const UserSearch = () => {
                   onChange={(e) => setSearch(e.target.value)}
                   className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 w-full md:w-1/3"
                 />
+                <Button
+                  variant="default"
+                  size="default"
+                  onClick={resetFilters}
+                >
+                  Reset Filters
+                </Button>
+              </div>
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4 justify-center md:justify-between items-center mb-4">
+                {/* College Filter */}
+                <select
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}
+                  className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 w-full md:w-auto"
+                >
+                  <option value="">Select College</option>
+                  {COLLEGE_DATA.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
 
-                {/* Filters */}
-                <div className="flex gap-4 md:w-2/3">
-                  {/* College Filter */}
-                  <select
-                    value={college}
-                    onChange={(e) => setCollege(e.target.value)}
-                    className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 flex-1"
-                  >
-                    <option value="">Select College</option>
-                    {COLLEGE_DATA.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
+                {/* Matriculation Year Filter */}
+                <select
+                  value={matriculationYear}
+                  onChange={(e) => setMatriculationYear(e.target.value)}
+                  className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 w-full md:w-auto"
+                >
+                  <option value="">Select Matriculation Year</option>
+                  {MATRICULATION_YEAR_DATA.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
 
-                  {/* Matriculation Year Filter */}
-                  <select
-                    value={matriculationYear}
-                    onChange={(e) => setMatriculationYear(e.target.value)}
-                    className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 flex-1"
-                  >
-                    <option value="">Select Matriculation Year</option>
-                    {MATRICULATION_YEAR_DATA.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Industry Filter */}
-                  <select
-                    value={industry}
-                    onChange={(e) => setIndustry(e.target.value)}
-                    className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 flex-1"
-                  >
-                    <option value="">Select Industry</option>
-                    {OCCUPATION_DATA.map((option) => (
-                      <option key={option.name} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Reset Filters Button */}
-                  <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded-lg ml-2 hover:bg-blue-600"
-                    onClick={resetFilters}
-                  >
-                    Reset Filters
-                  </button>
-                </div>
+                {/* Industry Filter */}
+                <select
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500 w-full md:w-auto"
+                >
+                  <option value="">Select Industry</option>
+                  {OCCUPATION_DATA.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Search Results */}
@@ -141,7 +126,7 @@ const UserSearch = () => {
                   <p>Loading...</p>
                 ) : (
                   options.map((option, index) => (
-                    <div key={index} className="border border-gray-300 rounded-lg p-4 mt-2 flex items-center justify-between">
+                    <div key={index} className="border border-gray-300 rounded-lg p-4 mt-2 flex items-center justify-between w-full">
                       {/* Avatar */}
                       <div className="mr-4">
                         <img
@@ -161,12 +146,14 @@ const UserSearch = () => {
                       </div>
 
                       {/* View Profile Button */}
-                      <button
-                        className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+                      <Button
+                        variant="destructive"
+                        size="default"
+                         className="text-white"
                         onClick={() => navigate(`/profile/${option._id}`)}
                       >
                         View Profile
-                      </button>
+                      </Button>
                     </div>
                   ))
                 )}
