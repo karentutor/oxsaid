@@ -40,9 +40,9 @@ export default function App() {
           <Route path="/join" element={<Join />} />
 
           {/* Dashboard */}
-          <Route element={<Layout />}>
+           <Route element={<Layout />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/user-search" element={<UserSearch />} />
+           <Route path="/user-search" element={<UserSearch />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/search" element={<Search />} />
@@ -75,7 +75,7 @@ export default function App() {
                 element={<ChangePassword />}
               />
             </Route>
-          </Route>
+          </Route> 
           {/* Catch-all route for 404 Not Found */}
           <Route path="*" element={<NotFound />} />
         </Routes>

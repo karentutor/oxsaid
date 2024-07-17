@@ -36,8 +36,9 @@ export const Main = () => {
           </div>
         </div>
       ) : (
-        posts.map((item) => <FeedItem key={item._id} {...item} />)
-      )}
+         posts.map((item) => <FeedItem key={item._id} {...item} />)
+
+)}
     </div>
   );
 };

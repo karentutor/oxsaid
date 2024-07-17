@@ -60,6 +60,7 @@ const ContributionsActivities = () => {
           const response = await axios.get(`/api/businesses/${auth.user.id}`);
           if (response.data.isSuccess) {
             setBusinesses(response.data.business);
+            console.log(response.data.business)
           }
         } catch (error) {
           console.error("Error fetching businesses:", error);

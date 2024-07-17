@@ -188,12 +188,12 @@ export const FeedItem = ({
             </span>
           </button>
           <CollapsibleTrigger>
-            <button className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all">
+            <div className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all">
               <span>{<MessageSquareIcon />}</span>
               <span className="font-semibold ml-2 hidden sm:inline">
                 Comment
               </span>
-            </button>
+            </div>
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent>
