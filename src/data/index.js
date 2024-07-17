@@ -384,27 +384,27 @@ export const fundings = [
 
 export const sidebarNavItems = [
   {
-    title: "Posts",
+    title: "Your Posts",
     href: "posts",
   },
   {
-    title: "Connection List",
+    title: "Your Connections",
     href: "connection-list",
   },
   {
-    title: "Business",
+    title: "Your Businesses",
     href: "business",
   },
   {
-    title: "Jobs",
+    title: "Your Jobs",
     href: "jobs",
   },
   {
-    title: "Events",
+    title: "Your Events",
     href: "events",
   },
   {
-    title: "Groups",
+    title: "Your Groups",
     href: "groups",
   },
   {

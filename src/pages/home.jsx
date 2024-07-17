@@ -1,15 +1,14 @@
 import React from "react";
 
-// import ContributionsActivities from "@/components/dashboard/Manage/ContributionsActivities";
 import { Main } from "@/components/dashboard/Main";
-// import { Sidebar } from "@/components/dashboard/Sidebar";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
 export default function Home() {
   return (
     <main className="pt-4 grid gap-6 index-grid">
-     {/* <Sidebar />  */}
+     <Sidebar /> 
      <Main /> 
-      {/* <ContributionsActivities /> */}
+
     
     </main>
   );
