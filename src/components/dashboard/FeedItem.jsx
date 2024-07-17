@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "../ui/card";
 import { UserAvatar } from "./UserAvatar";
@@ -25,6 +24,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ConfirmDelete({
   open,
@@ -91,6 +91,7 @@ export const FeedItem = ({
   const queryClient = useQueryClient();
   const [comment, setComment] = useState("");
   const [open, setOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Like
   const { mutate: likePost } = useMutation({
@@ -126,10 +127,18 @@ export const FeedItem = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Post deleted successfully");
-      setOpen(false);
     },
-    onError: () => toast.error("Something went wrong"),
+    onError: () => {
+      toast.error("Something went wrong");
+      setIsDeleting(false);
+    },
+    onSettled: () => setIsDeleting(false),
   });
+
+  const handleDelete = () => {
+    setIsDeleting(true);
+    deletePost();
+  };
 
   return (
     <Card className="p-0 mt-2 max-w-[600px]">
@@ -164,7 +173,13 @@ export const FeedItem = ({
           ) : null}
         </div>
         {userId === auth.user._id ? (
-          <ConfirmDelete open={open} setOpen={setOpen} onDelete={() => deletePost()} />
+          <ConfirmDelete
+            open={open}
+            setOpen={setOpen}
+            onDelete={handleDelete}
+            isClosed={isDeleting}
+            Icon={isDeleting ? () => <Skeleton className="w-5 h-5" /> : Trash}
+          />
         ) : null}
       </div>
       <Collapsible>
