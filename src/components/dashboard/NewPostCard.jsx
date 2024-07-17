@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { MyAvatar } from "./UserAvatar";
 import { Image } from "lucide-react";
 import { useState } from "react";
@@ -62,9 +61,29 @@ const PostBottomActions = () => {
 const WriteNewPostDialog = ({ onClose }) => {
   const [text, setText] = useState("");
   const [postPic, setPostPic] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { auth } = useAuth();
   const queryClient = useQueryClient();
-  const isPostButtonDisabled = text === "";
+  const isPostButtonDisabled = (text === "" && !postPic) || isLoading || isSubmitting;
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    setPostPic(file);
+    setIsLoading(true); // Set loading state to true when file is selected
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        setIsLoading(false); // Set loading state to false when preview is ready
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+      setIsLoading(false);
+    }
+  };
 
   const { mutate: createPost } = useMutation({
     mutationFn: () =>
@@ -87,9 +106,16 @@ const WriteNewPostDialog = ({ onClose }) => {
     onSettled: () => {
       setText("");
       setPostPic(null);
+      setPreview(null);
+      setIsSubmitting(false);
       onClose();
     },
   });
+
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    createPost();
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -111,12 +137,17 @@ const WriteNewPostDialog = ({ onClose }) => {
             rows={2}
             onChange={(e) => setText(e.target.value)}
           />
+          {preview && (
+            <div className="mt-4">
+              <img src={preview} alt="Preview" className="w-32 h-32 object-cover rounded" />
+            </div>
+          )}
           <Label htmlFor="postPic">
             <PostBottomActions />
           </Label>
           <Input
             id="postPic"
-            onChange={(e) => setPostPic(e.target.files?.[0])}
+            onChange={handleFileChange}
             type="file"
             className="hidden"
           />
@@ -129,17 +160,16 @@ const WriteNewPostDialog = ({ onClose }) => {
               "rounded-3xl font-semibold",
               !isPostButtonDisabled && "bg-accent"
             )}
-            onClick={createPost}
+            onClick={handleSubmit}
             disabled={isPostButtonDisabled}
           >
-            Post
+            {isSubmitting ? "Posting..." : isLoading ? "Loading..." : "Post"}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-
 
 export const NewPostCard = () => {
   const [isWriteDialogOpen, setWriteDialogOpen] = useState(false);
