@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const Main = () => {
   const { auth } = useAuth();
-  const { data: posts, isPending } = useQuery({
+  const { data: posts, isLoading } = useQuery({
     queryKey: ["posts"],
     queryFn: () =>
       axiosBase.get("/posts", {
@@ -15,10 +15,11 @@ export const Main = () => {
       }),
     select: (data) => data.data,
   });
+
   return (
     <div className="[grid-area:main] mb-20">
       <NewPostCard />
-      {isPending ? (
+      {isLoading ? (
         <div className="flex flex-col gap-6 p-6">
           <div className="flex items-center space-x-4">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -28,7 +29,7 @@ export const Main = () => {
             </div>
           </div>
           <div className="flex flex-col space-y-3">
-            <Skeleton className="h-[225px]  rounded-xl" />
+            <Skeleton className="h-[225px] rounded-xl" />
             <div className="space-y-2">
               <Skeleton className="h-4" />
               <Skeleton className="h-4" />
@@ -36,9 +37,8 @@ export const Main = () => {
           </div>
         </div>
       ) : (
-         posts.map((item) => <FeedItem key={item._id} {...item} />)
-
-)}
+        posts.map((item) => <FeedItem key={item._id} {...item} />)
+      )}
     </div>
   );
 };

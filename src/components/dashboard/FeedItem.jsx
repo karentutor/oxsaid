@@ -58,7 +58,10 @@ export function ConfirmDelete({
             </Button>
           </DialogClose>
           <Button
-            onClick={onDelete}
+            onClick={() => {
+              onDelete();
+              setOpen(false);
+            }}
             variant="destructive"
             className="text-white"
             type="submit"
@@ -98,7 +101,7 @@ export const FeedItem = ({
         { headers: { Authorization: auth.access_token } }
       ),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["posts", "myPosts"] }),
+      queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 
   // Comment
@@ -110,7 +113,7 @@ export const FeedItem = ({
         { headers: { Authorization: auth.access_token } }
       ),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["posts", "myPosts"] }),
+      queryClient.invalidateQueries({ queryKey: ["posts"] }),
     onSettled: () => setComment(""),
   });
 
@@ -121,7 +124,7 @@ export const FeedItem = ({
         headers: { Authorization: auth.access_token },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts", "myPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Post deleted successfully");
       setOpen(false);
     },
@@ -161,13 +164,13 @@ export const FeedItem = ({
           ) : null}
         </div>
         {userId === auth.user._id ? (
-          <ConfirmDelete open={open} setOpen={setOpen} onDelete={deletePost} />
+          <ConfirmDelete open={open} setOpen={setOpen} onDelete={() => deletePost()} />
         ) : null}
       </div>
       <Collapsible>
         <div className="flex flex-row justify-between items-center py-2 px-4">
           <button
-            onClick={likePost}
+            onClick={() => likePost()}
             className="p-2 rounded hover:bg-zinc-200 flex flex-row text-zinc-500 text-sm items-center cursor-pointer transition-all"
           >
             <span>
@@ -203,7 +206,7 @@ export const FeedItem = ({
               onChange={(e) => setComment(e.target.value)}
               placeholder="give your thoughts"
             />
-            <Button disabled={comment?.length < 2} onClick={commentOnPost}>
+            <Button disabled={comment?.length < 2} onClick={() => commentOnPost()}>
               Submit
             </Button>
           </div>
