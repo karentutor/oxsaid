@@ -66,7 +66,6 @@ const WriteNewPostDialog = ({ onClose }) => {
   const queryClient = useQueryClient();
   const isPostButtonDisabled = text === "";
 
-  // Comment
   const { mutate: createPost } = useMutation({
     mutationFn: () =>
       axiosBase.post(
@@ -99,15 +98,15 @@ const WriteNewPostDialog = ({ onClose }) => {
           <div className="flex flex-row items-center">
             <MyAvatar />
             <div className="ml-3">
-              <div className="text-lg font-semibold">Yousef Omar</div>
+              <div className="text-lg font-semibold">
+                {auth.user?.firstName} {auth.user?.lastName}
+              </div>
               <div className="text-sm">Post to anyone</div>
             </div>
           </div>
           <Textarea
             placeholder="What do you want to talk about?"
             className="border-none outline-none text-lg p-0 text-zinc-600 placeholder:text-gray-500 mt-5 resize-none"
-            // Override tailwind variable dynamically for this textarea
-            // @ts-ignore
             style={{ "--tw-ring-color": "transparent" }}
             rows={2}
             onChange={(e) => setText(e.target.value)}
@@ -140,6 +139,7 @@ const WriteNewPostDialog = ({ onClose }) => {
     </Dialog>
   );
 };
+
 
 export const NewPostCard = () => {
   const [isWriteDialogOpen, setWriteDialogOpen] = useState(false);
