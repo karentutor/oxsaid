@@ -27,10 +27,6 @@ const MyProfileHeader = () => {
     <div>
       <div
         className="bg-center bg-cover block h-14 w-full"
-        style={{
-          backgroundImage:
-            "url(https://media.licdn.com/dms/image/C5616AQFBJ6o2Z7TrsQ/profile-displaybackgroundimage-shrink_200_800/0/1516968055361?e=1692835200&v=beta&t=MEqhkc8BTKOniiPx0Hphp_pXKJ-0GH6OWaaKLurI8Qc)",
-        }}
       ></div>
       <div className="flex justify-center">
         <UserAvatar
@@ -41,6 +37,8 @@ const MyProfileHeader = () => {
     </div>
   );
 };
+
+
 
 const MyProfileStats = ({ text, count }) => {
   return (
