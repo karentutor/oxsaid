@@ -66,19 +66,19 @@ export default function BusinessForm() {
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      name: "Test Business",
-      email: "test@example.com",
-      phone: "123-456-7890",
-      occupation: "Technology",
-      subOccupation: "Software Development",
-      address: "123 Test St",
-      description: "This is a test business.",
-      websiteUrl: "https://www.testbusiness.com",
-      size: 1,
+      name: "",
+      email: "",
+      phone: "",
+      occupation: "",
+      subOccupation: "",
+      address: "",
+      description: "",
+      websiteUrl: "",
+      size: null, // Use null for no initial value
       visibility: "Public",
-      isAlumniOwned: true,
+      isAlumniOwned: false,
       isLessThanTwoYears: false,
-      yearFounded: 2020,
+      yearFounded: null, // Use null for no initial value
       picture: null
     }
   });
