@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -37,6 +37,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().nonempty("Business Name is required."),
@@ -54,41 +55,76 @@ const formSchema = z.object({
   yearFounded: z.number().optional().refine(val => !val || val <= new Date().getFullYear(), {
     message: "Year Founded must not be in the future.",
   }),
+  picture: z.instanceof(File).optional()
 });
 
 export default function BusinessForm() {
   const { auth } = useAuth();
   const queryClient = useQueryClient();
+  const [preview, setPreview] = useState(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      occupation: "",
-      subOccupation: "",
-      address: "",
-      description: "",
-      websiteUrl: "",
-      visibility: "",
-      isAlumniOwned: false,
+      name: "Test Business",
+      email: "test@example.com",
+      phone: "123-456-7890",
+      occupation: "Technology",
+      subOccupation: "Software Development",
+      address: "123 Test St",
+      description: "This is a test business.",
+      websiteUrl: "https://www.testbusiness.com",
+      size: 1,
+      visibility: "Public",
+      isAlumniOwned: true,
       isLessThanTwoYears: false,
-    },
+      yearFounded: 2020,
+      picture: null
+    }
   });
 
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    form.setValue("picture", file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  };
+
   const { mutate: createBusiness, isPending: isCreating } = useMutation({
-    mutationFn: (data) =>
-      axiosBase.post(
-        "/businesses",
-        { ...data, userId: auth.user._id },
-        { headers: { Authorization: auth.access_token } }
-      ),
+    mutationFn: (data) => {
+      const formData = new FormData();
+      for (const key in data) {
+        if (data[key] !== undefined) {
+          formData.append(key, data[key]);
+        }
+      }
+      if (data.picture) {
+        formData.append("picture", data.picture);
+        formData.append("picturePath", data.picture.name || "");
+      }
+      formData.append('userId', auth.user._id);
+
+      return axiosBase.post(
+        "businesses",
+        formData,
+        { headers: { Authorization: auth.access_token, "Content-Type": "multipart/form-data" } }
+      );
+    },
     onSuccess: () => {
       toast.success("Business Created 🎉");
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
     },
-    onError: () => toast.error("Something went wrong"),
+    onError: (error) => {
+      console.error(error);
+      toast.error("Something went wrong");
+    },
     onSettled: () => form.reset(),
   });
 
@@ -378,6 +414,32 @@ export default function BusinessForm() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="picture"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormLabel>Business Picture</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          onChange={(e) => {
+                            handleFileChange(e);
+                            field.onChange(e.target.files?.[0]);
+                          }}
+                        />
+                      </FormControl>
+                      {preview && (
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded mt-2"
+                        />
+                      )}
+                      <FormMessage>{form.formState.errors.picture?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
@@ -400,5 +462,3 @@ export default function BusinessForm() {
     </section>
   );
 }
-
-
