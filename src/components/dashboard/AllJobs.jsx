@@ -19,9 +19,9 @@ export default function AllJobs() {
   const { data: jobs, isPending } = useQuery({
     queryKey: ["jobs"],
     queryFn: () =>
-      axiosBase.get("/jobs", {
-        headers: { Authorization: auth.access_token },
-      }),
+        axiosBase.get("/jobs", {
+          headers: { Authorization: auth.access_token },
+        }),
     select: (data) =>
       data.data?.jobs.filter((item) =>
         item?.jobTitle.toLowerCase().includes(debouncedSearchTerm)

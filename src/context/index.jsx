@@ -1,15 +1,3 @@
-// import { createContext, useMemo, useState } from "react";
-
-// export const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const [auth, setAuth] = useState({ user: "karen", access_token: 1233 });
-
-//   const value = useMemo(() => ({ auth, setAuth }), [auth]);
-
-//   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-// };
-
 import { createContext, useMemo, useState } from "react";
 
 export const AuthContext = createContext();

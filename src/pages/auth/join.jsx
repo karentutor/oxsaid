@@ -46,10 +46,13 @@ export default function Join() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [cities, setCities] = useState([]);
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcmVudHV0b3IxQGdtYWlsLmNvbSIsImlhdCI6MTcyMTA4Mjk5NSwiZXhwIjoxNzIzNjc0OTk1fQ.HEIDeXd_RpZ-dvGQy4nCMQ03o6-IJUDLtATyfd7TUVo';
+  const token = new URLSearchParams(window.location.search).get('token');
 
-  const decodedToken = JSON.parse(atob(token.split('.')[1]));
-  const email = decodedToken.email;
+  let email = '';
+  if (token) {
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    email = decodedToken.email;
+  }
 
   const form = useForm({
     resolver: zodResolver(formSchema),
