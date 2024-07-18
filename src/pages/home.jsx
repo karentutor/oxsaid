@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useAuth from "@/hooks/useAuth"; // Import useAuth hook
+import useAuth from "@/hooks/useAuth";
 import { axiosBase } from "@/services/BaseService";
+import { Main } from "@/components/dashboard/Main";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
-const OwnProfile = ({ user }) => (
+const OwnProfile = ({ user, auth }) => (
   <main className="pt-4 grid gap-6 index-grid">
-    <div>Welcome, {user.firstName} {user.lastName}</div>
-    {/* Add more components to display user's own profile data */}
+    <Sidebar user={user} auth={auth} />
+    <Main user={user} auth={auth} />
   </main>
 );
 
-const OtherProfile = ({ userId }) => {
-  const { auth } = useAuth(); // Use useAuth hook
+const OtherProfile = ({ userId, auth }) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -21,8 +22,8 @@ const OtherProfile = ({ userId }) => {
         const response = await axiosBase.get(`/users/${userId}`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         });
-        console.log("Raw response:", response.data.user);
-        setUserData(response.data.user);
+        console.log("Raw response:", response.data);
+        setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -33,18 +34,8 @@ const OtherProfile = ({ userId }) => {
 
   return (
     <main className="pt-4 grid gap-6 index-grid">
-      <div>
-        {userData ? (
-          <div>
-            <h1>{userData.firstName} {userData.lastName}'s Profile</h1>
-            {/* Display other user's data */}
-            <p>{userData.bio}</p>
-            {/* Additional profile details */}
-          </div>
-        ) : (
-          <div>Loading...</div>
-        )}
-      </div>
+      <Sidebar user={userData} auth={auth} />
+      <Main user={userData} auth={auth} />
     </main>
   );
 };
@@ -60,8 +51,8 @@ export default function Home() {
   const isOwnProfile = !id || auth.user._id === id;
 
   return isOwnProfile ? (
-    <OwnProfile user={auth.user} />
+    <OwnProfile user={auth.user} auth={auth} />
   ) : (
-    <OtherProfile userId={id} />
+    <OtherProfile userId={id} auth={auth} />
   );
 }

@@ -1,25 +1,24 @@
-import useAuth from "@/hooks/useAuth";
-import { FeedItem } from "./FeedItem";
-import { NewPostCard } from "./NewPostCard";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FeedItem } from "./FeedItem";
+import { NewPostCard } from "./NewPostCard";
 
-export const Main = () => {
-  const { auth } = useAuth();
-  const { data: posts, isLoading } = useQuery({
+export const Main = ({ user, auth }) => {
+  const { data: posts, isLoading, isError } = useQuery({
     queryKey: ["posts"],
     queryFn: () =>
       axiosBase.get("/posts", {
-        headers: { Authorization: auth.access_token },
+        headers: { Authorization: `Bearer ${auth.access_token}` },
       }),
     select: (data) => data.data,
   });
 
-  return (
-    <div className="[grid-area:main] mb-20">
-      <NewPostCard />
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <div className="[grid-area:main] mb-20">
+        <NewPostCard />
         <div className="flex flex-col gap-6 p-6">
           <div className="flex items-center space-x-4">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -36,8 +35,26 @@ export const Main = () => {
             </div>
           </div>
         </div>
-      ) : (
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="[grid-area:main] mb-20">
+        <NewPostCard />
+        <div>Error loading posts</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="[grid-area:main] mb-20">
+      <NewPostCard />
+      {posts && posts.length > 0 ? (
         posts.map((item) => <FeedItem key={item._id} {...item} />)
+      ) : (
+        <div>No posts available</div>
       )}
     </div>
   );

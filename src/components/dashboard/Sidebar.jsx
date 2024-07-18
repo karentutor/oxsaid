@@ -1,11 +1,9 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
 import { UserAvatar } from "./UserAvatar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,53 +19,45 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 
-const MyProfileHeader = () => {
-  const { auth } = useAuth();
-  return (
-    <div>
-      <div
-        className="bg-center bg-cover block h-14 w-full"
-      ></div>
-      <div className="flex justify-center">
-        <UserAvatar
-          className="w-16 h-16 rounded-full overflow-hidden border-white border-2 mt-[-32px] z-1"
-          imageUrl={auth.user.picturePath}
-        />
-      </div>
+const MyProfileHeader = ({ user }) => (
+  <div>
+    <div className="bg-center bg-cover block h-14 w-full"></div>
+    <div className="flex justify-center">
+      <UserAvatar
+        className="w-16 h-16 rounded-full overflow-hidden border-white border-2 mt-[-32px] z-1"
+        imageUrl={user.picturePath}
+      />
     </div>
-  );
-};
+  </div>
+);
 
-
-
-const MyProfileStats = ({ text, count }) => {
-  return (
-    <div className="flex flex-row items-center text-xs font-semibold px-3 p-1 cursor-pointer hover:bg-zinc-200">
-      <div className="w-full text-zinc-500">{text}</div>
-      <div className="text-accent">{count}</div>
-    </div>
-  );
-};
+const MyProfileStats = ({ text, count }) => (
+  <div className="flex flex-row items-center text-xs font-semibold px-3 p-1 cursor-pointer hover:bg-zinc-200">
+    <div className="w-full text-zinc-500">{text}</div>
+    <div className="text-accent">{count}</div>
+  </div>
+);
 
 const FormSchema = z.object({
   email: z.string().email({ message: "Invalid Email" }),
 });
+
 const Form2Schema = z.object({
   email: z.string().email({ message: "Invalid Email" }),
 });
 
-const MyItems = () => {
+const MyItems = ({ user, auth }) => {
   const domainName = window.location.origin;
-  const { auth } = useAuth();
+
   // Invite a Friend
   const { mutate: inviteFriend } = useMutation({
     mutationFn: (data) =>
       axiosBase.post(
         `/auth/invite-friend`,
-        { userId: auth.user._id, email: data.email, domainName },
-        { headers: { Authorization: auth.access_token } }
+        { userId: user._id, email: data.email, domainName },
+        { headers: { Authorization: `Bearer ${auth.access_token}` } }
       ),
-    onSuccess: () => toast.success("Invite send"),
+    onSuccess: () => toast.success("Invite sent"),
     onError: () => toast.error("Something went wrong"),
   });
 
@@ -167,81 +157,65 @@ const Discover = () => {
   );
 };
 
-const SidebarDesktopLayout = () => {
-  const { auth } = useAuth();
-  return (
-    <>
-      <Card className="overflow-hidden">
-        <MyProfileHeader />
-        <a
-          className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
-          href="https://www.linkedin.com/in/ozgurgul35/"
-          target="_blank"
-        >
-          <div className="text-md font-medium hover:underline cursor-pointer">
-            {auth.user.firstName} {auth.user.lastName}
-          </div>
-          <div className="text-xs text-zinc-500 mt-1">
-            {auth.user.subOccupation}
-          </div>
-          <div className="text-xs mt-1">{auth.user.location}</div>
-        </a>
-        <div>
-          <div className="py-3 border-b">
-            <MyProfileStats
-              text="Who's viewed your profile"
-              // count={auth.user.viewedProfile}
-              count="tbd"
-            />
-            <MyProfileStats
-              text="Impressions of your post"
-              // count={auth.user.impressions}
-              count="tbd"
-            />
-          </div>
-          <MyItems />
+const SidebarDesktopLayout = ({ user, auth }) => (
+  <>
+    <Card className="overflow-hidden">
+      <MyProfileHeader user={user} />
+      <a
+        className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
+        href="https://www.linkedin.com/in/ozgurgul35/"
+        target="_blank"
+      >
+        <div className="text-md font-medium hover:underline cursor-pointer">
+          {user.firstName} {user.lastName}
         </div>
-      </Card>
-      <div className="sticky top-16">
-        <Discover />
+        <div className="text-xs text-zinc-500 mt-1">{user.subOccupation}</div>
+        <div className="text-xs mt-1">{user.location}</div>
+      </a>
+      <div>
+        <div className="py-3 border-b">
+          <MyProfileStats text="Who's viewed your profile" count="tbd" />
+          <MyProfileStats text="Impressions of your post" count="tbd" />
+        </div>
+        <MyItems user={user} auth={auth} />
       </div>
-    </>
-  );
-};
+    </Card>
+    <div className="sticky top-16">
+      <Discover />
+    </div>
+  </>
+);
 
-const SidebarMobileLayout = () => {
+const SidebarMobileLayout = ({ user, auth }) => {
   const [isShowingAllMobile, setShowingAllMobile] = useState(false);
-  const { auth } = useAuth();
   return (
     <>
       <Card className="overflow-hidden">
-        <MyProfileHeader />
+        <MyProfileHeader user={user} />
         <a
           className="flex justify-center items-center flex-col mt-4 pb-4 border-b"
           href="https://www.linkedin.com/in/ozgurgul35/"
           target="_blank"
         >
           <div className="text-md font-medium hover:underline cursor-pointer">
-            {auth.user.firstName} {auth.user.lastName}
+            {user.firstName} {user.lastName}
           </div>
-          <div className="text-xs text-zinc-500 mt-1">
-            {auth.user.subOccupation}
-          </div>
-          <div className="text-xs mt-1">{auth.user.location}</div>
+          <div className="text-xs text-zinc-500 mt-1">{user.subOccupation}</div>
+          <div className="text-xs mt-1">{user.location}</div>
         </a>
         {isShowingAllMobile && (
           <div>
             <div className="py-3 border-b">
               <MyProfileStats
                 text="Who's viewed your profile"
-                count={auth.user.viewedProfile}
+                count={user.viewedProfile}
               />
               <MyProfileStats
                 text="Impressions of your post"
-                count={auth.user.impressions}
+                count={user.impressions}
               />
             </div>
-            <MyItems />
+            <MyItems user={user} auth={auth} />
           </div>
         )}
       </Card>
@@ -264,15 +238,13 @@ const SidebarMobileLayout = () => {
   );
 };
 
-export const Sidebar = () => {
-  return (
-    <div style={{ gridArea: "sidebar" }}>
-      <div className="hidden sm:block">
-        <SidebarDesktopLayout />
-      </div>
-      <div className="block sm:hidden">
-        <SidebarMobileLayout />
-      </div>
+export const Sidebar = ({ user, auth }) => (
+  <div style={{ gridArea: "sidebar" }}>
+    <div className="hidden sm:block">
+      <SidebarDesktopLayout user={user} auth={auth} />
     </div>
-  );
-};
+    <div className="block sm:hidden">
+      <SidebarMobileLayout user={user} auth={auth} />
+    </div>
+  </div>
+);
