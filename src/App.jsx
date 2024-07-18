@@ -20,7 +20,6 @@ import ProfileConnectionList from "./pages/own-profile/connection-list";
 import ProfileEvents from "./pages/own-profile/events";
 import ProfileGroups from "./pages/own-profile/groups";
 import ProfileJobs from "./pages/own-profile/jobs";
-import ProfileLayout from "./pages/own-profile/layout";
 import ProfilePosts from "./pages/own-profile/posts";
 import Register from "./pages/auth/register";
 import Search from "./pages/search";
@@ -77,7 +76,7 @@ export default function App() {
       <Toaster
         richColors
         closeButton
-        position="top-right" // Set position to top-right
+        position="bottom-right" // Set position to top-right
       />
     </div>
   );

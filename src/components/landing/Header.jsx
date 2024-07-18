@@ -5,13 +5,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "../ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "../ui/sheet";
 
 import { buttonVariants } from "../ui/button";
 import { Menu } from "lucide-react";
@@ -39,11 +33,28 @@ export default function Header() {
       }`}
     >
       <NavigationMenu className="mx-auto py-2 overflow-hidden">
-        <NavigationMenuList className="container h-14 w-screen flex justify-between">
+        <NavigationMenuList className="container h-14 w-screen flex justify-between px-4 lg:px-6">
           <NavigationMenuItem className="font-bold flex">
-            <a href="#" className="font-bold text-2xl lg:text-3xl text-accent">
-              OXSAID
-            </a>
+            <img
+              src="/imgs/logo-large-light.png"
+              alt="logo light"
+              className="w-36 hidden lg:dark:hidden lg:block"
+            />
+            <img
+              src="/imgs/logo-large-dark.png"
+              alt="logo light"
+              className="w-36 hidden lg:hidden lg:dark:block"
+            />
+            <img
+              src="/imgs/logo-small-dark.png"
+              alt="logo light"
+              className="w-16 lg:hidden lg:dark:hidden dark:block hidden"
+            />
+            <img
+              src="/imgs/logo-small-light.png"
+              alt="logo light"
+              className="w-16 lg:dark:hidden lg:hidden dark:hidden"
+            />
           </NavigationMenuItem>
 
           {/* mobile */}
@@ -62,7 +73,17 @@ export default function Header() {
 
               <SheetContent side="left">
                 <SheetHeader>
-                  <SheetTitle className="font-bold text-xl">OXSAID</SheetTitle>
+                  <img
+                    src="/imgs/logo-small-dark.png"
+                    alt="logo light"
+                    className="w-16 lg:hidden lg:dark:hidden dark:block hidden"
+                  />
+                  <img
+                    src="/imgs/logo-small-light.png"
+                    alt="logo light"
+                    className="w-16 lg:dark:hidden lg:hidden dark:hidden"
+                  />
+                  {/* <SheetTitle className="font-bold text-xl">OXSAID</SheetTitle> */}
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-4">
                   {navLinks.map(({ href, label }) => (
@@ -106,15 +127,13 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex gap-2">
-          <ModeToggle />
+            <ModeToggle />
             <Link
               to="/signin"
               className={buttonVariants({ variant: "outline" })}
             >
               Sign In
             </Link>
-
-   
           </div>
         </NavigationMenuList>
       </NavigationMenu>

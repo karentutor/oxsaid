@@ -19,7 +19,7 @@ const stats = [
 
 export default function About() {
   return (
-    <section id="about" className="container py-16">
+    <section id="about" className="container px-4 lg:py-16">
       <div className="bg-primary/10 border rounded-xl p-5 lg:p-10">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8 md:gap-12">
           <img
