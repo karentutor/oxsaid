@@ -8,8 +8,6 @@ export default function Home() {
     <main className="pt-4 grid gap-6 index-grid">
      <Sidebar /> 
      <Main /> 
-
-    
     </main>
   );
 }

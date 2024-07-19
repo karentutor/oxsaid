@@ -13,8 +13,24 @@ const UserSearch = () => {
   const [college, setCollege] = useState('');
   const [matriculationYear, setMatriculationYear] = useState('');
   const [industry, setIndustry] = useState('');
+  const [friends, setFriends] = useState([]);
   const navigate = useNavigate();
   const { auth } = useAuth();
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await axiosBase.get(`/users/${auth.user._id}/friends`, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
+        setFriends(response.data);
+      } catch (error) {
+        console.error('Error fetching friends:', error);
+      }
+    };
+
+    fetchFriends();
+  }, [auth.user._id, auth.access_token]);
 
   useEffect(() => {
     const searchByKeyword = async () => {
@@ -32,7 +48,11 @@ const UserSearch = () => {
         });
         if (response) {
           const filteredData = response.data.filter((item) => item._id !== auth.user._id);
-          setOptions(filteredData);
+          const updatedOptions = filteredData.map((option) => ({
+            ...option,
+            isFollowed: friends.includes(option._id)
+          }));
+          setOptions(updatedOptions);
         }
       } catch (error) {
         console.error('Search error:', error);
@@ -41,7 +61,7 @@ const UserSearch = () => {
     };
 
     searchByKeyword();
-  }, [search, auth.access_token, auth.user._id, college, matriculationYear, industry]);
+  }, [search, auth.access_token, auth.user._id, college, matriculationYear, industry, friends]);
 
   const resetFilters = () => {
     setSearch('');
@@ -51,14 +71,36 @@ const UserSearch = () => {
     setOptions([]);
   };
 
-  const followUser = async (userId) => {
+  const toggleFollowUser = async (userId, isFollowed) => {
     try {
-      await axiosBase.post(`/users/follow/${userId}`, {}, {
-        headers: { Authorization: `Bearer ${auth.access_token}` },
-      });
-      alert('User followed successfully');
+      if (isFollowed) {
+        await axiosBase.post(`/users/unfollow/${userId}`, {}, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
+        alert('User unfollowed successfully');
+        updateUserFollowStatus(userId, false);
+      } else {
+        await axiosBase.post(`/users/follow/${userId}`, {}, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
+        alert('User followed successfully');
+        updateUserFollowStatus(userId, true);
+      }
     } catch (error) {
-      console.error('Follow error:', error);
+      console.error(isFollowed ? 'Unfollow error:' : 'Follow error:', error);
+    }
+  };
+
+  const updateUserFollowStatus = (userId, isFollowed) => {
+    setOptions((prevOptions) =>
+      prevOptions.map((option) =>
+        option._id === userId ? { ...option, isFollowed } : option
+      )
+    );
+    if (isFollowed) {
+      setFriends([...friends, userId]);
+    } else {
+      setFriends(friends.filter(id => id !== userId));
     }
   };
 
@@ -159,12 +201,12 @@ const UserSearch = () => {
                       {/* Action Buttons */}
                       <div className="flex items-center space-x-2">
                         <Button
-                          variant="default"
+                          variant={option.isFollowed ? "secondary" : "default"}
                           size="default"
                           className="text-white"
-                          onClick={() => followUser(option._id)}
+                          onClick={() => toggleFollowUser(option._id, option.isFollowed)}
                         >
-                          Follow
+                          {option.isFollowed ? 'Unfollow' : 'Follow'}
                         </Button>
                         <Button
                           variant="destructive"
