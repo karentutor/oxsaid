@@ -1,5 +1,5 @@
 import CreateBusiness from "@/components/dashboard/CreateBusiness";
-import BusinessMain from "@/components/dashboard/BusinessMain";
+import BusinessMain from "@/components/dashboard/business/BusinessMain";
 
 export default function Business() {
   return (
