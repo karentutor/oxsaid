@@ -383,30 +383,30 @@ export const fundings = [
 ]
 
 export const sidebarNavItems = [
-  {
-    title: "Your Posts",
-    href: "posts",
-  },
-  {
-    title: "Your Connections",
-    href: "connection-list",
-  },
-  {
-    title: "Your Businesses",
-    href: "business",
-  },
-  {
-    title: "Your Jobs",
-    href: "jobs",
-  },
-  {
-    title: "Your Events",
-    href: "events",
-  },
-  {
-    title: "Your Groups",
-    href: "groups",
-  },
+  // {
+  //   title: "Your Posts",
+  //   href: "posts",
+  // },
+  // {
+  //   title: "Your Connections",
+  //   href: "connection-list",
+  // },
+  // {
+  //   title: "Your Businesses",
+  //   href: "business",
+  // },
+  // {
+  //   title: "Your Jobs",
+  //   href: "jobs",
+  // },
+  // {
+  //   title: "Your Events",
+  //   href: "events",
+  // },
+  // {
+  //   title: "Your Groups",
+  //   href: "groups",
+  // },
   {
     title: "Update Profile",
     href: "update-profile",

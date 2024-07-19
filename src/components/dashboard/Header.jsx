@@ -93,8 +93,8 @@ export default function Header() {
                 <span className="text-gray-500 text-xs">{auth.user.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-200" />
-              <Link to={`/profile/${auth.user._id}`}>
-                <DropdownMenuItem>Contributions & Settings</DropdownMenuItem>
+              <Link to={`/settings`}>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
               </Link>
               <DropdownMenuItem>
                 <Link to="/contact">Contact Us</Link>
