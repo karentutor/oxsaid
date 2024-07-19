@@ -25,16 +25,16 @@ import { geoData } from "@/data/geoData";
 
 const formSchema = z.object({
   email: z.string().email(),
-  firstName: z.string().nonempty("First name is required"),
-  lastName: z.string().nonempty("Last name is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
-  college: z.string().nonempty("College is required"),
-  matriculationYear: z.string().nonempty("Matriculation year is required"),
-  occupation: z.string().nonempty("Occupation is required"),
-  subOccupation: z.string().nonempty("Sub-occupation is required"),
-  location: z.string().nonempty("Location is required"),
-  city: z.string().nonempty("City is required"),
+  college: z.string().min(1, "College is required"),
+  matriculationYear: z.string().min(1, "Matriculation year is required"),
+  occupation: z.string().min(1, "Occupation is required"),
+  subOccupation: z.string().min(1, "Sub-occupation is required"),
+  location: z.string().min(1, "Location is required"),
+  city: z.string().min(1, "City is required"),
   picture: z.any().optional()
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
@@ -48,20 +48,14 @@ export default function Join() {
   const [cities, setCities] = useState([]);
   const token = new URLSearchParams(window.location.search).get('token');
 
-  let email = '';
-  if (token) {
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    email = decodedToken.email;
-  }
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: email || "",
+      email: "",
       firstName: "",
       lastName: "",
-      password: "",  // Ensure password field is empty
-      confirmPassword: "",  // Ensure confirmPassword field is empty
+      password: "",
+      confirmPassword: "",
       college: "",
       matriculationYear: "",
       occupation: "",
@@ -71,6 +65,25 @@ export default function Join() {
       picture: null,
     },
   });
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    let email = '';
+    try {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      email = decodedToken.email;
+    } catch (error) {
+      navigate('/');
+      return;
+    }
+
+    form.setValue('email', email);
+
+  }, [token, navigate, form]);
 
   const { control, handleSubmit, setValue, watch } = form;
   const selectedCountry = watch("location");
@@ -324,7 +337,7 @@ export default function Join() {
                 <FormItem className="col-span-2">
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} value={email} disabled />
+                    <Input {...field} value={field.value} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
