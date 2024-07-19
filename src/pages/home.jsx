@@ -4,11 +4,13 @@ import useAuth from "@/hooks/useAuth";
 import { axiosBase } from "@/services/BaseService";
 import { Main } from "@/components/dashboard/Main";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import Activities from "@/components/dashboard/activities/Activities"
 
 const OwnProfile = ({ user, auth }) => (
   <main className="pt-4 grid gap-6 index-grid">
     <Sidebar user={user} auth={auth} />
     <Main user={user} auth={auth} />
+    <Activities user={user} auth={auth} />
   </main>
 );
 
@@ -37,6 +39,7 @@ const OtherProfile = ({ userId, auth }) => {
 
       <Sidebar user={userData} auth={auth} />
       <Main user={userData} auth={auth} />
+      <Activities user={userData} auth={auth} /> 
     </main>
   );
 };
