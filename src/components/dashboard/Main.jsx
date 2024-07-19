@@ -1,24 +1,51 @@
-import React from "react";
+import useAuth from "@/hooks/useAuth";
+import { FeedItem } from "./FeedItem";
+import { NewPostCard } from "./NewPostCard";
 import { useQuery } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FeedItem } from "./FeedItem";
-import { NewPostCard } from "./NewPostCard";
 
-export const Main = ({ user, auth }) => {
-  const { data: posts, isLoading, isError } = useQuery({
-    queryKey: ["posts"],
+export const Main = () => {
+  const { auth } = useAuth();
+
+  const { data: followedPosts, isLoading: isLoadingFollowed, error: errorFollowed } = useQuery({
+    queryKey: ["followedPosts"],
     queryFn: () =>
-      axiosBase.get("/posts", {
+      axiosBase.get("/posts/followed", {
         headers: { Authorization: `Bearer ${auth.access_token}` },
       }),
     select: (data) => data.data,
   });
 
-  if (isLoading) {
+  const { data: ownPosts, isLoading: isLoadingOwn, error: errorOwn } = useQuery({
+    queryKey: ["ownPosts"],
+    queryFn: () =>
+      axiosBase.get("/posts/own", {
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      }),
+    select: (data) => data.data,
+  });
+
+  if (errorFollowed || errorOwn) {
     return (
-      <div className="[grid-area:main] mb-20">
-        <NewPostCard />
+      <div>
+        Error fetching posts: {errorFollowed?.message || errorOwn?.message}
+      </div>
+    );
+  }
+
+  const isLoading = isLoadingFollowed || isLoadingOwn;
+
+  // Combine posts and sort by date
+  const posts = [
+    ...(ownPosts || []),
+    ...(followedPosts || [])
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return (
+    <div className="[grid-area:main] mb-20">
+      <NewPostCard />
+      {isLoading ? (
         <div className="flex flex-col gap-6 p-6">
           <div className="flex items-center space-x-4">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -35,27 +62,10 @@ export const Main = ({ user, auth }) => {
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="[grid-area:main] mb-20">
-        <NewPostCard />
-        <div>Error loading posts</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="[grid-area:main] mb-20">
-      <NewPostCard />
-      {posts && posts.length > 0 ? (
-        posts.map((item) => <FeedItem key={item._id} {...item} />)
       ) : (
-        <div>No posts available</div>
+        posts.map((item) => <FeedItem key={item._id} {...item} />)
       )}
     </div>
   );
 };
+
