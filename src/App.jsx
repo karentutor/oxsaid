@@ -15,12 +15,24 @@ import Join from "./pages/auth/join";
 import Landing from "./pages/landing";
 import Messages from "./pages/messages";
 import NotFound from "./pages/not-found";
+import ProfileBusiness from "./pages/profile/business";
+import ProfileConnectionList from "./pages/profile/connection-list";
+import ProfileEvents from "./pages/profile/events";
+import ProfileGroups from "./pages/profile/groups";
+import ProfileJobs from "./pages/profile/jobs";
+import ProfileLayout from "./pages/profile/layout";
+import ProfilePosts from "./pages/profile/posts";
+/*
+>>>>>>> 83525a2 (change nav logos mobile/desktop dark/light)
 import ProfileBusiness from "./pages/own-profile/business";
 import ProfileConnectionList from "./pages/own-profile/connection-list";
 import ProfileEvents from "./pages/own-profile/events";
 import ProfileGroups from "./pages/own-profile/groups";
 import ProfileJobs from "./pages/own-profile/jobs";
 import ProfilePosts from "./pages/own-profile/posts";
+<<<<<<< HEAD
+=======
+*/
 import Register from "./pages/auth/register";
 import Search from "./pages/search";
 import Signin from "./pages/auth/signin";
