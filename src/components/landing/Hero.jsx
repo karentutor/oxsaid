@@ -63,7 +63,10 @@ export default function Hero() {
   });
 
   return (
-    <section className="container grid lg:grid-cols-2 place-items-center grid-cols-1 py-24 md:py-32 gap-10">
+    <section
+      className="container grid lg:grid-cols-2 place-items-center grid-cols-1 py-24 md:py-32 gap-10"
+      id="hero"
+    >
       <div className="text-center lg:text-start space-y-6">
         <h1 className="inline bg-gradient-to-r from-primary to-accent text-transparent bg-clip-text lg:text-lg">
           Empower Your Future

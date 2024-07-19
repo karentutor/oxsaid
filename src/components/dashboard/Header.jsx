@@ -27,7 +27,26 @@ export default function Header() {
           to="/"
           className="flex items-center gap-2 text-lg font-semibold lg:text-2xl text-accent"
         >
-          OXSAID
+          <img
+            src="/imgs/logo-large-light.png"
+            alt="logo light"
+            className="w-36 hidden lg:block lg:dark:hidden"
+          />
+          <img
+            src="/imgs/logo-large-dark.png"
+            alt="logo light"
+            className="w-36 hidden lg:hidden lg:dark:block"
+          />
+          <img
+            src="/imgs/logo-small-dark.png"
+            alt="logo light"
+            className="w-16 lg:hidden lg:dark:hidden dark:block hidden"
+          />
+          <img
+            src="/imgs/logo-small-light.png"
+            alt="logo light"
+            className="w-16 lg:dark:hidden lg:hidden dark:hidden"
+          />
           <span className="sr-only">Oxsaid</span>
         </Link>
         <div>
@@ -49,7 +68,7 @@ export default function Header() {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-3">
-        <ModeToggle />
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
@@ -84,7 +103,6 @@ export default function Header() {
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-    
         </div>
       </nav>
       <Sheet>
@@ -120,7 +138,7 @@ export default function Header() {
         </SheetContent>
       </Sheet>
       <div className="flex lg:hidden items-center gap-3">
-      <ModeToggle />
+        <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
@@ -144,7 +162,6 @@ export default function Header() {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
- 
       </div>
     </header>
   );
