@@ -51,6 +51,17 @@ const UserSearch = () => {
     setOptions([]);
   };
 
+  const followUser = async (userId) => {
+    try {
+      await axiosBase.post(`/users/follow/${userId}`, {}, {
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      });
+      alert('User followed successfully');
+    } catch (error) {
+      console.error('Follow error:', error);
+    }
+  };
+
   return (
     <div className="pb-16 min-h-screen flex flex-col items-center">
       <div className="container mx-auto px-6">
@@ -145,15 +156,25 @@ const UserSearch = () => {
                         <div className="text-gray-600">{option.occupation || 'N/A'}</div>
                       </div>
 
-                      {/* View Profile Button */}
-                      <Button
-                        variant="destructive"
-                        size="default"
-                         className="text-white"
-                        onClick={() => navigate(`/profile/${option._id}`)}
-                      >
-                        View Profile
-                      </Button>
+                      {/* Action Buttons */}
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="default"
+                          size="default"
+                          className="text-white"
+                          onClick={() => followUser(option._id)}
+                        >
+                          Follow
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="default"
+                          className="text-white"
+                          onClick={() => navigate(`/profile/${option._id}`)}
+                        >
+                          View Profile
+                        </Button>
+                      </div>
                     </div>
                   ))
                 )}

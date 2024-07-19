@@ -7,14 +7,40 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const Main = () => {
   const { auth } = useAuth();
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["posts"],
+
+  const { data: followedPosts, isLoading: isLoadingFollowed, error: errorFollowed } = useQuery({
+    queryKey: ["followedPosts"],
     queryFn: () =>
-      axiosBase.get("/posts", {
-        headers: { Authorization: auth.access_token },
+      axiosBase.get("/posts/followed", {
+        headers: { Authorization: `Bearer ${auth.access_token}` },
       }),
     select: (data) => data.data,
   });
+
+  const { data: ownPosts, isLoading: isLoadingOwn, error: errorOwn } = useQuery({
+    queryKey: ["ownPosts"],
+    queryFn: () =>
+      axiosBase.get("/posts/own", {
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      }),
+    select: (data) => data.data,
+  });
+
+  if (errorFollowed || errorOwn) {
+    return (
+      <div>
+        Error fetching posts: {errorFollowed?.message || errorOwn?.message}
+      </div>
+    );
+  }
+
+  const isLoading = isLoadingFollowed || isLoadingOwn;
+
+  // Combine posts and sort by date
+  const posts = [
+    ...(ownPosts || []),
+    ...(followedPosts || [])
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="[grid-area:main] mb-20">
