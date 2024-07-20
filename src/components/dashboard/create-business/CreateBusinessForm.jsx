@@ -305,7 +305,6 @@ export default function CreateBusinessForm({
                   )}
                 />
                 <CreateBusinessPictureForm
-                  control={form.control}
                   handleFileChange={handleFileChange}
                   preview={preview}
                   formState={formState}
@@ -332,3 +331,4 @@ export default function CreateBusinessForm({
     </section>
   );
 }
+

@@ -72,7 +72,7 @@ export default function CreateBusinessMain() {
     mutationFn: (data) => {
       const formData = new FormData();
       for (const key in data) {
-        if (data[key] !== undefined) {
+        if (data[key] !== undefined && key !== 'picture') {
           formData.append(key, data[key]);
         }
       }
@@ -110,4 +110,3 @@ export default function CreateBusinessMain() {
     />
   );
 }
-
