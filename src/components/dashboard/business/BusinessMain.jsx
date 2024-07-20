@@ -112,6 +112,7 @@ export default function BusinessMain() {
             onDelete={handleDelete}
             onEdit={handleEdit}
             isLoading={allBusinessesLoading}
+            showEditDelete={false}
           />
         </TabsContent>
         <TabsContent value="mine">
@@ -121,12 +122,13 @@ export default function BusinessMain() {
             </h1>
             {myBusinessesError && myBusinessesError.response && myBusinessesError.response.status === 404 ? (
               <div className="text-black">No Businesses Found. Would you like to create one where you work or own?</div>
-            ) : (
+            ) : ( 
               <BusinessList
                 businesses={myBusinesses}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 isLoading={myBusinessesisLoading}
+                showEditDelete={true}
               />
             )}
           </div>

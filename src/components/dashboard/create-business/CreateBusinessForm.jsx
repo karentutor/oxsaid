@@ -1,133 +1,23 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Textarea } from "../ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Checkbox } from "../ui/checkbox";
-import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { OCCUPATION_DATA, VISIBILITY_DATA, companysizeData } from "@/data";
-import useAuth from "@/hooks/useAuth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosBase } from "@/services/BaseService";
-import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import CreateBusinessPictureForm from "./CreateBusinessPictureForm";
 
-const formSchema = z.object({
-  name: z.string().nonempty("Business Name is required."),
-  address: z.string().nonempty("Business Address is required."),
-  phone: z.string().nonempty("Business Phone is required."),
-  email: z.string().email("Invalid email format."),
-  websiteUrl: z.string().nonempty("Website URL is required."),
-  description: z.string().nonempty("Business Description is required."),
-  occupation: z.string().nonempty("Occupation is required."),
-  subOccupation: z.string().nonempty("Sub-occupation is required."),
-  size: z.number().positive("Size must be a positive number."),
-  visibility: z.string().nonempty("Visibility is required."),
-  isAlumniOwned: z.boolean(),
-  isLessThanTwoYears: z.boolean(),
-  yearFounded: z.number().optional().refine(val => !val || val <= new Date().getFullYear(), {
-    message: "Year Founded must not be in the future.",
-  }),
-  picture: z.instanceof(File).optional()
-});
-
-export default function BusinessForm() {
-  const { auth } = useAuth();
-  const queryClient = useQueryClient();
-  const [preview, setPreview] = useState(null);
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      occupation: "",
-      subOccupation: "",
-      address: "",
-      description: "",
-      websiteUrl: "",
-      size: null, // Use null for no initial value
-      visibility: "Public",
-      isAlumniOwned: false,
-      isLessThanTwoYears: false,
-      yearFounded: null, // Use null for no initial value
-      picture: null
-    }
-  });
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    form.setValue("picture", file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
-    }
-  };
-
-  const { mutate: createBusiness, isPending: isCreating } = useMutation({
-    mutationFn: (data) => {
-      const formData = new FormData();
-      for (const key in data) {
-        if (data[key] !== undefined) {
-          formData.append(key, data[key]);
-        }
-      }
-      if (data.picture) {
-        formData.append("picture", data.picture);
-        formData.append("picturePath", data.picture.name || "");
-      }
-      formData.append('userId', auth.user._id);
-
-      return axiosBase.post(
-        "businesses",
-        formData,
-        { headers: { Authorization: auth.access_token, "Content-Type": "multipart/form-data" } }
-      );
-    },
-    onSuccess: () => {
-      toast.success("Business Created 🎉");
-      queryClient.invalidateQueries({ queryKey: ["businesses"] });
-    },
-    onError: (error) => {
-      console.error(error);
-      toast.error("Something went wrong");
-    },
-    onSettled: () => form.reset(),
-  });
-
+export default function CreateBusinessForm({
+  form,
+  handleFileChange,
+  createBusiness,
+  isCreating,
+  preview,
+  formState
+}) {
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
@@ -151,7 +41,7 @@ export default function BusinessForm() {
                       <FormControl>
                         <Input placeholder="Business Name" {...field} />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.name?.message}</FormMessage>
+                      <FormMessage>{formState.errors.name?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -164,7 +54,7 @@ export default function BusinessForm() {
                       <FormControl>
                         <Input placeholder="Business Address" {...field} />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.address?.message}</FormMessage>
+                      <FormMessage>{formState.errors.address?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -177,7 +67,7 @@ export default function BusinessForm() {
                       <FormControl>
                         <Input placeholder="Business Phone" {...field} />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.phone?.message}</FormMessage>
+                      <FormMessage>{formState.errors.phone?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -190,7 +80,7 @@ export default function BusinessForm() {
                       <FormControl>
                         <Input placeholder="Business Email" {...field} />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.email?.message}</FormMessage>
+                      <FormMessage>{formState.errors.email?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -206,7 +96,7 @@ export default function BusinessForm() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.description?.message}</FormMessage>
+                      <FormMessage>{formState.errors.description?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -219,7 +109,7 @@ export default function BusinessForm() {
                       <FormControl>
                         <Input placeholder="Business Url" {...field} />
                       </FormControl>
-                      <FormMessage>{form.formState.errors.websiteUrl?.message}</FormMessage>
+                      <FormMessage>{formState.errors.websiteUrl?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -246,7 +136,7 @@ export default function BusinessForm() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage>{form.formState.errors.occupation?.message}</FormMessage>
+                      <FormMessage>{formState.errors.occupation?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -276,7 +166,7 @@ export default function BusinessForm() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage>{form.formState.errors.subOccupation?.message}</FormMessage>
+                      <FormMessage>{formState.errors.subOccupation?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -310,7 +200,7 @@ export default function BusinessForm() {
                         </SelectContent>
                       </Select>
                       <FormMessage>
-                        {form.formState.errors.size?.message}
+                        {formState.errors.size?.message}
                       </FormMessage>
                     </FormItem>
                   )}
@@ -339,7 +229,7 @@ export default function BusinessForm() {
                         </SelectContent>
                       </Select>
                       <FormMessage>
-                        {form.formState.errors.visibility?.message}
+                        {formState.errors.visibility?.message}
                       </FormMessage>
                     </FormItem>
                   )}
@@ -409,42 +299,22 @@ export default function BusinessForm() {
                         </SelectContent>
                       </Select>
                       <FormMessage>
-                        {form.formState.errors.yearFounded?.message}
+                        {formState.errors.yearFounded?.message}
                       </FormMessage>
                     </FormItem>
                   )}
                 />
-                <FormField
+                <CreateBusinessPictureForm
                   control={form.control}
-                  name="picture"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Picture</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          onChange={(e) => {
-                            handleFileChange(e);
-                            field.onChange(e.target.files?.[0]);
-                          }}
-                        />
-                      </FormControl>
-                      {preview && (
-                        <img
-                          src={preview}
-                          alt="Preview"
-                          className="w-32 h-32 object-cover rounded mt-2"
-                        />
-                      )}
-                      <FormMessage>{form.formState.errors.picture?.message}</FormMessage>
-                    </FormItem>
-                  )}
+                  handleFileChange={handleFileChange}
+                  preview={preview}
+                  formState={formState}
                 />
               </CardContent>
               <CardFooter className="p-0 bg-background border-t sticky bottom-0">
                 <div className="py-2 px-6 w-full">
                   <Button
-                    disabled={!form.formState.isValid || isCreating}
+                    disabled={!formState.isValid || isCreating}
                     className="w-full flex items-center gap-2"
                     type="submit"
                   >

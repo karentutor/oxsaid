@@ -1,13 +1,13 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BusinessCard from "./BusinessCard";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const BusinessList = ({ businesses, onDelete, onEdit, isLoading }) => {
+const BusinessList = ({ businesses, onDelete, onEdit, isLoading, showEditDelete }) => {
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">
       <div className="flex flex-col gap-2 p-4 pt-0">
-        {isLoading ? (
+        {isLoading ? ( 
           <Card>
             <div className="flex flex-col gap-6 p-6">
               <div className="flex items-center justify-between space-x-4">
@@ -29,7 +29,13 @@ const BusinessList = ({ businesses, onDelete, onEdit, isLoading }) => {
           </Card>
         ) : businesses.length > 0 ? (
           businesses.map((item) => (
-            <BusinessCard key={item._id} item={item} onDelete={() => onDelete(item._id)} onEdit={() => onEdit(item._id)} />
+            <BusinessCard 
+              key={item._id} 
+              item={item} 
+              onDelete={() => onDelete(item._id)} 
+              onEdit={() => onEdit(item._id)} 
+              showEditDelete={showEditDelete} 
+            />
           ))
         ) : (
           <div className="flex flex-col items-center justify-center text-center gap-4 py-16">
