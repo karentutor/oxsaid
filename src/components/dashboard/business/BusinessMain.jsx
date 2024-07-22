@@ -1,85 +1,86 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosBase } from "@/services/BaseService";
-import useAuth from "@/hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import BusinessList from "./BusinessList";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function BusinessMain() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [allBusinesses, setAllBusinesses] = useState([]);
+  const [myBusinesses, setMyBusinesses] = useState([]);
+  const [combinedBusinesses, setCombinedBusinesses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { auth } = useAuth();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const queryParams = new URLSearchParams(location.search);
   const initialTab = queryParams.get('tab') || 'all';
 
-  const queryClient = useQueryClient();
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        const [allRes, ownRes] = await Promise.all([
+          axiosBase.get('/businesses', {
+            headers: { Authorization: auth.access_token },
+          }),
+          axiosBase.get('/businesses/own', {
+            headers: { Authorization: auth.access_token },
+          }),
+        ]);
 
-  const { data: allBusinesses = [], isLoading: allBusinessesLoading, error: allBusinessesError } = useQuery({
-    queryKey: ["allBusinesses"],
-    queryFn: () =>
-      axiosBase.get('/businesses', {
-        headers: { Authorization: auth.access_token },
-      }).then(res => res.data.business),
-    select: (data) =>
-      data.filter((item) =>
-        item?.name?.name.toLowerCase().includes(debouncedSearchTerm)
-      ),
-  });
+        const allBusinessesData = allRes.data.business || [];
+        const myBusinessesData = ownRes.data ? [ownRes.data] : [];
 
-  const { data: myBusinesses = [], isLoading: myBusinessesisLoading, error: myBusinessesError } = useQuery({
-    queryKey: ["myBusinesses"],
-    queryFn: () =>
-      axiosBase.get('/businesses/own', {
-        headers: { Authorization: auth.access_token },
-      }).then(res => res.data ? [res.data] : []),
-    select: (data) => {
-      console.log("My Businesses:", data); // Log the response data
-      return data.filter((item) =>
-        item?.name?.name.toLowerCase().includes(debouncedSearchTerm)
-      );
-    },
-  });
+        console.log("Response from /businesses:", allBusinessesData);
+        console.log("Response from /businesses/own:", myBusinessesData);
 
-  const deleteBusinessMutation = useMutation({
-    mutationFn: (id) => 
-      axiosBase.delete(`/businesses/${id}`, {
-        headers: { Authorization: auth.access_token },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries("allBusinesses");
-      queryClient.invalidateQueries("myBusinesses");
-    }
-  });
+        setAllBusinesses(allBusinessesData);
+        setMyBusinesses(myBusinessesData);
 
-  const handleDelete = (id) => {
+        // Combine and filter unique businesses
+        const combined = [...allBusinessesData, ...myBusinessesData];
+        const uniqueCombined = Array.from(new Map(combined.map(b => [b._id, b])).values());
+        console.log("Unique Combined Businesses:", uniqueCombined);
+
+        setCombinedBusinesses(uniqueCombined);
+      } catch (err) {
+        setError(err);
+        console.error("Error fetching businesses:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusinesses();
+  }, [auth.access_token]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
+  }, [myBusinesses]);
+
+  const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this business?')) {
-      deleteBusinessMutation.mutate(id);
+      try {
+        await axiosBase.delete(`/businesses/${id}`, {
+          headers: { Authorization: auth.access_token },
+        });
+        setAllBusinesses(allBusinesses.filter(b => b._id !== id));
+        setMyBusinesses(myBusinesses.filter(b => b._id !== id));
+        setCombinedBusinesses(combinedBusinesses.filter(b => b._id !== id));
+      } catch (error) {
+        console.error("Error deleting business:", error);
+      }
     }
   };
 
   const handleEdit = (id) => {
     // Implement edit functionality here
   };
-
-  useEffect(() => {
-    const debounceId = setTimeout(
-      () => setDebouncedSearchTerm(searchTerm),
-      1000
-    );
-
-    return () => clearTimeout(debounceId);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    if (allBusinessesError) console.error("Error fetching all businesses:", allBusinessesError);
-    if (myBusinessesError && myBusinessesError.response && myBusinessesError.response.status !== 404) {
-      console.error("Error fetching my businesses:", myBusinessesError);
-    }
-  }, [allBusinessesError, myBusinessesError]);
 
   return (
     <section className="[grid-area:main]">
@@ -108,10 +109,10 @@ export default function BusinessMain() {
             </div>
           </div>
           <BusinessList
-            businesses={allBusinesses}
+            businesses={combinedBusinesses}
             onDelete={handleDelete}
             onEdit={handleEdit}
-            isLoading={allBusinessesLoading}
+            isLoading={loading}
             showEditDelete={false}
           />
         </TabsContent>
@@ -120,14 +121,16 @@ export default function BusinessMain() {
             <h1 className="text-2xl lg:text-3xl font-semibold text-center py-3">
               My Businesses
             </h1>
-            {myBusinessesError && myBusinessesError.response && myBusinessesError.response.status === 404 ? (
+            {loading ? (
+              <div>Loading...</div>
+            ) : myBusinesses.length === 0 ? (
               <div className="text-black">No Businesses Found. Would you like to create one where you work or own?</div>
-            ) : ( 
+            ) : (
               <BusinessList
                 businesses={myBusinesses}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
-                isLoading={myBusinessesisLoading}
+                isLoading={loading}
                 showEditDelete={true}
               />
             )}

@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const BusinessList = ({ businesses, onDelete, onEdit, isLoading, showEditDelete }) => {
+  console.log("Businesses in BusinessList:", businesses); // Log the businesses data
+
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">
       <div className="flex flex-col gap-2 p-4 pt-0">
@@ -53,3 +55,4 @@ const BusinessList = ({ businesses, onDelete, onEdit, isLoading, showEditDelete 
 };
 
 export default BusinessList;
+  

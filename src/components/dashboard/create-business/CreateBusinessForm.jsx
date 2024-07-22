@@ -341,23 +341,6 @@ export default function CreateBusinessForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="isLessThanTwoYears"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>Less than 2 years old?</FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="yearFounded"
                   render={({ field }) => (
                     <FormItem className="space-y-0">

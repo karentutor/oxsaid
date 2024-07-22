@@ -90,7 +90,7 @@ export default function CreateBusinessMain() {
     },
     onSuccess: () => {
       toast.success("Business Created 🎉");
-      queryClient.invalidateQueries({ queryKey: ["businesses"] });
+      queryClient.invalidateQueries({ queryKey: ["businesses", "myBusinesses"] });
     },
     onError: (error) => {
       console.error(error);

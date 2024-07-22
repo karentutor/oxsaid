@@ -1,9 +1,9 @@
-// src/components/dashboard/activities/Business.js
-
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Business = () => {
   const { auth } = useAuth();
@@ -20,7 +20,11 @@ const Business = () => {
         setBusiness(response.data);
         setLoading(false);
       } catch (error) {
-        setError(error.message);
+        if (error.response && error.response.status === 404) {
+          setError('No businesses found. Would you like to let us know where you work?');
+        } else {
+          setError(error.message);
+        }
         setLoading(false);
       }
     };
@@ -37,7 +41,16 @@ const Business = () => {
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <Card className="p-4">
+        <div className="flex flex-col items-center">
+          <p className="text-sm mb-4">{error}</p>
+          <Button onClick={handleClick} className="rounded-full">
+            Let us know
+          </Button>
+        </div>
+      </Card>
+    );
   }
 
   return (

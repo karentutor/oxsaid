@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const BusinessCard = ({ item, onDelete, onEdit, showEditDelete }) => {
+  console.log("BusinessCard item:", item); // Log the item data
+
   return (
     <Card key={item._id} className="p-4 flex flex-col lg:flex-row items-start gap-4">
       <img src={item.picturePath} alt="Business" className="w-24 h-24 object-cover" />
