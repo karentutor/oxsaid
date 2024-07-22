@@ -18,7 +18,6 @@ const BusinessCard = ({ item, onDelete, onEdit, showEditDelete }) => {
         <div className="flex-1 lg:mt-0 mt-2 lg:ml-2 text-left">
           <p className="text-sm"><strong className="text-accent">Size:</strong> {item.size}</p>
           <p className="text-sm"><strong className="text-accent">Alumni Owned:</strong> {item.isAlumniOwned ? "Yes" : "No"}</p>
-          <p className="text-sm"><strong className="text-accent">Less Than Two Years:</strong> {item.isLessThanTwoYears ? "Yes" : "No"}</p>
           <p className="text-sm"><strong className="text-accent">Visibility:</strong> {item.visibility}</p>
           <p className="text-sm"><strong className="text-accent">Year Founded:</strong> {item.yearFounded}</p>
           <p className="text-sm"><strong className="text-accent">Occupation:</strong> {item.occupation}</p>

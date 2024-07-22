@@ -3,24 +3,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import CreateBusinessForm from "./CreateBusinessForm";
 
 const formSchema = z.object({
-  name: z.string().nonempty("Business Name is required."),
-  address: z.string().nonempty("Business Address is required."),
-  phone: z.string().nonempty("Business Phone is required."),
+  name: z.string().min(1, "Business Name is required."),
+  address: z.string().min(1, "Business Address is required."),
+  phone: z.string().min(1, "Business Phone is required."),
   email: z.string().email("Invalid email format."),
-  websiteUrl: z.string().nonempty("Website URL is required."),
-  description: z.string().nonempty("Business Description is required."),
-  occupation: z.string().nonempty("Occupation is required."),
-  subOccupation: z.string().nonempty("Sub-occupation is required."),
+  websiteUrl: z.string().min(1, "Website URL is required."),
+  description: z.string().min(1, "Business Description is required."),
+  occupation: z.string().min(1, "Occupation is required."),
+  subOccupation: z.string().min(1, "Sub-occupation is required."),
   size: z.number().positive("Size must be a positive number."),
-  visibility: z.string().nonempty("Visibility is required."),
+  visibility: z.string().min(1, "Visibility is required."),
   isAlumniOwned: z.boolean(),
   isLessThanTwoYears: z.boolean(),
   yearFounded: z.number().optional().refine(val => !val || val <= new Date().getFullYear(), {
@@ -31,21 +31,23 @@ const formSchema = z.object({
 
 export default function CreateBusinessMain() {
   const { auth } = useAuth();
-  const queryClient = useQueryClient();
   const [preview, setPreview] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
+      name: "t",
+      email: "t@t.com",
+      phone: "604-644-2433",
       occupation: "",
       subOccupation: "",
-      address: "",
-      description: "",
-      websiteUrl: "",
+      address: "1855 w.54",
+      description: "asfda",
+      websiteUrl: "www.coom.com",
       size: null,
       visibility: "Public",
       isAlumniOwned: false,
@@ -68,42 +70,55 @@ export default function CreateBusinessMain() {
     }
   };
 
-  const { mutate: createBusiness, isPending: isCreating } = useMutation({
-    mutationFn: (data) => {
-      const formData = new FormData();
-      for (const key in data) {
-        if (data[key] !== undefined && key !== 'picture') {
-          formData.append(key, data[key]);
-        }
+  const onSubmit = async (data) => {
+    setIsCreating(true);
+    const formData = new FormData();
+    for (const key in data) {
+      if (data[key] !== undefined && key !== 'picture') {
+        formData.append(key, data[key]);
       }
-      if (data.picture) {
-        formData.append("picture", data.picture);
-        formData.append("picturePath", data.picture.name || "");
-      }
-      formData.append('userId', auth.user._id);
+    }
+    if (data.picture) {
+      formData.append("picture", data.picture);
+      formData.append("picturePath", data.picture.name || "");
+    }
+    formData.append('userId', auth.user._id);
 
-      return axiosBase.post(
+    try {
+      await axiosBase.post(
         "businesses",
         formData,
         { headers: { Authorization: auth.access_token, "Content-Type": "multipart/form-data" } }
       );
-    },
-    onSuccess: () => {
       toast.success("Business Created 🎉");
-      queryClient.invalidateQueries({ queryKey: ["businesses", "myBusinesses"] });
-    },
-    onError: (error) => {
-      console.error(error);
+
+      // Log the current search parameters
+      console.log("Current location.search:", location.search);
+      console.log("Navigating to mine tab...");
+
+   
+    } catch (error) {
+      console.error("Error creating business:", error);
       toast.error("Something went wrong");
-    },
-    onSettled: () => form.reset(),
-  });
+    } finally {
+      setIsCreating(false);
+      form.reset();
+         // Navigate to "mine" tab
+         if (location.search.includes('tab=mine')) {
+          console.log("Refreshing the page...");
+          navigate(0); // Refresh the page if already on the "mine" tab
+        } else {
+          console.log("Navigating to mine tab...");
+          navigate('/business?tab=mine'); // Change to "mine" tab
+        }
+    }
+  };
 
   return (
     <CreateBusinessForm
       form={form}
       handleFileChange={handleFileChange}
-      createBusiness={createBusiness}
+      createBusiness={form.handleSubmit(onSubmit)}
       isCreating={isCreating}
       preview={preview}
       formState={form.formState}

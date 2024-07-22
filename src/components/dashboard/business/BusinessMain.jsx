@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import BusinessList from "./BusinessList";
 import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function BusinessMain() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,7 +16,6 @@ export default function BusinessMain() {
   const [error, setError] = useState(null);
   const { auth } = useAuth();
   const location = useLocation();
-  const queryClient = useQueryClient();
   const queryParams = new URLSearchParams(location.search);
   const initialTab = queryParams.get('tab') || 'all';
 
@@ -26,15 +24,15 @@ export default function BusinessMain() {
       try {
         const [allRes, ownRes] = await Promise.all([
           axiosBase.get('/businesses', {
-            headers: { Authorization: auth.access_token },
+            headers: { Authorization: `Bearer ${auth.access_token}` },
           }),
           axiosBase.get('/businesses/own', {
-            headers: { Authorization: auth.access_token },
+            headers: { Authorization: `Bearer ${auth.access_token}` },
           }),
         ]);
 
-        const allBusinessesData = allRes.data.business || [];
-        const myBusinessesData = ownRes.data ? [ownRes.data] : [];
+        const allBusinessesData = Array.isArray(allRes.data) && allRes.data.length ? allRes.data : [];
+        const myBusinessesData = Array.isArray(ownRes.data) && ownRes.data.length ? ownRes.data : [];
 
         console.log("Response from /businesses:", allBusinessesData);
         console.log("Response from /businesses/own:", myBusinessesData);
@@ -59,15 +57,11 @@ export default function BusinessMain() {
     fetchBusinesses();
   }, [auth.access_token]);
 
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
-  }, [myBusinesses]);
-
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this business?')) {
       try {
         await axiosBase.delete(`/businesses/${id}`, {
-          headers: { Authorization: auth.access_token },
+          headers: { Authorization: `Bearer ${auth.access_token}` },
         });
         setAllBusinesses(allBusinesses.filter(b => b._id !== id));
         setMyBusinesses(myBusinesses.filter(b => b._id !== id));
@@ -108,13 +102,19 @@ export default function BusinessMain() {
               </form>
             </div>
           </div>
-          <BusinessList
-            businesses={combinedBusinesses}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            isLoading={loading}
-            showEditDelete={false}
-          />
+          {loading ? (
+            <div>Loading...</div>
+          ) : combinedBusinesses.length === 0 ? (
+            <div className="text-black">No Businesses Found. Please check back later.</div>
+          ) : (
+            <BusinessList
+              businesses={combinedBusinesses}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+              isLoading={loading}
+              showEditDelete={false}
+            />
+          )}
         </TabsContent>
         <TabsContent value="mine">
           <div className="flex flex-col items-center justify-center text-center">
