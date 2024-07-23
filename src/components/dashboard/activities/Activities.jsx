@@ -3,7 +3,7 @@ import Business from "@/components/dashboard/activities/Business";
 
 const Activities = () => {
   return (
-    <Business />
+      <Business />
   )
 }
 

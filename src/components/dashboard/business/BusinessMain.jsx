@@ -73,7 +73,7 @@ export default function BusinessMain() {
   };
 
   const handleEdit = (id) => {
-    // Implement edit functionality here
+    //
   };
 
   return (

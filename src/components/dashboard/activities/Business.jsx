@@ -7,17 +7,22 @@ import { Button } from "@/components/ui/button";
 
 const Business = () => {
   const { auth } = useAuth();
-  const [business, setBusiness] = useState(null);
+  const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBusiness = async () => {
+    const fetchBusinesses = async () => {
       try {
         const response = await axiosBase.get('/businesses/own', {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         });
-        setBusiness(response.data);
+        console.log(response.data); // Log the response to check the structure
+        if (response.data.length > 0) {
+          setBusinesses(response.data);
+        } else {
+          setBusinesses([]);
+        }
         setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -29,7 +34,7 @@ const Business = () => {
       }
     };
 
-    fetchBusiness();
+    fetchBusinesses();
   }, [auth.access_token]);
 
   const handleClick = () => {
@@ -54,22 +59,27 @@ const Business = () => {
   }
 
   return (
-    <Card
-      className="p-4 flex flex-col items-start justify-start cursor-pointer hover:bg-lightBlue"
-      onClick={handleClick}
-    >
-      <h1 className="text-center text-2xl font-bold mb-4">Business</h1>
-      {business ? (
-        <div className="text-sm">
-          <p><strong>Name:</strong> {business.name.name}</p>
-          <p><strong>Occupation:</strong> {business.occupation}</p>
-          <p><strong>Sub-Occupation:</strong> {business.subOccupation}</p>
-          <p><strong>Website:</strong> <a href={business.websiteUrl} target="_blank" rel="noopener noreferrer">{business.websiteUrl}</a></p>
-        </div>
+    <div>
+      <h1 className="text-center text-2xl font-bold mb-4">Businesses</h1>
+      {businesses.length > 0 ? (
+        businesses.map((business, index) => (
+          <Card
+            key={index}
+            className="p-4 flex flex-col items-start justify-start cursor-pointer hover:bg-lightBlue"
+            onClick={handleClick}
+          >
+            <div className="text-sm">
+              <p><strong>Name:</strong> {business.name ? business.name.name : 'N/A'}</p>
+              <p><strong>Occupation:</strong> {business.occupation}</p>
+              <p><strong>Sub-Occupation:</strong> {business.subOccupation}</p>
+              <p><strong>Website:</strong> <a href={business.websiteUrl} target="_blank" rel="noopener noreferrer">{business.websiteUrl}</a></p>
+            </div>
+          </Card>
+        ))
       ) : (
         <p className="text-sm">No business data available.</p>
       )}
-    </Card>
+    </div>
   );
 };
 

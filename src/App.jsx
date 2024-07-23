@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context"; // Ensure correct import path for AuthProvider
 
@@ -7,6 +7,7 @@ import Business from "./pages/business";
 import ChangePassword from "./pages/change-password";
 import Contact from "./pages/contact";
 import Events from "./pages/events";
+import EditBusiness from "./pages/edit-business";
 import Funding from "./pages/funding"; // Fixed typo: Fundnig -> Funding
 import Groups from "./pages/groups";
 import Home from "./pages/home";
@@ -52,6 +53,9 @@ export default function App() {
                 {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/edit-business/:id" element={<EditBusiness />} />
+                <Route path="/edit-business/:id" element={<EditBusiness />} />
+                <Route path="/edit-business" element={<Navigate to="/home" />} /> {/* Redirect if no ID */}
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/home" element={<Home />} />
