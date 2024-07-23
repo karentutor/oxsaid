@@ -12,7 +12,13 @@ import { axiosBase } from "@/services/BaseService";
 import { toast } from "sonner";
 import { CircleX, Edit } from "lucide-react";
 
-export default function JobCard({ item, myJob = false }) {
+export default function JobCard({
+  item,
+  myJob = false,
+  setSelectedState,
+  setFormStatus,
+  selectedJob,
+}) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { auth } = useAuth();
@@ -35,8 +41,17 @@ export default function JobCard({ item, myJob = false }) {
     onError: () => toast.error("Something went wrong"),
   });
 
+  const handleEdit = () => {
+    setSelectedState(item);
+    setFormStatus("edit");
+  };
+
   return (
-    <Card className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10">
+    <Card
+      className={`flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10 ${
+        selectedJob?._id === item._id ? "border-accent bg-accent/10" : ""
+      }`}
+    >
       <div className="flex w-full flex-col gap-1">
         <div className="flex items-center">
           <div className="flex items-center gap-2">
@@ -83,17 +98,24 @@ export default function JobCard({ item, myJob = false }) {
       </div>
       {myJob ? (
         <div className="flex items-center">
-          <Button size="icon" variant="outline">
-            <Edit size={14} />
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+            onClick={handleEdit}
+          >
+            <Edit size={14} /> Edit
           </Button>
-          <ConfirmDelete
-            isClose
-            onDelete={deleteJob}
-            open={open}
-            setOpen={setOpen}
-            Icon={CircleX}
-            isClosed={item.isClosed}
-          />
+          {item.isClosed ? null : (
+            <ConfirmDelete
+              isClose
+              onDelete={deleteJob}
+              open={open}
+              setOpen={setOpen}
+              Icon={CircleX}
+              isClosed={item.isClosed}
+            />
+          )}
         </div>
       ) : null}
     </Card>

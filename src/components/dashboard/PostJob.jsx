@@ -37,6 +37,8 @@ import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { defaultJob } from "@/pages/jobs";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   jobTitle: z.string(),
@@ -49,7 +51,12 @@ const formSchema = z.object({
   businessId: z.string(),
 });
 
-export default function PostJob() {
+export default function PostJob({
+  selectedJob,
+  formStatus,
+  setFormStatus,
+  setSelectedJob,
+}) {
   const { auth } = useAuth();
   const queryClient = useQueryClient();
 
@@ -65,41 +72,49 @@ export default function PostJob() {
         value: item._id,
       })),
   });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      jobTitle: "",
-      country: "",
-      city: "",
-      salary: "",
-      occupation: "",
-      subOccupation: "",
-      business: "",
-      description: "",
-    },
+    defaultValues: selectedJob,
   });
 
   const { mutate: postJob, isPending: isPosting } = useMutation({
     mutationFn: (data) =>
-      axiosBase.post(
-        "/jobs",
-        { ...data, userId: auth.user._id },
-        { headers: { Authorization: auth.access_token } }
-      ),
+      formStatus === "create"
+        ? axiosBase.post(
+            "/jobs",
+            { ...data, userId: auth.user._id },
+            { headers: { Authorization: auth.access_token } }
+          )
+        : axiosBase.put(
+            `/jobs/${selectedJob._id}`,
+            { ...data, userId: auth.user._id },
+            { headers: { Authorization: auth.access_token } }
+          ),
     onSuccess: () => {
-      toast.success("Job Created 🎉");
+      if (formStatus === "create") {
+        toast.success("Job Created 🎉");
+      } else {
+        toast.success("Job Updated 🎉");
+      }
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
     },
     onError: () => toast.error("Something went wrong"),
     onSettled: () => form.reset(),
   });
 
+  useEffect(() => {
+    form.reset(selectedJob);
+  }, [formStatus]);
+
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">
         <ScrollArea className="h-[calc(100vh-100px)]">
           <CardHeader>
-            <CardTitle>Post Job</CardTitle>
+            <CardTitle>
+              {formStatus === "edit" ? "Edit Job" : "Post Job"}
+            </CardTitle>
             <CardDescription>Find Your Perfect Candidate</CardDescription>
           </CardHeader>
           <Form {...form}>
@@ -284,7 +299,7 @@ export default function PostJob() {
                   )}
                 />
               </CardContent>
-              <CardFooter className="p-0 bg-background border-t sticky bottom-0">
+              <CardFooter className="p-0 bg-background border-t sticky bottom-0 flex flex-col">
                 <div className="py-2 px-6 w-full">
                   <Button
                     disabled={isPosting}
@@ -294,9 +309,24 @@ export default function PostJob() {
                     {isPosting ? (
                       <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
                     ) : null}
-                    Submit
+                    {formStatus === "edit" ? "Edit" : "Submit"}
                   </Button>
                 </div>
+                {formStatus === "edit" ? (
+                  <div className="py-2 px-6 w-full">
+                    <Button
+                      className="w-full flex items-center gap-2"
+                      type="submit"
+                      variant="outline"
+                      onClick={() => {
+                        setFormStatus("create");
+                        setSelectedJob(defaultJob);
+                      }}
+                    >
+                      Back to create
+                    </Button>
+                  </div>
+                ) : null}
               </CardFooter>
             </form>
           </Form>

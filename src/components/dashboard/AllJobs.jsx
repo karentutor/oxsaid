@@ -10,7 +10,11 @@ import { Skeleton } from "../ui/skeleton";
 import JobCard from "./JobCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
-export default function AllJobs() {
+export default function AllJobs({
+  setSelectedJob,
+  setFormStatus,
+  selectedJob,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [isMyJobs, setIsMyJobs] = useState(false);
@@ -19,9 +23,9 @@ export default function AllJobs() {
   const { data: jobs, isPending } = useQuery({
     queryKey: ["jobs"],
     queryFn: () =>
-        axiosBase.get("/jobs", {
-          headers: { Authorization: auth.access_token },
-        }),
+      axiosBase.get("/jobs", {
+        headers: { Authorization: auth.access_token },
+      }),
     select: (data) =>
       data.data?.jobs.filter((item) =>
         item?.jobTitle.toLowerCase().includes(debouncedSearchTerm)
@@ -136,7 +140,16 @@ export default function AllJobs() {
                 0 ? (
                 jobs
                   .filter((j) => j.userId._id === auth.user._id)
-                  .map((item) => <JobCard key={item._id} item={item} />)
+                  .map((item) => (
+                    <JobCard
+                      key={item._id}
+                      item={item}
+                      myJob
+                      setSelectedState={setSelectedJob}
+                      setFormStatus={setFormStatus}
+                      selectedJob={selectedJob}
+                    />
+                  ))
               ) : (
                 <div className="flex flex-col items-center justify-center text-center gap-4 py-16">
                   <h3 className="text-3xl lg:text-4xl font-semibold">
