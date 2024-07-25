@@ -39,11 +39,12 @@ export function ConfirmDelete({
       <DialogTrigger asChild>
         <Button
           variant="destructive"
-          className="text-white ms-4 mr-auto"
-          size="icon"
+          className="text-white ms-4 mr-auto flex items-center gap-2"
+          size="sm"
           disabled={isClosed}
         >
           <Icon size={14} />
+          {isClose ? "Close" : "Delete"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -101,8 +102,7 @@ export const FeedItem = ({
         { userId: auth.user._id },
         { headers: { Authorization: auth.access_token } }
       ),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["posts"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 
   // Comment
@@ -113,8 +113,7 @@ export const FeedItem = ({
         { userId: auth.user._id, text: comment },
         { headers: { Authorization: auth.access_token } }
       ),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["posts"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
     onSettled: () => setComment(""),
   });
 
@@ -221,7 +220,10 @@ export const FeedItem = ({
               onChange={(e) => setComment(e.target.value)}
               placeholder="give your thoughts"
             />
-            <Button disabled={comment?.length < 2} onClick={() => commentOnPost()}>
+            <Button
+              disabled={comment?.length < 2}
+              onClick={() => commentOnPost()}
+            >
               Submit
             </Button>
           </div>
