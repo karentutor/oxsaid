@@ -3,11 +3,10 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/context"; // Ensure correct import path for AuthProvider
 
 import AuthenticatedRoute from "@/components/auth/AuthenticatedRoute"; // Correct import path
-import Business from "./pages/business";
+import Business from "./pages/businesses";
 import ChangePassword from "./pages/change-password";
 import Contact from "./pages/contact";
 import Events from "./pages/events";
-import EditBusiness from "./pages/edit-business";
 import Funding from "./pages/funding"; // Fixed typo: Fundnig -> Funding
 import Groups from "./pages/groups";
 import Home from "./pages/home";
@@ -17,13 +16,6 @@ import Landing from "./pages/landing";
 import Layout from "./components/Layout";
 import Messages from "./pages/messages";
 import NotFound from "./pages/not-found";
-// import ProfileBusiness from "./pages/own-profile/business";
-// import ProfileConnectionList from "./pages/own-profile/connection-list";
-// import ProfileEvents from "./pages/own-profile/events";
-// import ProfileGroups from "./pages/own-profile/groups";
-// import ProfileJobs from "./pages/own-profile/jobs";
-// import ProfileLayout from "./pages/own-profile/layout";
-// import ProfilePosts from "./pages/own-profile/posts";
 import Register from "./pages/auth/register";
 import Search from "./pages/search";
 import Settings from "./pages/settings";
@@ -53,8 +45,6 @@ export default function App() {
                 {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/events" element={<Events />} />
-                  <Route path="/edit-business/:id" element={<EditBusiness />} />
-                  <Route path="/edit-business" element={<Navigate to="/home" />} /> {/* Redirect if no ID */}
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/home" element={<Home />} />

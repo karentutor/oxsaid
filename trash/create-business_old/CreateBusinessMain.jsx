@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import CreateBusinessForm from "../business/BusinessForm";
+import CreateBusinessForm from "../business_old/BusinessForm";
 
 const formSchema = z.object({
   name: z.string().min(1, "Business Name is required."),
