@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import { axiosBase } from "@/services/BaseService";
 import { toast } from "sonner";
 import { CircleX, Edit } from "lucide-react";
+import JobForm from "./jobs/job-form";
 
 export default function JobCard({ item, myJob = false }) {
   const [open, setOpen] = useState(false);
@@ -83,17 +84,32 @@ export default function JobCard({ item, myJob = false }) {
       </div>
       {myJob ? (
         <div className="flex items-center">
-          <Button size="icon" variant="outline">
-            <Edit size={14} />
-          </Button>
-          <ConfirmDelete
-            isClose
-            onDelete={deleteJob}
+          <JobForm
+            type="edit"
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                type="button"
+              >
+                <Edit size={14} /> Edit
+              </Button>
+            }
             open={open}
             setOpen={setOpen}
-            Icon={CircleX}
-            isClosed={item.isClosed}
           />
+
+          {item.isClosed ? null : (
+            <ConfirmDelete
+              isClose
+              onDelete={deleteJob}
+              open={open}
+              setOpen={setOpen}
+              Icon={CircleX}
+              isClosed={item.isClosed}
+            />
+          )}
         </div>
       ) : null}
     </Card>
