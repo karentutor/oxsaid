@@ -22,12 +22,23 @@ import { ConfirmDelete } from "@/components/dashboard/FeedItem";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+export const defaultJob = {
+  jobTitle: "",
+  country: "",
+  city: "",
+  salary: "",
+  occupation: "",
+  subOccupation: "",
+  business: "",
+  description: "",
+};
+
 export default function Jobs() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [isMyJobs, setIsMyJobs] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(defaultJob);
   const { auth } = useAuth();
 
   const queryClient = useQueryClient();
@@ -93,6 +104,8 @@ export default function Jobs() {
           </div>
           <JobForm
             type="add"
+            selectedJob={selectedJob}
+            setSelectedJob={setSelectedJob}
             trigger={
               <Button className="flex items-center gap-2">
                 <CirclePlus size={14} /> Create Job
@@ -103,29 +116,29 @@ export default function Jobs() {
         <TabsContent value="all">
           <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
-              {isPending ? (
-                <Card>
-                  <div className="flex flex-col gap-6 p-6">
-                    <div className="flex items-center justify-between space-x-4">
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-60" />
-                        <Skeleton className="h-4 w-24" />
+              {isPending
+                ? Array.from(Array(2).keys()).map((item) => (
+                    <Card key={item}>
+                      <div className="flex flex-col gap-6 p-6">
+                        <div className="flex items-center justify-between space-x-4">
+                          <div className="space-y-2">
+                            <Skeleton className="h-4 w-60" />
+                            <Skeleton className="h-4 w-24" />
+                          </div>
+                          <Skeleton className="w-16 h-6 rounded-lg" />
+                        </div>
+                        <div className="flex flex-col space-y-3">
+                          <div className="space-y-2">
+                            <Skeleton className="h-4" />
+                            <Skeleton className="h-4" />
+                            <Skeleton className="h-4" />
+                            <Skeleton className="h-4" />
+                          </div>
+                        </div>
                       </div>
-                      <Skeleton className="w-16 h-6 rounded-lg" />
-                    </div>
-                    <div className="flex flex-col space-y-3">
-                      <div className="space-y-2">
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-14" />
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ) : (
-                jobs.map((item) => <JobCard key={item._id} item={item} />)
-              )}
+                    </Card>
+                  ))
+                : jobs.map((item) => <JobCard key={item._id} item={item} />)}
             </div>
           </ScrollArea>
         </TabsContent>
@@ -133,25 +146,27 @@ export default function Jobs() {
           <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
               {isPending ? (
-                <Card>
-                  <div className="flex flex-col gap-6 p-6">
-                    <div className="flex items-center justify-between space-x-4">
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-60" />
-                        <Skeleton className="h-4 w-24" />
+                Array.from(Array(2).keys()).map((item) => (
+                  <Card key={item}>
+                    <div className="flex flex-col gap-6 p-6">
+                      <div className="flex items-center justify-between space-x-4">
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-60" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                        <Skeleton className="w-16 h-6 rounded-lg" />
                       </div>
-                      <Skeleton className="w-16 h-6 rounded-lg" />
-                    </div>
-                    <div className="flex flex-col space-y-3">
-                      <div className="space-y-2">
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-4" />
-                        <Skeleton className="h-14" />
+                      <div className="flex flex-col space-y-3">
+                        <div className="space-y-2">
+                          <Skeleton className="h-4" />
+                          <Skeleton className="h-4" />
+                          <Skeleton className="h-4" />
+                          <Skeleton className="h-4" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                ))
               ) : jobs.filter((j) => j.userId._id === auth.user._id).length >
                 0 ? (
                 jobs
@@ -215,12 +230,15 @@ export default function Jobs() {
                         <div className="flex items-center">
                           <JobForm
                             type="edit"
+                            selectedJob={selectedJob}
+                            setSelectedJob={setSelectedJob}
                             trigger={
                               <Button
                                 variant="outline"
                                 size="sm"
                                 className="flex items-center gap-2"
                                 type="button"
+                                onClick={() => setSelectedJob(item)}
                               >
                                 <Edit size={14} /> Edit
                               </Button>
