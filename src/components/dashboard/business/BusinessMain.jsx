@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -18,6 +19,8 @@ export default function BusinessMain() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialTab = queryParams.get('tab') || 'all';
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -73,7 +76,7 @@ export default function BusinessMain() {
   };
 
   const handleEdit = (id) => {
-    //
+    navigate(`/edit-business/${id}`);
   };
 
   return (

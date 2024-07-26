@@ -34,7 +34,7 @@ const formSchema = z.object({
   picture: z.instanceof(File).optional()
 });
 
-export default function CreateBusinessForm({ form, handleFileChange, createBusiness, isCreating, preview, formState }) {
+export default function BusinessForm({ form, handleFileChange, createBusiness, isCreating, preview, formState }) {
   return (
     <section className="[grid-area:sidebar]">
       <Card className="overflow-hidden">

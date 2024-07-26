@@ -53,9 +53,8 @@ export default function App() {
                 {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/events" element={<Events />} />
-                <Route path="/edit-business/:id" element={<EditBusiness />} />
-                <Route path="/edit-business/:id" element={<EditBusiness />} />
-                <Route path="/edit-business" element={<Navigate to="/home" />} /> {/* Redirect if no ID */}
+                  <Route path="/edit-business/:id" element={<EditBusiness />} />
+                  <Route path="/edit-business" element={<Navigate to="/home" />} /> {/* Redirect if no ID */}
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/home" element={<Home />} />
