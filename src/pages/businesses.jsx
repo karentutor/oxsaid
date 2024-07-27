@@ -40,15 +40,58 @@ export const defaultBusiness = {
   picturePath: ""
 };
 
-export default function Jobs() {
+export default function Business() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [isMyBusinesses, setIsMyBusinessess] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState(defaultJob);
+  const [selectedBusiness, setSelectedBusiness] = useState(defaultBusiness);
   const { auth } = useAuth();
 
   const queryClient = useQueryClient();
+
+
+    // // Get Businesses
+    // const { data: businesses, isPending } = useQuery({
+    //   queryKey: ["businesses"],
+    //   queryFn: () =>
+    //     axiosBase.get("/businesses", {
+    //       headers: { Authorization: auth.access_token },
+    //     }),
+    //   select: (data) =>
+    //     data.data?.businesses.filter((item) =>
+    //       item?.businessTitle.toLowerCase().includes(debouncedSearchTerm)
+    //     ),
+    // });
+
+    const [businesses, setBusinesses] = useState([]);
+    const [isPending, setIsPending] = useState(true);
+  
+    useEffect(() => {
+      const fetchBusinesses = async () => {
+        try {
+          const response = await axiosBase.get('/businesses', {
+            headers: { Authorization: auth.access_token },
+          });
+  
+          console.log(response)
+          setBusinesses(response.data.businesses);
+        } catch (error) {
+          console.error('Error fetching businesses:', error);
+        } finally {
+          setIsPending(false);
+        }
+      };
+  
+      fetchBusinesses();
+    }, [auth.access_token]);
+  
+    useEffect(() => {
+      if (businesses.length) {
+        console.log('Businesses:', businesses);
+      }
+    }, [businesses]);
+
 
   // Delete Job
   const { mutate: deleteJob } = useMutation({
@@ -68,18 +111,12 @@ export default function Jobs() {
     onError: () => toast.error("Something went wrong"),
   });
 
-    // Get Businesses
-  const { data: businesses, isPending } = useQuery({
-    queryKey: ["businesses"],
-    queryFn: () =>
-      axiosBase.get("/businesses", {
-        headers: { Authorization: auth.access_token },
-      }),
-    select: (businesses) =>
-      data.data?.businesses.filter((item) =>
-        item?.businessTitle.toLowerCase().includes(debouncedSearchTerm)
-      ),
-  });
+
+  useEffect(() => {
+    if (businesses) {
+      console.log('Businesses:', businesses);
+    }
+  }, [businesses]);
 
   useEffect(() => {
     const debounceId = setTimeout(

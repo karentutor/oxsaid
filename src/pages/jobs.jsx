@@ -38,7 +38,7 @@ export default function Jobs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [isMyJobs, setIsMyJobs] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(defaultJob);
+  const [selectedJob, setSelectedJob] = useState(defaultBusiness);
   const { auth } = useAuth();
 
   const queryClient = useQueryClient();
@@ -72,6 +72,11 @@ export default function Jobs() {
         item?.jobTitle.toLowerCase().includes(debouncedSearchTerm)
       ),
   });
+
+
+  useEffect(() => {
+    console.log('Businesses:', businesses);
+  }, [businesses]);
 
   useEffect(() => {
     const debounceId = setTimeout(
