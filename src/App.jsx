@@ -40,7 +40,7 @@ export default function App() {
               <Route element={<Layout />}>
                            
                 {/* Authenticated User Profile */}
-                <Route path="/business" element={<Business />} />
+                <Route path="/businesses" element={<Business />} />
                 <Route path="/change-password" element={<ChangePassword />} />
                 {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />

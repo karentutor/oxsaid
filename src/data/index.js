@@ -47,8 +47,8 @@ export const navLinks = [
     label: "Funding",
   },
   {
-    href: "#business",
-    label: "Business",
+    href: "#businesses",
+    label: "Businesses",
   },
   {
     href: "#jobs",
@@ -68,8 +68,8 @@ export const dashboardNavLinks = [
     icon: UserRoundSearch
   },
   {
-    href: "/business",
-    label: "Business",
+    href: "/businesses",
+    label: "Businesses",
     icon: Building2
   },
   {

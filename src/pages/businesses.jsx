@@ -13,7 +13,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import JobCard from "@/components/dashboard/JobCard";
+import BusinessCard from "@/components/dashboard/BusinessCard";
 import JobForm from "@/components/dashboard/jobs/job-form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,29 +23,29 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const defaultBusiness = {
-    name: "",
-    city: "",
-    country: "",
-    address: "",
-    phone: "",
-    email: "",
-    description: "",
-    size: "",
-    isAlumniOwned: false,
-    visibility: "",
-    yearFounded: "",
-    occupation: "",
-    subOccupation: "",
-    websiteUrl: "",
-    picturePath: ""
+  _id: "",
+  name: "", // Assuming name.name should be used
+  address: "",
+  phone: "",
+  email: "",
+  description: "",
+  size: 0,
+  isAlumniOwned: false,
+  visibility: "",
+  yearFounded: 0,
+  occupation: "",
+  subOccupation: "",
+  createdAt: "",
+  websiteUrl: "",
+  picturePath: ""
 };
 
 export default function Jobs() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [isMyBusinesses, setIsMyBusinesses] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState(defaultBusiness);
+  const [isMyBusinesses, setIsMyBusinessess] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState(defaultJob);
   const { auth } = useAuth();
 
   const queryClient = useQueryClient();
@@ -54,29 +54,30 @@ export default function Jobs() {
   const { mutate: deleteJob } = useMutation({
     mutationFn: () =>
       axiosBase.put(
-        `/businesses/${selectedBusiness?._id}/close`,
+        `/jobs/${selectedBusiness?._id}/close`,
         {},
         {
           headers: { Authorization: auth.access_token },
         }
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
-      toast.success("Business Closed successfully");
+      queryClient.invalidateQueries({ queryKey: ["myJobs"] });
+      toast.success("Job Closed successfully");
       setOpenConfirm(false);
     },
     onError: () => toast.error("Something went wrong"),
   });
 
-  const { data: jobs, isPending } = useQuery({
+    // Get Businesses
+  const { data: businesses, isPending } = useQuery({
     queryKey: ["businesses"],
     queryFn: () =>
       axiosBase.get("/businesses", {
         headers: { Authorization: auth.access_token },
       }),
-    select: (data) =>
-      data.data?.jobs.filter((item) =>
-        item?.name.toLowerCase().includes(debouncedSearchTerm)
+    select: (businesses) =>
+      data.data?.businesses.filter((item) =>
+        item?.businessTitle.toLowerCase().includes(debouncedSearchTerm)
       ),
   });
 
@@ -90,7 +91,7 @@ export default function Jobs() {
   }, [searchTerm]);
   return (
     <main className="p-4 max-w-7xl mx-auto w-full">
-      <Tabs defaultValue="all" onValueChange={() => setIsMyBusinesses(!isMyBusinesses)}>
+      <Tabs defaultValue="all" onValueChange={() => setIsMyBusinessess(!isMyBusinesses)}>
         <TabsList className="grid w-full grid-cols-2 max-w-96 mx-auto mb-6 bg-gray-200 dark:bg-slate-800 text-gray-600 dark:text-gray-200">
           <TabsTrigger value="all">All Businesses</TabsTrigger>
           <TabsTrigger value="mine">My Businesses</TabsTrigger>
@@ -145,7 +146,7 @@ export default function Jobs() {
                       </div>
                     </Card>
                   ))
-                : jobs.map((item) => <JobCard key={item._id} item={item} />)}
+                 : businesses.map((item) => <BusinessCard key={item._id} item={item} />)}
             </div>
           </ScrollArea>
         </TabsContent>
@@ -174,10 +175,10 @@ export default function Jobs() {
                     </div>
                   </Card>
                 ))
-              ) : jobs.filter((j) => j.userId._id === auth.user._id).length >
+              ) : businesses.filter((b) => b.userId._id === auth.user._id).length >
                 0 ? (
-                jobs
-                  .filter((j) => j.userId._id === auth.user._id)
+                    businesses
+                  .filter((b) => b.userId._id === auth.user._id)
                   .map((item) => (
                     <Card
                       key={item._id}
@@ -269,10 +270,10 @@ export default function Jobs() {
               ) : (
                 <div className="flex flex-col items-center justify-center text-center gap-4 py-16">
                   <h3 className="text-3xl lg:text-4xl font-semibold">
-                    No Jobs Found
+                    No Businesses Found
                   </h3>
                   <p className="text-black/70">
-                    Add your first jobs from the form at your left
+                    Add your first business from the form at your left
                   </p>
                 </div>
               )}
