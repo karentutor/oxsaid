@@ -1,53 +1,30 @@
+import { geoData } from './geoData.js';
 import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-// Get the directory name of the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Read the geoData.js file
-const filePath = path.join(__dirname, 'geoData.js');
-const fileContent = fs.readFileSync(filePath, 'utf8');
-
-// Remove the 'export const geoData = ' part and the trailing semicolon
-let objectString = fileContent.replace('export const geoData = ', '').trim().slice(0, -1);
-
-// Replace single quotes with double quotes and add double quotes to keys
-// Escape existing double quotes inside the strings
-objectString = objectString
-  .replace(/'/g, '"')
-  .replace(/(\w+):/g, '"$1":')
-  .replace(/"([^"]*)"/g, (match, p1) => `"${p1.replace(/"/g, '\\"')}"`);
-
-// Manually handle the embedded single quotes within city names by replacing `"` with `\"`
-objectString = objectString.replace(/"Xi'an"/g, '"Xi\'an"');
-
-// Parse the string to a JavaScript object
-const geoData = JSON.parse(objectString);
-
-// Function to sort the countries and cities
+// Function to sort the keys and values
 function sortGeoData(data) {
   const sortedData = {};
-  const sortedCountries = Object.keys(data).sort();
-  sortedCountries.forEach((country) => {
-    sortedData[country] = data[country].sort();
+
+  // Get the keys and sort them
+  const keys = Object.keys(data).sort();
+
+  // Iterate over each key
+  keys.forEach(key => {
+    // Sort the array values
+    sortedData[key] = data[key].sort((a, b) => a.localeCompare(b));
   });
+
   return sortedData;
 }
 
-// Sort the geoData
+// Sort the geoData object
 const sortedGeoData = sortGeoData(geoData);
 
-// Convert the sorted data back to a string
-const sortedJsonString = JSON.stringify(sortedGeoData, null, 2);
+// Convert the sorted object to a string
+const sortedGeoDataString = 'export const geoData = ' + JSON.stringify(sortedGeoData, null, 2) + ';';
 
-// Create the new file content
-const newFileContent = `export const geoData = ${sortedJsonString};`;
+// Write the sorted object to a new file
+fs.writeFileSync('sortedGeoData.js', sortedGeoDataString);
 
-// Write the sorted data to a new file
-const newFilePath = path.join(__dirname, 'sortedGeoData.js');
-fs.writeFileSync(newFilePath, newFileContent);
-
-console.log('Sorted geoData.js file has been created successfully.');
+console.log('Sorted data has been written to sortedGeoData.js');
 

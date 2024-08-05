@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import { AuthProvider } from "@/context"; // Ensure correct import path for AuthProvider
-
-import AuthenticatedRoute from "@/components/auth/AuthenticatedRoute"; // Correct import path
+import { AuthProvider } from "@/context"; 
+import AuthenticatedRoute from "@/components/auth/AuthenticatedRoute"; 
+import PublicRoute from "@/components/auth/PublicRoute"; 
 import Business from "./pages/businesses";
 import ChangePassword from "./pages/change-password";
 import Contact from "./pages/contact";
@@ -30,48 +30,28 @@ export default function App() {
         <Router>
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/join" element={<Join />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/signin" element={<Signin />} />
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<Landing />} />
+              <Route path="/join" element={<Join />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/signin" element={<Signin />} />
+            </Route>
 
             {/* Protected routes */}
             <Route element={<AuthenticatedRoute />}>
               <Route element={<Layout />}>
-                           
-                {/* Authenticated User Profile */}
                 <Route path="/businesses" element={<Business />} />
                 <Route path="/change-password" element={<ChangePassword />} />
-                {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/jobs" element={<Jobs />} />
-                {/* <Route path="/messages" element={<Messages />} />
-                <Route path="/search" element={<Search />} /> */}
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/update-profile" element={<UpdateProfile />} />
                 <Route path="/user-search" element={<UserSearch />} />
-
- 
-                <Route path="/" element={<Home />} />
-                {/* <Route path="/business" element={<ProfileBusiness />} /> */}
-
-                {/* <Route path="/events" element={<ProfileEvents />} />
-                <Route path="/groups" element={<ProfileGroups />} />
-                <Route path="/jobs" element={<ProfileJobs />} /> */}
-                {/* <Route path="/posts" element={<ProfilePosts />} /> */}
-
-                {/* Other Users' Profiles */}
                 <Route path="/profile/:id" element={<Home />} />
-                {/* <Route path="/profile/:id/business" element={<ProfileBusiness />} />
-                <Route path="/profile/:id/connection-list" element={<ProfileConnectionList />} />
-                <Route path="/profile/:id/events" element={<ProfileEvents />} />
-                <Route path="/profile/:id/groups" element={<ProfileGroups />} />
-                <Route path="/profile/:id/jobs" element={<ProfileJobs />} />
-                <Route path="/profile/:id/posts" element={<ProfilePosts />} /> */}
               </Route>
             </Route>
 
@@ -79,11 +59,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
-        <Toaster
-          richColors
-          closeButton
-          position="bottom-right"
-        />
+        <Toaster richColors closeButton position="bottom-right" />
       </div>
     </AuthProvider>
   );

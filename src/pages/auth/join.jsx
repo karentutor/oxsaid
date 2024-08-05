@@ -411,7 +411,7 @@ export default function Join() {
             <Link to="/#services">Oxsaid Services</Link>
           </Button>
           <a
-            href="mailto:admin@nanoosedev.com"
+            href="mailto:admin@oxsaid.net"
             target="_blank"
             rel="noreferrer"
           >

@@ -28,8 +28,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { geoData } from "@/data/geoData";
-import { OCCUPATION_DATA } from "@/data";
+import { geoData as initialGeoData } from "@/data/geoData";
+import { VISIBILITY_DATA, companysizeData } from "@/data";
+import { occupationData } from "@/data/occupationData";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
@@ -65,12 +67,16 @@ export default function BusinessForm({
   const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [geoData, setGeoData] = useState(initialGeoData);
   const { auth } = useAuth();
   const queryClient = useQueryClient();
 
+
+  
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: selectedBusiness,
+    defaultValues: selectedBusiness
   });
 
   const { mutate: postBusiness, isPending: isPosting } = useMutation({
@@ -160,7 +166,7 @@ export default function BusinessForm({
                 name="address"
                 render={({ field }) => (
                   <FormItem className="space-y-0 pb-2 px-1">
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Street Address</FormLabel>
                     <FormControl>
                       <Input placeholder="Address" {...field} />
                     </FormControl>
@@ -266,11 +272,31 @@ export default function BusinessForm({
                 control={form.control}
                 name="size"
                 render={({ field }) => (
-                  <FormItem className="space-y-0 pb-2 px-1">
-                    <FormLabel>Size</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Size" type="number" {...field} />
-                    </FormControl>
+                  <FormItem className="space-y-0">
+                    <FormLabel>Business Size</FormLabel>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Size">
+                            {field.value
+                              ? companysizeData.find(
+                                  (item) => item.id === field.value
+                                )?.name
+                              : "Select Size"}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {companysizeData.map((item) => (
+                          <SelectItem value={item.id} key={item.id}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -309,12 +335,35 @@ export default function BusinessForm({
                 control={form.control}
                 name="yearFounded"
                 render={({ field }) => (
-                  <FormItem className="space-y-0 pb-2 px-1">
+                  <FormItem className="space-y-0">
                     <FormLabel>Year Founded</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Year Founded" type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
+                    <Select
+                      onValueChange={(v) => field.onChange(Number(v))}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Year founded">
+                            {field.value
+                              ? field.value.toString()
+                              : "Select Year founded"}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="max-h-40 overflow-y-auto">
+                        {Array.from(
+                          { length: 200 },
+                          (_, i) => `${new Date().getFullYear() - i}`
+                        ).map((item) => (
+                          <SelectItem value={item} key={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage>
+                      {/* {formState.errors.yearFounded?.message} */}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -334,7 +383,7 @@ export default function BusinessForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {OCCUPATION_DATA.map((item) => (
+                        {occupationData.map((item) => (
                           <SelectItem value={item.name} key={item.name}>
                             {item.name}
                           </SelectItem>
@@ -362,7 +411,7 @@ export default function BusinessForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {OCCUPATION_DATA.find(
+                        {occupationData.find(
                           (item) => item.name === form.watch("occupation")
                         )?.sublist.map((item) => (
                           <SelectItem value={item.name} key={item.name}>
@@ -388,34 +437,34 @@ export default function BusinessForm({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="picturePath"
-                render={({ field }) => (
-                  <FormItem className="space-y-0 pb-2 px-1">
-                    <FormLabel>Picture</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                          handleImageChange(e);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    {imageLoading && <p>Loading...</p>}
-                    {imagePreview && (
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="mt-2 h-32 w-32 object-cover"
-                      />
-                    )}
-                  </FormItem>
-                )}
-              />
+<FormField
+  control={form.control}
+  name="picturePath"
+  render={({ field }) => (
+    <FormItem className="space-y-0 pb-2 px-1">
+      <FormLabel>Picture</FormLabel>
+      <FormControl>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            field.onChange(e.target.files);
+            handleImageChange(e);
+          }}
+        />
+      </FormControl>
+      <FormMessage />
+      {imageLoading && <p>Loading...</p>}
+      {imagePreview && (
+        <img
+          src={imagePreview}
+          alt="Preview"
+          className="mt-2 h-32 w-32 object-cover"
+        />
+      )}
+    </FormItem>
+  )}
+/>
             </ScrollArea>
             <DialogFooter className="px-3 pt-3">
               <DialogClose asChild>
