@@ -30,7 +30,7 @@ export function ConfirmDelete({
   open,
   setOpen,
   onDelete,
-  isClose = false,
+  isDelete = true,
   isClosed = false,
   Icon = Trash,
 }) {
@@ -41,34 +41,33 @@ export function ConfirmDelete({
           variant="destructive"
           className="text-white ms-4 mr-auto flex items-center gap-2"
           size="sm"
-          disabled={isClosed}
+          disabled={isClosed && !isDelete}
         >
           <Icon size={14} />
-          {isClose ? "Close" : "Delete"}
+          {isDelete ? "Delete" : "Close"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isClose ? "Close" : "Delete"} Item</DialogTitle>
+          <DialogTitle>{isDelete ? "Delete" : "Close"} Item</DialogTitle>
         </DialogHeader>
-        Are you sure you want to {isClose ? "close" : "delete"} this Item?
+        Are you sure you want to {isDelete ? "delete" : "close"} this Item?
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" type="submit">
               Cancel
             </Button>
           </DialogClose>
-          <Button
-            onClick={() => {
-              onDelete();
-              setOpen(false);
-            }}
-            variant="destructive"
-            className="text-white"
-            type="submit"
-          >
-            {isClose ? "Close" : "Delete"}
-          </Button>
+          <DialogClose asChild>
+            <Button
+              onClick={onDelete}
+              variant="destructive"
+              className="text-white"
+              type="submit"
+            >
+              {isDelete ? "Delete" : "Close"}
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

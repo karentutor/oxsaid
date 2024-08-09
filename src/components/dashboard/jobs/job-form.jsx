@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -67,14 +68,17 @@ export default function JobForm({
         headers: { Authorization: auth.access_token },
       }),
     select: (data) =>
-      data.data.business.map((item) => ({
-        label: item.name.name,
+      data.data.businesses.map((item) => ({
+        label: item.name,
         value: item._id,
       })),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: selectedJob,
+    defaultValues: {
+      ...selectedJob,
+      businessId: selectedJob?.businessId?._id,
+    },
   });
 
   const { mutate: postJob, isPending: isPosting } = useMutation({
@@ -103,15 +107,27 @@ export default function JobForm({
     onSettled: () => {
       form.reset();
       setSelectedJob(defaultJob);
+      setOpen(false);
     },
   });
 
   useEffect(() => {
-    form.reset(selectedJob);
+    form.reset({
+      ...selectedJob,
+      businessId: selectedJob?.businessId?._id,
+    });
   }, [selectedJob]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        setOpen(val);
+        if (val === false) {
+          setSelectedJob(defaultJob);
+        }
+      }}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

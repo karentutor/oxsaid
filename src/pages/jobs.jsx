@@ -1,4 +1,4 @@
-import { CirclePlus, CircleX, Edit, Search } from "lucide-react";
+import { CirclePlus, CircleX, Edit, Search, Trash } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { useEffect, useState } from "react";
@@ -34,7 +34,6 @@ export const defaultJob = {
 };
 
 export default function Jobs() {
-  const [openConfirm, setOpenConfirm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [isMyJobs, setIsMyJobs] = useState(false);
@@ -43,20 +42,36 @@ export default function Jobs() {
 
   const queryClient = useQueryClient();
 
-  // Delete Job
-  const { mutate: deleteJob } = useMutation({
-    mutationFn: () =>
+  // Close Job
+  const { mutate: closeJob } = useMutation({
+    mutationFn: (id) =>
       axiosBase.put(
-        `/jobs/${selectedJob?._id}/close`,
+        `/jobs/${id}/close`,
         {},
         {
           headers: { Authorization: auth.access_token },
         }
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["myJobs"] });
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Job Closed successfully");
-      setOpenConfirm(false);
+    },
+    onError: () => toast.error("Something went wrong"),
+  });
+
+  // Delete Job
+  const { mutate: deleteJob } = useMutation({
+    mutationFn: (id) =>
+      axiosBase.delete(
+        `/jobs/${id}`,
+        {},
+        {
+          headers: { Authorization: auth.access_token },
+        }
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast.success("Job Deleted successfully");
     },
     onError: () => toast.error("Something went wrong"),
   });
@@ -244,13 +259,16 @@ export default function Jobs() {
                               </Button>
                             }
                           />
+                          <ConfirmDelete
+                            onDelete={() => deleteJob(item._id)}
+                            Icon={Trash}
+                            isClosed={item.isClosed}
+                          />
 
                           {item.isClosed ? null : (
                             <ConfirmDelete
-                              isClose
-                              onDelete={deleteJob}
-                              open={openConfirm}
-                              setOpen={setOpenConfirm}
+                              isDelete={false}
+                              onDelete={() => closeJob(item._id)}
                               Icon={CircleX}
                               isClosed={item.isClosed}
                             />
