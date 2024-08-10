@@ -1,6 +1,5 @@
 import { CirclePlus, CircleX, Edit, Search, Trash } from "lucide-react";
 import { Input } from "../components/ui/input";
-import { ScrollArea } from "../components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -129,39 +128,9 @@ export default function Jobs() {
           />
         </div>
         <TabsContent value="all">
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
-              {isPending
-                ? Array.from(Array(2).keys()).map((item) => (
-                    <Card key={item}>
-                      <div className="flex flex-col gap-6 p-6">
-                        <div className="flex items-center justify-between space-x-4">
-                          <div className="space-y-2">
-                            <Skeleton className="h-4 w-60" />
-                            <Skeleton className="h-4 w-24" />
-                          </div>
-                          <Skeleton className="w-16 h-6 rounded-lg" />
-                        </div>
-                        <div className="flex flex-col space-y-3">
-                          <div className="space-y-2">
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))
-                : jobs.map((item) => <JobCard key={item._id} item={item} />)}
-            </div>
-          </ScrollArea>
-        </TabsContent>
-        <TabsContent value="mine">
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
-              {isPending ? (
-                Array.from(Array(2).keys()).map((item) => (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
+            {isPending
+              ? Array.from(Array(2).keys()).map((item) => (
                   <Card key={item}>
                     <div className="flex flex-col gap-6 p-6">
                       <div className="flex items-center justify-between space-x-4">
@@ -182,113 +151,139 @@ export default function Jobs() {
                     </div>
                   </Card>
                 ))
-              ) : jobs.filter((j) => j.userId._id === auth.user._id).length >
-                0 ? (
-                jobs
-                  .filter((j) => j.userId._id === auth.user._id)
-                  .map((item) => (
-                    <Card
-                      key={item._id}
-                      className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10"
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold text-xl">
-                              {item.jobTitle}
-                            </div>
-                          </div>
-                          <div
-                            className={cn(
-                              "ml-auto text-xs text-accent hover:!text-primary flex items-center gap-2"
-                            )}
-                          >
-                            {item.isClosed ? (
-                              <Badge
-                                variant="destructive"
-                                className="text-white font-light"
-                              >
-                                Closed
-                              </Badge>
-                            ) : (
-                              <Badge variant="" className="font-light">
-                                Open
-                              </Badge>
-                            )}
-                            {moment(item.createdAt).startOf().fromNow()}
+              : jobs.map((item) => <JobCard key={item._id} item={item} />)}
+          </div>
+        </TabsContent>
+        <TabsContent value="mine">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-4 pt-0">
+            {isPending ? (
+              Array.from(Array(2).keys()).map((item) => (
+                <Card key={item}>
+                  <div className="flex flex-col gap-6 p-6">
+                    <div className="flex items-center justify-between space-x-4">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-60" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <Skeleton className="w-16 h-6 rounded-lg" />
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            ) : jobs.filter((j) => j.userId._id === auth.user._id).length >
+              0 ? (
+              jobs
+                .filter((j) => j.userId._id === auth.user._id)
+                .map((item) => (
+                  <Card
+                    key={item._id}
+                    className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10"
+                  >
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="flex items-center">
+                        <div className="flex items-center gap-2">
+                          <div className="font-semibold text-xl">
+                            {item.jobTitle}
                           </div>
                         </div>
-                        <div className="text-xs font-semibold">
-                          Location:{" "}
-                          <span className="font-medium">
-                            {item.country} | {item.city}
-                          </span>
-                        </div>
-                        <div className="text-xs font-semibold">
-                          Field:{" "}
-                          <span className="font-medium">
-                            {item.occupation} | {item.subOccupation}
-                          </span>
+                        <div
+                          className={cn(
+                            "ml-auto text-xs text-accent hover:!text-primary flex items-center gap-2"
+                          )}
+                        >
+                          {item.isClosed ? (
+                            <Badge
+                              variant="destructive"
+                              className="text-white font-light"
+                            >
+                              Closed
+                            </Badge>
+                          ) : (
+                            <Badge variant="" className="font-light">
+                              Open
+                            </Badge>
+                          )}
+                          {moment(item.createdAt).startOf().fromNow()}
                         </div>
                       </div>
-                      <div className="text-xs text-muted font-semibold">
-                        Description:{" "}
+                      <div className="text-xs font-semibold">
+                        Location:{" "}
                         <span className="font-medium">
-                          {item.description.substring(0, 300)}
+                          {item.country} | {item.city}
                         </span>
                       </div>
-                      <div className="text-xs text-muted font-semibold">
-                        Salary:{" "}
-                        <span className="font-medium">{item.salary}$</span>
+                      <div className="text-xs font-semibold">
+                        Field:{" "}
+                        <span className="font-medium">
+                          {item.occupation} | {item.subOccupation}
+                        </span>
                       </div>
-                      {isMyJobs ? (
-                        <div className="flex items-center">
-                          <JobForm
-                            type="edit"
-                            selectedJob={selectedJob}
-                            setSelectedJob={setSelectedJob}
-                            trigger={
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex items-center gap-2"
-                                type="button"
-                                onClick={() => setSelectedJob(item)}
-                              >
-                                <Edit size={14} /> Edit
-                              </Button>
-                            }
-                          />
+                    </div>
+                    <div className="text-xs text-muted font-semibold">
+                      Description:{" "}
+                      <span className="font-medium">
+                        {item.description.substring(0, 300)}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted font-semibold">
+                      Salary:{" "}
+                      <span className="font-medium">{item.salary}$</span>
+                    </div>
+                    {isMyJobs ? (
+                      <div className="flex items-center">
+                        <JobForm
+                          type="edit"
+                          selectedJob={selectedJob}
+                          setSelectedJob={setSelectedJob}
+                          trigger={
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-2"
+                              type="button"
+                              onClick={() => setSelectedJob(item)}
+                            >
+                              <Edit size={14} /> Edit
+                            </Button>
+                          }
+                        />
+                        <ConfirmDelete
+                          onDelete={() => deleteJob(item._id)}
+                          Icon={Trash}
+                          isClosed={item.isClosed}
+                        />
+
+                        {item.isClosed ? null : (
                           <ConfirmDelete
-                            onDelete={() => deleteJob(item._id)}
-                            Icon={Trash}
+                            isDelete={false}
+                            onDelete={() => closeJob(item._id)}
+                            Icon={CircleX}
                             isClosed={item.isClosed}
                           />
-
-                          {item.isClosed ? null : (
-                            <ConfirmDelete
-                              isDelete={false}
-                              onDelete={() => closeJob(item._id)}
-                              Icon={CircleX}
-                              isClosed={item.isClosed}
-                            />
-                          )}
-                        </div>
-                      ) : null}
-                    </Card>
-                  ))
-              ) : (
-                <div className="flex flex-col items-center justify-center text-center gap-4 py-16">
-                  <h3 className="text-3xl lg:text-4xl font-semibold">
-                    No Jobs Found
-                  </h3>
-                  <p className="text-black/70">
-                    Add your first jobs from the form at your left
-                  </p>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
+                        )}
+                      </div>
+                    ) : null}
+                  </Card>
+                ))
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center gap-4 py-16">
+                <h3 className="text-3xl lg:text-4xl font-semibold">
+                  No Jobs Found
+                </h3>
+                <p className="text-black/70">
+                  Add your first jobs from the form at your left
+                </p>
+              </div>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </main>

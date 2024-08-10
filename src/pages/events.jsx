@@ -3,7 +3,6 @@ import EventForm from "@/components/dashboard/events/event-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useAuth from "@/hooks/useAuth";
@@ -101,41 +100,9 @@ export default function Events() {
           />
         </div>
         <TabsContent value="all">
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 pt-0">
-              {isPending
-                ? Array.from(Array(2).keys()).map((item) => (
-                    <Card key={item}>
-                      <div className="flex flex-col gap-6 p-6">
-                        <div className="flex items-center justify-between space-x-4">
-                          <div className="space-y-2">
-                            <Skeleton className="h-4 w-60" />
-                            <Skeleton className="h-4 w-24" />
-                          </div>
-                          <Skeleton className="w-16 h-6 rounded-lg" />
-                        </div>
-                        <div className="flex flex-col space-y-3">
-                          <div className="space-y-2">
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                            <Skeleton className="h-4" />
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))
-                : events.map((item) => (
-                    <EventCard key={item._id} item={item} />
-                  ))}
-            </div>
-          </ScrollArea>
-        </TabsContent>
-        <TabsContent value="mine">
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 pt-0">
-              {isPending ? (
-                Array.from(Array(2).keys()).map((item) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 pt-0">
+            {isPending
+              ? Array.from(Array(2).keys()).map((item) => (
                   <Card key={item}>
                     <div className="flex flex-col gap-6 p-6">
                       <div className="flex items-center justify-between space-x-4">
@@ -156,30 +123,56 @@ export default function Events() {
                     </div>
                   </Card>
                 ))
-              ) : events.filter((j) => j.userId._id === auth.user._id).length >
-                0 ? (
-                events
-                  .filter((j) => j.userId._id === auth.user._id)
-                  .map((item) => (
-                    <EventCard
-                      key={item._id}
-                      item={item}
-                      isMyEvent
-                      onDelete={() => deleteEvent(item._id)}
-                    />
-                  ))
-              ) : (
-                <div className="flex flex-col items-center justify-center md:col-span-2 lg:col-span-3 text-center gap-4 py-16">
-                  <h3 className="text-3xl lg:text-4xl font-semibold">
-                    No Events Found
-                  </h3>
-                  <p className="text-black/70">
-                    Add your first event from the form at your left
-                  </p>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
+              : events.map((item) => <EventCard key={item._id} item={item} />)}
+          </div>
+        </TabsContent>
+        <TabsContent value="mine">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 pt-0">
+            {isPending ? (
+              Array.from(Array(2).keys()).map((item) => (
+                <Card key={item}>
+                  <div className="flex flex-col gap-6 p-6">
+                    <div className="flex items-center justify-between space-x-4">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-60" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <Skeleton className="w-16 h-6 rounded-lg" />
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            ) : events.filter((j) => j.userId._id === auth.user._id).length >
+              0 ? (
+              events
+                .filter((j) => j.userId._id === auth.user._id)
+                .map((item) => (
+                  <EventCard
+                    key={item._id}
+                    item={item}
+                    isMyEvent
+                    onDelete={() => deleteEvent(item._id)}
+                  />
+                ))
+            ) : (
+              <div className="flex flex-col items-center justify-center md:col-span-2 lg:col-span-3 text-center gap-4 py-16">
+                <h3 className="text-3xl lg:text-4xl font-semibold">
+                  No Events Found
+                </h3>
+                <p className="text-black/70">
+                  Add your first event from the form at your left
+                </p>
+              </div>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </main>

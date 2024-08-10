@@ -11,9 +11,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import { useState } from "react";
 import { Edit } from "lucide-react";
+import GroupForm from "./groups/group-form";
+import { defaultGroup } from "@/pages/groups";
 
-export default function GroupCard({ item, isAdmin = false }) {
+export default function GroupCard({
+  item,
+  onDelete,
+  isMyGroup = false,
+  isAdmin = false,
+}) {
   const [open, setOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(defaultGroup);
   const queryClient = useQueryClient();
   const { auth } = useAuth();
 
@@ -79,6 +87,27 @@ export default function GroupCard({ item, isAdmin = false }) {
               </div>
             ) : null}
           </div>
+          {isMyGroup ? (
+            <div className="flex items-center">
+              <GroupForm
+                type="edit"
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                    type="button"
+                    onClick={() => setSelectedGroup(item)}
+                  >
+                    <Edit size={14} /> Edit
+                  </Button>
+                }
+              />
+              <ConfirmDelete onDelete={onDelete} />
+            </div>
+          ) : null}
         </div>
       </CardContent>
     </Card>
