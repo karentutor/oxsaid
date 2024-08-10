@@ -1,17 +1,23 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import moment from "moment";
 import { Card } from "../ui/card";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { CircleX, Edit, Trash } from "lucide-react";
+import { ConfirmDelete } from "./FeedItem";
+import FundForm from "./funding/fund-form";
+import { useState } from "react";
+import { defaultFund } from "@/pages/funding";
 
-export default function FundingCard({ item }) {
+export default function FundingCard({ item, onDelete, isMyFunding = false }) {
+  const [selectedFunding, setSelectedFunding] = useState(defaultFund);
   return (
     <Card className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10">
       <div className="flex w-full flex-col gap-1">
         <div className="flex items-center">
-          <div className="flex items-center gap-2">
-            <div className="font-semibold">
-              amount: <span className="text-2xl">{item.amount}$</span>
-            </div>
+          <div className="font-semibold">
+            amount: <span className="text-2xl">{item.amount}$</span>
           </div>
           <div
             className={cn(
@@ -21,6 +27,7 @@ export default function FundingCard({ item }) {
             {moment(item.createdAt).startOf().fromNow()}
           </div>
         </div>
+        <h3 className="text-lg lg:text-xl font-semibold">{item.name}</h3>
         <div className="text-xs font-semibold">
           field:{" "}
           <span className="font-medium">
@@ -44,6 +51,27 @@ export default function FundingCard({ item }) {
           {item.description.substring(0, 300)}
         </span>
       </div>
+      {isMyFunding ? (
+        <div className="flex items-center">
+          <FundForm
+            type="edit"
+            selectedFund={selectedFunding}
+            setSelectedFund={setSelectedFunding}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                type="button"
+                onClick={() => setSelectedFunding(item)}
+              >
+                <Edit size={14} /> Edit
+              </Button>
+            }
+          />
+          <ConfirmDelete onDelete={onDelete} />
+        </div>
+      ) : null}
     </Card>
   );
 }

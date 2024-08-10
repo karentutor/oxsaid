@@ -82,7 +82,6 @@ export default function FundingForms({ isGetFunding }) {
           ...data,
           userId: auth.user._id,
           isSeeking: isGetFunding,
-          isOffering: !isGetFunding,
         },
         { headers: { Authorization: auth.access_token } }
       ),

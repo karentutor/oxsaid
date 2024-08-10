@@ -30,7 +30,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { OCCUPATION_DATA } from "@/data";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
 import { LoaderCircle } from "lucide-react";
@@ -45,6 +45,7 @@ const formSchema = z.object({
   occupation: z.string(),
   subOccupation: z.string(),
   description: z.string(),
+  businessId: z.string(),
 });
 
 export default function FundForm({
@@ -58,13 +59,29 @@ export default function FundForm({
   const { auth } = useAuth();
   const queryClient = useQueryClient();
 
+  const { data: businesses } = useQuery({
+    queryKey: ["businesses"],
+    queryFn: () =>
+      axiosBase.get("/businesses", {
+        headers: { Authorization: auth.access_token },
+      }),
+    select: (data) =>
+      data.data.businesses.map((item) => ({
+        label: item.name,
+        value: item._id,
+      })),
+  });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: selectedFund,
+    defaultValues: {
+      ...selectedFund,
+      businessId: selectedFund?.businessId?._id,
+    },
   });
 
   const { mutate: postFund, isPending: isPosting } = useMutation({
-    mutationFn: ({ data }) =>
+    mutationFn: (data) =>
       type === "add"
         ? axiosBase.post(
             "/fundings",
@@ -72,7 +89,6 @@ export default function FundForm({
               ...data,
               userId: auth.user._id,
               isSeeking,
-              isOffering: !isSeeking,
             },
             { headers: { Authorization: auth.access_token } }
           )
@@ -83,7 +99,6 @@ export default function FundForm({
               ...data,
               userId: auth.user._id,
               isSeeking,
-              isOffering: !isSeeking,
             },
             { headers: { Authorization: auth.access_token } }
           ),
@@ -104,11 +119,22 @@ export default function FundForm({
   });
 
   useEffect(() => {
-    form.reset(selectedFund);
+    form.reset({
+      ...selectedFund,
+      businessId: selectedFund?.businessId?._id,
+    });
   }, [selectedFund]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        setOpen(val);
+        if (val === false) {
+          setSelectedFund(defaultFund);
+        }
+      }}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -127,6 +153,33 @@ export default function FundForm({
                     <FormControl>
                       <Input placeholder="Fund name" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="businessId"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Business</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Business" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {businesses?.map((item) => (
+                          <SelectItem value={item.value} key={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
