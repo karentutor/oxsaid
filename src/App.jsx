@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context"; // Ensure correct import path for AuthProvider
 
@@ -15,7 +20,6 @@ import Jobs from "./pages/jobs";
 import Join from "./pages/auth/join";
 import Landing from "./pages/landing";
 import Layout from "./components/Layout";
-import Messages from "./pages/messages";
 import NotFound from "./pages/not-found";
 // import ProfileBusiness from "./pages/own-profile/business";
 // import ProfileConnectionList from "./pages/own-profile/connection-list";
@@ -25,11 +29,11 @@ import NotFound from "./pages/not-found";
 // import ProfileLayout from "./pages/own-profile/layout";
 // import ProfilePosts from "./pages/own-profile/posts";
 import Register from "./pages/auth/register";
-import Search from "./pages/search";
 import Settings from "./pages/settings";
 import Signin from "./pages/auth/signin";
 import UpdateProfile from "./pages/update-profile";
 import UserSearch from "./pages/user-search";
+import RegisterFlow from "./pages/auth/register-flow";
 
 export default function App() {
   return (
@@ -41,20 +45,24 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/join" element={<Join />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register-flow" element={<RegisterFlow />} />
             <Route path="/signin" element={<Signin />} />
 
             {/* Protected routes */}
             <Route element={<AuthenticatedRoute />}>
               <Route element={<Layout />}>
-                           
                 {/* Authenticated User Profile */}
                 <Route path="/business" element={<Business />} />
                 <Route path="/change-password" element={<ChangePassword />} />
                 {/* <Route path="/connection-list" element={<ProfileConnectionList />} /> */}
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/events" element={<Events />} />
-                  <Route path="/edit-business/:id" element={<EditBusiness />} />
-                  <Route path="/edit-business" element={<Navigate to="/home" />} /> {/* Redirect if no ID */}
+                <Route path="/edit-business/:id" element={<EditBusiness />} />
+                <Route
+                  path="/edit-business"
+                  element={<Navigate to="/home" />}
+                />{" "}
+                {/* Redirect if no ID */}
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/home" element={<Home />} />
@@ -64,16 +72,12 @@ export default function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/update-profile" element={<UpdateProfile />} />
                 <Route path="/user-search" element={<UserSearch />} />
-
- 
                 <Route path="/" element={<Home />} />
                 {/* <Route path="/business" element={<ProfileBusiness />} /> */}
-
                 {/* <Route path="/events" element={<ProfileEvents />} />
                 <Route path="/groups" element={<ProfileGroups />} />
                 <Route path="/jobs" element={<ProfileJobs />} /> */}
                 {/* <Route path="/posts" element={<ProfilePosts />} /> */}
-
                 {/* Other Users' Profiles */}
                 <Route path="/profile/:id" element={<Home />} />
                 {/* <Route path="/profile/:id/business" element={<ProfileBusiness />} />
@@ -89,11 +93,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
-        <Toaster
-          richColors
-          closeButton
-          position="bottom-right"
-        />
+        <Toaster richColors closeButton position="bottom-right" />
       </div>
     </AuthProvider>
   );

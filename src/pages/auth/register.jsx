@@ -83,7 +83,7 @@ export default function Register() {
       } else {
         setAuth({ user: data.user, access_token: data.token });
         toast.success("Register Success", { richColors: true });
-        navigate("/home", { replace: true });
+        navigate("/register-flow", { replace: true });
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
       }
