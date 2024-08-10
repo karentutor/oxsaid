@@ -1,19 +1,52 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosBase } from "@/services/BaseService";
+import useAuth from "@/hooks/useAuth";
+import { LoaderCircle, X } from "lucide-react";
+import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { OCCUPATION_DATA, VISIBILITY_DATA, companysizeData } from "@/data";
-import { LoaderCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { defaultBusiness } from "@/pages/business";
+import { OCCUPATION_DATA, VISIBILITY_DATA } from "@/data";
+
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 
 const formSchema = z.object({
   name: z.string().min(1, "Business Name is required."),
@@ -26,329 +59,404 @@ const formSchema = z.object({
   subOccupation: z.string().min(1, "Sub-occupation is required."),
   size: z.number().positive("Size must be a positive number."),
   visibility: z.string().min(1, "Visibility is required."),
-  isAlumniOwned: z.boolean(),
-  isLessThanTwoYears: z.boolean(),
-  yearFounded: z.number().optional().refine(val => !val || val <= new Date().getFullYear(), {
-    message: "Year Founded must not be in the future.",
-  }),
-  picture: z.instanceof(File).optional()
+  // isAlumniOwned: z.boolean(),
+  // isLessThanTwoYears: z.boolean(),
+  yearFounded: z
+    .number()
+    .optional()
+    .refine((val) => !val || val <= new Date().getFullYear(), {
+      message: "Year Founded must not be in the future.",
+    }),
+  picturePath: z
+    .union([
+      z
+        .instanceof(File)
+        .refine(
+          (file) =>
+            file &&
+            ACCEPTED_IMAGE_TYPES.includes(file.type) &&
+            file.size <= MAX_FILE_SIZE,
+          "Invalid file. Choose either JPEG, JPG, PNG, or WEBP image. Max file size allowed is 5MB."
+        ),
+      z.string().nonempty({ message: "Image is required." }),
+    ])
+    .optional(),
 });
 
-export default function BusinessForm({ form, handleFileChange, createBusiness, isCreating, preview, formState }) {
+export default function BusinessForm({
+  trigger,
+  selectedBusiness,
+  setSelectedBusiness,
+  type = "add",
+}) {
+  const [open, setOpen] = useState(false);
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: selectedBusiness,
+  });
+
+  const config = {
+    headers: {
+      Authorization: auth.access_token,
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  const { mutate: createBusiness, isPending: isPosting } = useMutation({
+    mutationFn: (data) => {
+      let picturePath;
+
+      if (type === "add") {
+        if (data.picturePath instanceof File) {
+          picturePath = data.picturePath;
+        } else {
+          throw new Error("Image file is required for creating a new business");
+        }
+      } else {
+        if (data.picturePath instanceof File) {
+          picturePath = data.picturePath;
+        } else {
+          picturePath = selectedBusiness.picturePath;
+        }
+      }
+
+      const payload = {
+        ...data,
+        userId: auth.user._id,
+        time: data.date,
+        picturePath,
+      };
+
+      if (type === "add") {
+        return axiosBase.post("/businesses", payload, config);
+      } else {
+        return axiosBase.put(
+          `/businesses/${selectedBusiness?._id}`,
+          payload,
+          config
+        );
+      }
+    },
+    onSuccess: () => {
+      toast.success(
+        type === "add" ? "Business Created 🎉" : "Business Updated 🎉"
+      );
+      queryClient.invalidateQueries({ queryKey: ["businesses"] });
+    },
+    onError: () => toast.error("Something went wrong"),
+    onSettled: () => {
+      form.reset();
+      setSelectedBusiness(defaultBusiness);
+      setOpen(false);
+    },
+  });
+
+  useEffect(() => {
+    form.reset(selectedBusiness);
+  }, [selectedBusiness]);
+
   return (
-    <section className="[grid-area:sidebar]">
-      <Card className="overflow-hidden">
-        <ScrollArea className="h-[calc(100vh-100px)]">
-          <CardHeader>
-            <CardTitle>Add Business</CardTitle>
-            <CardDescription>Elevate Your Business with Us</CardDescription>
-          </CardHeader>
-          <Form {...form}>
-            <form
-              onSubmit={createBusiness}
-              className="space-y-4"
-            >
-              <CardContent className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Name</FormLabel>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        setOpen(val);
+        if (val === false) {
+          setSelectedBusiness(defaultBusiness);
+        }
+      }}
+    >
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {type === "add" ? "Add" : "Edit"} a Business
+          </DialogTitle>
+        </DialogHeader>
+        {/* Form Content */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(createBusiness)}>
+            <ScrollArea className="h-[450px] !flex flex-col gap-4 pe-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.name?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Address" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.address?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Phone" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.phone?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.email?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="visibility"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Visibility</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue="Public"
+                    >
                       <FormControl>
-                        <Input placeholder="Business Name" {...field} />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Visibility" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage>{formState.errors.name?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Address</FormLabel>
+                      <SelectContent>
+                        {VISIBILITY_DATA.map((item) => (
+                          <SelectItem value={item} key={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage>
+                      {form.formState.errors.visibility?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="websiteUrl"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>WebsiteUrl</FormLabel>
+                    <FormControl>
+                      <Input placeholder="WebsiteUrl" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.websiteUrl?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="occupation"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Occupation</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <Input placeholder="Business Address" {...field} />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Occupation" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage>{formState.errors.address?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Phone</FormLabel>
+                      <SelectContent>
+                        {OCCUPATION_DATA.map((item) => (
+                          <SelectItem value={item.name} key={item.name}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="subOccupation"
+                render={({ field }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>subOccupation</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!form.watch("occupation")}
+                    >
                       <FormControl>
-                        <Input placeholder="Business Phone" {...field} />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select SubOccupation" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage>{formState.errors.phone?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Business Email" {...field} />
-                      </FormControl>
-                      <FormMessage>{formState.errors.email?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Business Description"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage>{formState.errors.description?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="websiteUrl"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Url</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Business Url" {...field} />
-                      </FormControl>
-                      <FormMessage>{formState.errors.websiteUrl?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="occupation"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Occupation</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Occupation" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {OCCUPATION_DATA.map((item) => (
-                            <SelectItem value={item.name} key={item.name}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage>{formState.errors.occupation?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="subOccupation"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Sub-occupation</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={!form.watch("occupation")}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Sub-occupation" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {OCCUPATION_DATA.find(
-                            (item) => item.name === form.watch("occupation")
-                          )?.sublist.map((item) => (
-                            <SelectItem value={item.name} key={item.name}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage>{formState.errors.subOccupation?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Size</FormLabel>
-                      <Select
-                        onValueChange={(val) => field.onChange(Number(val))}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Size">
-                              {field.value
-                                ? companysizeData.find(
-                                    (item) => item.id === field.value
-                                  )?.name
-                                : "Select Size"}
-                            </SelectValue>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {companysizeData.map((item) => (
-                            <SelectItem value={item.id} key={item.id}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage>
-                        {formState.errors.size?.message}
-                      </FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="visibility"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Visibility</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Visibility" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {VISIBILITY_DATA.map((item) => (
-                            <SelectItem value={item} key={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage>
-                        {formState.errors.visibility?.message}
-                      </FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="isAlumniOwned"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>More than 50% alumni owned</FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="yearFounded"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Year Founded</FormLabel>
-                      <Select
-                        onValueChange={(v) => field.onChange(Number(v))}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Year founded">
-                              {field.value
-                                ? field.value.toString()
-                                : "Select Year founded"}
-                            </SelectValue>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="max-h-40 overflow-y-auto">
-                          {Array.from(
-                            { length: 200 },
-                            (_, i) => `${new Date().getFullYear() - i}`
-                          ).map((item) => (
-                            <SelectItem value={item} key={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage>
-                        {formState.errors.yearFounded?.message}
-                      </FormMessage>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="picture"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0">
-                      <FormLabel>Business Picture</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            handleFileChange(e.target.files?.[0]);
-                            field.onChange(e.target.files?.[0]);
-                          }}
-                        />
-                      </FormControl>
-                      {preview && (
-                        <img
-                          src={preview}
-                          alt="Preview"
-                          className="w-32 h-32 object-cover rounded mt-2"
-                        />
-                      )}
-                      <FormMessage>{formState.errors.picture?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter className="p-0 bg-background border-t sticky bottom-0">
-                <div className="py-2 px-6 w-full">
-                  <Button
-                    disabled={!formState.isValid || isCreating}
-                    className="w-full flex items-center gap-2"
-                    type="submit"
-                  >
-                    {isCreating ? (
-                      <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
-                    ) : null}
-                    Submit
-                  </Button>
-                </div>
-              </CardFooter>
-            </form>
-          </Form>
-        </ScrollArea>
-      </Card>
-    </section>
+                      <SelectContent>
+                        {OCCUPATION_DATA.find(
+                          (item) => item.name === form.watch("occupation")
+                        )?.sublist.map((item) => (
+                          <SelectItem value={item.name} key={item.name}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="size"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Size</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Size"
+                        {...field}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value, 10);
+                          if (value > 0) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange("");
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.size?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="yearFounded"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>YearFounded</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="YearFounded"
+                        {...field}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value, 10);
+                          if (value > 0) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange("");
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.yearFounded?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 pb-2 px-1">
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Description" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.description?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="picturePath"
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem className="space-y-0">
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Click for Image"
+                        type="file"
+                        accept="image/*"
+                        onChange={(business) => {
+                          const file =
+                            business.target.files && business.target.files[0];
+                          if (file) {
+                            onChange(file);
+                          }
+                        }}
+                        {...fieldProps}
+                      />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.picturePath?.message}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+            </ScrollArea>
+            <DialogFooter className="px-3 pt-3">
+              <DialogClose asChild>
+                <Button variant="outline" type="submit">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                disabled={isPosting}
+                className="w-fit flex items-center gap-2"
+              >
+                {isPosting ? (
+                  <LoaderCircle className="animate-spin w-5 h-5 text-accent" />
+                ) : null}
+                Submit
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

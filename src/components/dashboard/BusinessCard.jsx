@@ -1,42 +1,37 @@
 /* eslint-disable react/prop-types */
 import { cn } from "@/lib/utils";
-import { Card } from "../ui/card";
+import { Card, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import moment from "moment";
 import { Button } from "../ui/button";
 import { Edit } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosBase } from "@/services/BaseService";
-import { toast } from "sonner";
-import useAuth from "@/hooks/useAuth";
 import { ConfirmDelete } from "./FeedItem";
+import BusinessForm from "./business/BusinessForm";
+import { defaultBusiness } from "@/pages/business";
 import { useState } from "react";
 
-export default function BusinessCard({ item, myBusiness = false }) {
-  const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { auth } = useAuth();
-
-  // Delete Business
-  const { mutate: deleteBusiness } = useMutation({
-    mutationFn: () =>
-      axiosBase.delete(`/businesses/${item._id}`, {
-        headers: { Authorization: auth.access_token },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
-      toast.success("Business deleted successfully");
-      setOpen(false);
-    },
-    onError: () => toast.error("Something went wrong"),
-  });
-
+export default function BusinessCard({ item, onDelete, isMyBusiness = false }) {
+  const [selectedBusiness, setSelectedBusiness] = useState(defaultBusiness);
   return (
     <Card
       className={cn(
         "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/10"
       )}
     >
+      <CardHeader className="relative p-0 w-full">
+        <img
+          src={item.picturePath ? item.picturePath : "/imgs/about.jpg"}
+          alt={item.name}
+          className="rounded-lg object-cover w-full h-48"
+        />
+        <div
+          className={cn(
+            "ml-auto text-sm text-accent hover:!text-primary absolute top-2 right-4 bg-background py-0.5 px-2 rounded-2xl"
+          )}
+        >
+          {moment(item.createdAt).calendar()}
+        </div>
+      </CardHeader>
       <div className="flex w-full flex-col gap-1">
         <div className="flex items-center">
           <div className="flex items-center justify-between gap-2">
@@ -76,16 +71,25 @@ export default function BusinessCard({ item, myBusiness = false }) {
           {item.description.substring(0, 300)}
         </span>
       </div>
-      {myBusiness ? (
+      {isMyBusiness ? (
         <div className="flex items-center">
-          <Button size="icon" variant="outline">
-            <Edit size={14} />
-          </Button>
-          <ConfirmDelete
-            onDelete={deleteBusiness}
-            open={open}
-            setOpen={setOpen}
+          <BusinessForm
+            type="edit"
+            selectedBusiness={selectedBusiness}
+            setSelectedBusiness={setSelectedBusiness}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                type="button"
+                onClick={() => setSelectedBusiness(item)}
+              >
+                <Edit size={14} /> Edit
+              </Button>
+            }
           />
+          <ConfirmDelete onDelete={onDelete} />
         </div>
       ) : null}
     </Card>

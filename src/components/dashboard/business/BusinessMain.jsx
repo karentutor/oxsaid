@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -18,24 +18,30 @@ export default function BusinessMain() {
   const { auth } = useAuth();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const initialTab = queryParams.get('tab') || 'all';
+  const initialTab = queryParams.get("tab") || "all";
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
         const [allRes, ownRes] = await Promise.all([
-          axiosBase.get('/businesses', {
+          axiosBase.get("/businesses", {
             headers: { Authorization: `Bearer ${auth.access_token}` },
           }),
-          axiosBase.get('/businesses/own', {
+          axiosBase.get("/businesses/own", {
             headers: { Authorization: `Bearer ${auth.access_token}` },
           }),
         ]);
 
-        const allBusinessesData = Array.isArray(allRes.data) && allRes.data.length ? allRes.data : [];
-        const myBusinessesData = Array.isArray(ownRes.data) && ownRes.data.length ? ownRes.data : [];
+        const allBusinessesData =
+          Array.isArray(allRes.data.businesses) &&
+          allRes.data.businesses?.length
+            ? allRes.data?.businesses
+            : [];
+        const myBusinessesData =
+          Array.isArray(ownRes.data.businesses) && ownRes.data.businesses.length
+            ? ownRes.data.businesses
+            : [];
 
         console.log("Response from /businesses:", allBusinessesData);
         console.log("Response from /businesses/own:", myBusinessesData);
@@ -45,7 +51,9 @@ export default function BusinessMain() {
 
         // Combine and filter unique businesses
         const combined = [...allBusinessesData, ...myBusinessesData];
-        const uniqueCombined = Array.from(new Map(combined.map(b => [b._id, b])).values());
+        const uniqueCombined = Array.from(
+          new Map(combined.map((b) => [b._id, b])).values()
+        );
         console.log("Unique Combined Businesses:", uniqueCombined);
 
         setCombinedBusinesses(uniqueCombined);
@@ -61,14 +69,14 @@ export default function BusinessMain() {
   }, [auth.access_token]);
 
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this business?')) {
+    if (confirm("Are you sure you want to delete this business?")) {
       try {
         await axiosBase.delete(`/businesses/${id}`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         });
-        setAllBusinesses(allBusinesses.filter(b => b._id !== id));
-        setMyBusinesses(myBusinesses.filter(b => b._id !== id));
-        setCombinedBusinesses(combinedBusinesses.filter(b => b._id !== id));
+        setAllBusinesses(allBusinesses.filter((b) => b._id !== id));
+        setMyBusinesses(myBusinesses.filter((b) => b._id !== id));
+        setCombinedBusinesses(combinedBusinesses.filter((b) => b._id !== id));
       } catch (error) {
         console.error("Error deleting business:", error);
       }
@@ -108,7 +116,9 @@ export default function BusinessMain() {
           {loading ? (
             <div>Loading...</div>
           ) : combinedBusinesses.length === 0 ? (
-            <div className="text-black">No Businesses Found. Please check back later.</div>
+            <div className="text-black">
+              No Businesses Found. Please check back later.
+            </div>
           ) : (
             <BusinessList
               businesses={combinedBusinesses}
@@ -127,7 +137,10 @@ export default function BusinessMain() {
             {loading ? (
               <div>Loading...</div>
             ) : myBusinesses.length === 0 ? (
-              <div className="text-black">No Businesses Found. Would you like to create one where you work or own?</div>
+              <div className="text-black">
+                No Businesses Found. Would you like to create one where you work
+                or own?
+              </div>
             ) : (
               <BusinessList
                 businesses={myBusinesses}
