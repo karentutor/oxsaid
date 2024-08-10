@@ -3,8 +3,15 @@ import moment from "moment";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
+import EventForm from "./events/event-form";
+import { Button } from "../ui/button";
+import { Edit } from "lucide-react";
+import { ConfirmDelete } from "./FeedItem";
+import { useState } from "react";
+import { defaultEvent } from "@/pages/events";
 
-export default function EventCard({ item }) {
+export default function EventCard({ item, onDelete, isMyEvent = false }) {
+  const [selectedEvent, setSelectedEvent] = useState(defaultEvent);
   return (
     <Card key={item._id}>
       <CardHeader className="relative p-2">
@@ -51,9 +58,29 @@ export default function EventCard({ item }) {
               <span className="font-medium">{item.zoomMeetingInvite}</span>
             </p>
           )}
+          {isMyEvent ? (
+            <div className="flex items-center">
+              <EventForm
+                type="edit"
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                    type="button"
+                    onClick={() => setSelectedEvent(item)}
+                  >
+                    <Edit size={14} /> Edit
+                  </Button>
+                }
+              />
+              <ConfirmDelete onDelete={onDelete} />
+            </div>
+          ) : null}
         </div>
       </CardContent>
     </Card>
   );
 }
-
