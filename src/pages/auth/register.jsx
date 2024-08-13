@@ -82,10 +82,10 @@ export default function Register() {
         toast.error(data.msg, { richColors: true });
       } else {
         setAuth({ user: data.user, access_token: data.token });
-        toast.success("Register Success", { richColors: true });
-        navigate("/register-flow", { replace: true });
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        toast.success("Register Success", { richColors: true });
+        navigate("/register-flow", { replace: true });
       }
     },
     onError: (err) => {
