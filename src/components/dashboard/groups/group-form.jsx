@@ -123,12 +123,12 @@ export default function GroupForm({
 
   let selectables = users?.filter(
     (user) =>
-      !selected.some((selectedUser) => selectedUser.value === user.value)
+      !selected?.some((selectedUser) => selectedUser.value === user.value)
   );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: selectedGroup,
+    defaultValues: selectedGroup ?? defaultGroup,
   });
 
   const config = {
@@ -139,37 +139,36 @@ export default function GroupForm({
   };
 
   const { mutate: postGroup, isPending: isPosting } = useMutation({
-    mutationFn: (data) => console.log("data", data),
-    //   {
-    //   let groupCoverImage;
+    mutationFn: (data) => {
+      let groupCoverImage;
 
-    //   if (type === "add") {
-    //     if (data.groupCoverImage instanceof File) {
-    //       groupCoverImage = data.groupCoverImage;
-    //     } else {
-    //       throw new Error("Image file is required for creating a new group");
-    //     }
-    //   } else {
-    //     if (data.groupCoverImage instanceof File) {
-    //       groupCoverImage = data.groupCoverImage;
-    //     } else {
-    //       groupCoverImage = selectedGroup.groupCoverImage;
-    //     }
-    //   }
+      if (type === "add") {
+        if (data.groupCoverImage instanceof File) {
+          groupCoverImage = data.groupCoverImage;
+        } else {
+          throw new Error("Image file is required for creating a new group");
+        }
+      } else {
+        if (data.groupCoverImage instanceof File) {
+          groupCoverImage = data.groupCoverImage;
+        } else {
+          groupCoverImage = selectedGroup.groupCoverImage;
+        }
+      }
 
-    //   const payload = {
-    //     ...data,
-    //     userId: auth.user._id,
-    //     groupCoverImage,
-    //     groupMembers: selectables?.map((item) => item.value).join(","),
-    //   };
+      const payload = {
+        ...data,
+        userId: auth.user._id,
+        groupCoverImage,
+        groupMembers: selectables?.map((item) => item.value).join(","),
+      };
 
-    //   if (type === "add") {
-    //     return axiosBase.post("/groups", payload, config);
-    //   } else {
-    //     return axiosBase.put(`/groups/${selectedGroup?._id}`, payload, config);
-    //   }
-    // },
+      if (type === "add") {
+        return axiosBase.post("/groups", payload, config);
+      } else {
+        return axiosBase.put(`/groups/${selectedGroup?._id}`, payload, config);
+      }
+    },
     onSuccess: () => {
       toast.success(type === "add" ? "Group Created 🎉" : "Group Updated 🎉");
       queryClient.invalidateQueries({ queryKey: ["groups"] });
@@ -177,7 +176,7 @@ export default function GroupForm({
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
       form.reset();
-      setSelectedGroup(defaultGroup);
+      setSelectedGroup && setSelectedGroup(defaultGroup);
       setSelected([]);
       setOpen(false);
     },
@@ -186,7 +185,12 @@ export default function GroupForm({
   useEffect(() => {
     form.reset(selectedGroup);
     setSelected(
-      selectedGroup.groupMembers?.map((m) => ({ label: m.email, value: m._id }))
+      selectedGroup?.name
+        ? selectedGroup?.groupMembers?.map((m) => ({
+            label: m.email,
+            value: m._id,
+          }))
+        : []
     );
   }, [selectedGroup]);
 
@@ -196,7 +200,7 @@ export default function GroupForm({
       onOpenChange={(val) => {
         setOpen(val);
         if (val === false) {
-          setSelectedGroup(defaultGroup);
+          setSelectedGroup && setSelectedGroup(defaultGroup);
           setSelected([]);
         }
       }}
@@ -238,12 +242,12 @@ export default function GroupForm({
               />
               <Command
                 onKeyDown={handleKeyDown}
-                className="overflow-visible bg-transparent gap-1 px-1"
+                className="overflow-visible bg-transparent gap-1 p-1"
               >
                 <Label>Members</Label>
                 <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                   <div className="flex flex-wrap gap-1">
-                    {selected.map((framework) => {
+                    {selected?.map((framework) => {
                       return (
                         <Badge key={framework.value} variant="secondary">
                           {framework.label}

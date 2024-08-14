@@ -86,8 +86,8 @@ export default function JobForm({
       type === "add"
         ? axiosBase.post(
             "/jobs",
-            { ...data, userId: auth.user._id },
-            { headers: { Authorization: auth.access_token } }
+            { ...data, userId: auth.user._id }
+            // { headers: { Authorization: auth.access_token } }
           )
         : axiosBase.put(
             // eslint-disable-next-line react/prop-types
@@ -106,7 +106,7 @@ export default function JobForm({
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
       form.reset();
-      setSelectedJob(defaultJob);
+      setSelectedJob && setSelectedJob(defaultJob);
       setOpen(false);
     },
   });
@@ -114,7 +114,7 @@ export default function JobForm({
   useEffect(() => {
     form.reset({
       ...selectedJob,
-      businessId: selectedJob?.businessId?._id,
+      businessId: selectedJob?.businessId?._id ?? "",
     });
   }, [selectedJob]);
 
@@ -124,7 +124,7 @@ export default function JobForm({
       onOpenChange={(val) => {
         setOpen(val);
         if (val === false) {
-          setSelectedJob(defaultJob);
+          selectedJob?.jobTitle ? setSelectedJob(defaultJob) : null;
         }
       }}
     >

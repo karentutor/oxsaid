@@ -131,7 +131,7 @@ export default function EventForm({
     defaultValues: {
       ...selectedEvent,
       groupId: selectedEvent?.groupId?._id,
-      date: new Date(selectedEvent.date),
+      date: selectedEvent ? new Date(selectedEvent?.date) : new Date(),
     },
   });
 
@@ -168,7 +168,7 @@ export default function EventForm({
       const payload = {
         ...data,
         userId: auth.user._id,
-        time: data.date,
+        time: data?.date,
         eventCoverImage,
       };
 
@@ -185,7 +185,7 @@ export default function EventForm({
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
       form.reset();
-      setSelectedEvent(defaultEvent);
+      setSelectedEvent && setSelectedEvent(defaultEvent);
       setOpen(false);
     },
   });
@@ -194,7 +194,7 @@ export default function EventForm({
     form.reset({
       ...selectedEvent,
       groupId: selectedEvent?.groupId?._id,
-      date: new Date(selectedEvent.date),
+      date: selectedEvent ? new Date(selectedEvent?.date) : new Date(),
     });
   }, [selectedEvent]);
 
@@ -210,7 +210,7 @@ export default function EventForm({
       onOpenChange={(val) => {
         setOpen(val);
         if (val === false) {
-          setSelectedEvent(defaultEvent);
+          setSelectedEvent && setSelectedEvent(defaultEvent);
         }
       }}
     >

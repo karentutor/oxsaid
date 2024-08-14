@@ -4,62 +4,115 @@ import {
   Building2,
   CalendarCheck2,
   CircleDollarSign,
+  CirclePlus,
   Users,
 } from "lucide-react";
 
 import { Step, Stepper, useStepper } from "@/components/stepper";
 import { Button } from "@/components/ui/button";
+import BusinessForm from "@/components/dashboard/business/BusinessForm";
+import JobForm from "@/components/dashboard/jobs/job-form";
+import FundForm from "@/components/dashboard/funding/fund-form";
+import EventForm from "@/components/dashboard/events/event-form";
+import GroupForm from "@/components/dashboard/groups/group-form";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
     label: "Businesses",
     icon: Building2,
     optional: true,
-    onActionClick: () => console.log("clicked"),
+    actionComp: (
+      <BusinessForm
+        type="add"
+        trigger={
+          <Button className="flex items-center gap-2" size="sm">
+            <CirclePlus size={14} /> Create Business
+          </Button>
+        }
+      />
+    ),
+    img: "/imgs/business.svg",
     title: "Empower Your Business",
     subtitle:
       "Create and manage your business profile, connect with clients, and grow your brand.",
-    actionText: "Create Business",
   },
   {
     label: "Jobs",
     icon: BriefcaseBusiness,
     optional: true,
-    onActionClick: () => console.log("clicked"),
+    actionComp: (
+      <JobForm
+        type="add"
+        trigger={
+          <Button className="flex items-center gap-2" size="sm">
+            <CirclePlus size={14} /> Create Job
+          </Button>
+        }
+      />
+    ),
+    img: "/imgs/jobs.svg",
     title: "Find the Perfect Job",
     subtitle:
       "Explore job opportunities, apply to positions, and advance your career.",
-    actionText: "Create a job",
   },
   {
     label: "Funding",
     icon: CircleDollarSign,
     optional: true,
-    onActionClick: () => console.log("clicked"),
+    actionComp: (
+      <FundForm
+        type="add"
+        isSeeking
+        trigger={
+          <Button className="flex items-center gap-2">
+            <CirclePlus size={14} /> Apply for Fund
+          </Button>
+        }
+      />
+    ),
+    img: "/imgs/funding.svg",
     title: "Secure Your Funding",
     subtitle:
       "Access funding opportunities, submit applications, and manage your finances.",
-    actionText: "Create a funding",
   },
   {
     label: "Events",
     icon: CalendarCheck2,
     optional: true,
-    onActionClick: () => console.log("clicked"),
+    actionComp: (
+      <EventForm
+        type="add"
+        trigger={
+          <Button className="flex items-center gap-2">
+            <CirclePlus size={14} /> Create Event
+          </Button>
+        }
+      />
+    ),
+    img: "/imgs/events.svg",
     title: "Host and Attend Events",
     subtitle:
       "Create events, invite participants, and engage with your community.",
-    actionText: "Create Event",
   },
   {
     label: "Groups",
     icon: Users,
     optional: true,
-    onActionClick: () => console.log("clicked"),
+    actionComp: (
+      <GroupForm
+        type="add"
+        trigger={
+          <Button className="flex items-center gap-2">
+            <CirclePlus size={14} /> Create Group
+          </Button>
+        }
+      />
+    ),
+    img: "/imgs/groups.svg",
     title: "Build and Join Groups",
     subtitle:
       "Connect with like-minded individuals, share ideas, and grow together.",
-    actionText: "Create Groups",
   },
 ];
 
@@ -73,19 +126,21 @@ export default function RegisterFlow() {
             {steps.map((stepProps, index) => {
               return (
                 <Step key={stepProps.label} {...stepProps}>
-                  <div className="h-40 relative flex justify-center flex-col gap-4 p-6 my-2 border border-secondary text-primary rounded-md">
+                  <div className="relative flex items-center text-center justify-center flex-col gap-4 p-6 my-2 border border-secondary text-primary rounded-md">
                     <span className="absolute top-2 right-3 text-accent text-sm">
                       {index + 1} / {steps.length}
                     </span>
+                    <img
+                      src={stepProps.img}
+                      alt={stepProps.title}
+                      className="w-60"
+                    />
                     <h1 className="text-2xl lg:text-3xl font-semibold">
                       {stepProps.title}
                     </h1>
-                    <p className="">{stepProps.subtitle}</p>
+                    <p className="max-w-sm">{stepProps.subtitle}</p>
                   </div>
-                  <Footer
-                    onActionClick={stepProps.onActionClick}
-                    actionText={stepProps.actionText}
-                  />
+                  <Footer actionComp={stepProps.actionComp} />
                 </Step>
               );
             })}
@@ -96,7 +151,7 @@ export default function RegisterFlow() {
   );
 }
 
-const Footer = ({ onActionClick, actionText }) => {
+const Footer = ({ actionComp }) => {
   const {
     nextStep,
     prevStep,
@@ -106,6 +161,7 @@ const Footer = ({ onActionClick, actionText }) => {
     isLastStep,
     isOptionalStep,
   } = useStepper();
+  const navigate = useNavigate();
   return (
     <>
       {hasCompletedAllSteps && (
@@ -129,15 +185,20 @@ const Footer = ({ onActionClick, actionText }) => {
               >
                 Prev
               </Button>
-              <Button size="sm" onClick={nextStep}>
+              <Button
+                size="sm"
+                onClick={
+                  isLastStep
+                    ? () => navigate("/home", { replace: true })
+                    : nextStep
+                }
+              >
                 {isLastStep ? "Finish" : isOptionalStep ? "Skip" : "Next"}
               </Button>
             </>
           )}
         </div>
-        <Button size="sm" onClick={onActionClick}>
-          {actionText}
-        </Button>
+        {actionComp}
       </div>
     </>
   );

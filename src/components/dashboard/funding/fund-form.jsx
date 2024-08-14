@@ -113,7 +113,7 @@ export default function FundForm({
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
       form.reset();
-      setSelectedFund(defaultFund);
+      setSelectedFund && setSelectedFund(defaultFund);
       setOpen(false);
     },
   });
@@ -131,7 +131,7 @@ export default function FundForm({
       onOpenChange={(val) => {
         setOpen(val);
         if (val === false) {
-          setSelectedFund(defaultFund);
+          setSelectedFund && setSelectedFund(defaultFund);
         }
       }}
     >

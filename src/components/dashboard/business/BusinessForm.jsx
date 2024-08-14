@@ -149,7 +149,7 @@ export default function BusinessForm({
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
       form.reset();
-      setSelectedBusiness(defaultBusiness);
+      setSelectedBusiness && setSelectedBusiness(defaultBusiness);
       setOpen(false);
     },
   });
@@ -164,7 +164,7 @@ export default function BusinessForm({
       onOpenChange={(val) => {
         setOpen(val);
         if (val === false) {
-          setSelectedBusiness(defaultBusiness);
+          setSelectedBusiness && setSelectedBusiness(defaultBusiness);
         }
       }}
     >
