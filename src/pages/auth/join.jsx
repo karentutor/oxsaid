@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
-import { EnvelopeOpenIcon, EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import {
+  EnvelopeOpenIcon,
+  EyeOpenIcon,
+  EyeClosedIcon,
+} from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useController } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -23,30 +27,34 @@ import Dropzone from "react-dropzone";
 import { COLLEGE_DATA, MATRICULATION_YEAR_DATA, OCCUPATION_DATA } from "@/data";
 import { geoData } from "@/data/geoData";
 
-const formSchema = z.object({
-  email: z.string().email(),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
-  college: z.string().min(1, "College is required"),
-  matriculationYear: z.string().min(1, "Matriculation year is required"),
-  occupation: z.string().min(1, "Occupation is required"),
-  subOccupation: z.string().min(1, "Sub-occupation is required"),
-  location: z.string().min(1, "Location is required"),
-  city: z.string().min(1, "City is required"),
-  picture: z.any().optional()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const formSchema = z
+  .object({
+    email: z.string().email(),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm password must be at least 8 characters"),
+    college: z.string().min(1, "College is required"),
+    matriculationYear: z.string().min(1, "Matriculation year is required"),
+    occupation: z.string().min(1, "Occupation is required"),
+    subOccupation: z.string().min(1, "Sub-occupation is required"),
+    location: z.string().min(1, "Location is required"),
+    city: z.string().min(1, "City is required"),
+    picture: z.any().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export default function Join() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [cities, setCities] = useState([]);
-  const token = new URLSearchParams(window.location.search).get('token');
+  const token = new URLSearchParams(window.location.search).get("token");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -68,21 +76,20 @@ export default function Join() {
 
   useEffect(() => {
     if (!token) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
-    let email = '';
+    let email = "";
     try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
       email = decodedToken.email;
     } catch (error) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
-    form.setValue('email', email);
-
+    form.setValue("email", email);
   }, [token, navigate, form]);
 
   const { control, handleSubmit, setValue, watch } = form;
@@ -100,7 +107,7 @@ export default function Join() {
     mutationFn: (data) => {
       const formData = new FormData();
       for (const key in data) {
-        if (key === 'picture' && data[key]) {
+        if (key === "picture" && data[key]) {
           formData.append(key, data[key]);
         } else if (data[key]) {
           formData.append(key, data[key]);
@@ -113,10 +120,10 @@ export default function Join() {
         toast.error("Registration Failed", { richColors: true });
       } else {
         setAuth({ user: data.user, access_token: data.token });
-        toast.success("Registration Success", { richColors: true });
-        navigate("/home", { replace: true });
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        toast.success("User Success", { richColors: true });
+        navigate("/register-flow", { replace: true });
       }
     },
     onError: (err) => {
@@ -135,7 +142,10 @@ export default function Join() {
           </p>
         </div>
         <Form {...form}>
-          <form onSubmit={handleSubmit(register)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form
+            onSubmit={handleSubmit(register)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             <FormField
               control={control}
               name="firstName"
@@ -169,15 +179,18 @@ export default function Join() {
                 <FormItem className="col-span-1">
                   <FormLabel>College</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full p-2 border border-gray-300 rounded">
+                    <select
+                      {...field}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    >
                       <option value="">Select College</option>
-                      {COLLEGE_DATA.sort((a, b) => a.name.localeCompare(b.name)).map(
-                        (college, index) => (
-                          <option key={index} value={college.name}>
-                            {college.name}
-                          </option>
-                        )
-                      )}
+                      {COLLEGE_DATA.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                      ).map((college, index) => (
+                        <option key={index} value={college.name}>
+                          {college.name}
+                        </option>
+                      ))}
                     </select>
                   </FormControl>
                   <FormMessage />
@@ -191,7 +204,10 @@ export default function Join() {
                 <FormItem className="col-span-1">
                   <FormLabel>Matriculation Year</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full p-2 border border-gray-300 rounded">
+                    <select
+                      {...field}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    >
                       <option value="">Select Year</option>
                       {MATRICULATION_YEAR_DATA.map((year, index) => (
                         <option key={index} value={year}>
@@ -211,13 +227,18 @@ export default function Join() {
                 <FormItem className="col-span-1">
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full p-2 border border-gray-300 rounded">
+                    <select
+                      {...field}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    >
                       <option value="">Select Country</option>
-                      {Object.keys(geoData).sort((a, b) => a.localeCompare(b)).map((country) => (
-                        <option key={country} value={country}>
-                          {country}
-                        </option>
-                      ))}
+                      {Object.keys(geoData)
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
+                        ))}
                     </select>
                   </FormControl>
                   <FormMessage />
@@ -231,7 +252,10 @@ export default function Join() {
                 <FormItem className="col-span-1">
                   <FormLabel>City</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full p-2 border border-gray-300 rounded">
+                    <select
+                      {...field}
+                      className="w-full p-2 border border-gray-300 rounded"
+                    >
                       <option value="">Select City</option>
                       {cities.map((city) => (
                         <option key={city} value={city}>
@@ -280,7 +304,11 @@ export default function Join() {
                 <FormItem className="col-span-2">
                   <FormLabel>Sub-Occupation</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full p-2 border border-gray-300 rounded" disabled={!watch("occupation")}>
+                    <select
+                      {...field}
+                      className="w-full p-2 border border-gray-300 rounded"
+                      disabled={!watch("occupation")}
+                    >
                       <option value="">Select Sub-Occupation</option>
                       {watch("occupation") &&
                         OCCUPATION_DATA.find(
@@ -310,10 +338,15 @@ export default function Join() {
                     <Dropzone
                       acceptedFiles=".jpg,.jpeg,.png"
                       multiple={false}
-                      onDrop={(acceptedFiles) => setValue("picture", acceptedFiles[0])}
+                      onDrop={(acceptedFiles) =>
+                        setValue("picture", acceptedFiles[0])
+                      }
                     >
                       {({ getRootProps, getInputProps }) => (
-                        <div {...getRootProps()} className="w-full p-4 border-2 border-dashed border-gray-300 rounded cursor-pointer">
+                        <div
+                          {...getRootProps()}
+                          className="w-full p-4 border-2 border-dashed border-gray-300 rounded cursor-pointer"
+                        >
                           <input {...getInputProps()} />
                           {!watch("picture") ? (
                             <p>Add Picture Here</p>
@@ -359,7 +392,7 @@ export default function Join() {
                         className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon /> }
+                        {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
                       </div>
                     </div>
                   </FormControl>

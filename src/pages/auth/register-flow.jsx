@@ -27,7 +27,7 @@ const steps = [
         type="add"
         trigger={
           <Button className="flex items-center gap-2" size="sm">
-            <CirclePlus size={14} /> Create Business
+            <CirclePlus size={14} /> List Business
           </Button>
         }
       />
@@ -35,7 +35,7 @@ const steps = [
     img: "/imgs/business.svg",
     title: "Empower Your Business",
     subtitle:
-      "Create and manage your business profile, connect with clients, and grow your brand.",
+      "Create and manage your business profile, connect with alums, and grow your brand.",
   },
   {
     label: "Jobs",

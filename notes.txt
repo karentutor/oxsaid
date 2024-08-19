@@ -1,0 +1,8 @@
+CURRENT SPRINT			DETAIL					CATEGORY		DUE DATE
+register-progress		progress to next step on submission	USER INTERFACE		25 Aug 2024	
+
+
+BACKLOG
+1. category notification	notifications for users	user interface	USER INTERFACE		25 AUG 2024
+2. Cookie			Replace localhost with cookies		SECURITY		1 SEP 2024
+
