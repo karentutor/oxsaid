@@ -3,6 +3,7 @@ register-progress		progress to next step on submission	USER INTERFACE		25 Aug 20
 
 
 BACKLOG
-1. category notification	notifications for users	user interface	USER INTERFACE		25 AUG 2024
-2. Cookie			Replace localhost with cookies		SECURITY		1 SEP 2024
+1. folder uploads for images	images to be put into oxsaid/category	DATA STORAGE		25 AUG 2025
+2. category notification	notifications for users	user interface	USER INTERFACE		25 AUG 2024
+3. Cookie			Replace localhost with cookies		SECURITY		1 SEP 2024
 
