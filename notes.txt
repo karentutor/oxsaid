@@ -3,7 +3,6 @@ register-progress		progress to next step on submission	USER INTERFACE		25 Aug 20
 
 
 BACKLOG
-1. folder uploads for images	images to be put into oxsaid/category	DATA STORAGE		25 AUG 2025	Yousef
 2. category notification	notifications for users	user interface	USER INTERFACE		25 AUG 2024	Yousef
 3. Cookie			Replace localhost with cookies		SECURITY		1 SEP 2024	Yousef/Karen		
 4. Subscription			Integration subscription		USER INTERFACE		15 SEP 2024	Karen
@@ -12,4 +11,7 @@ BACKLOG
 
 MOBILE
 Karen - building out 
+
+COMPLETED													COMPLETED	BY
+1. folder uploads for images	images to be put into oxsaid/category	DATA STORAGE		25 AUG 2025	21 Aug 2024	Karen		
 
