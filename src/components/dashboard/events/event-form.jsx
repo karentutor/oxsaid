@@ -108,6 +108,7 @@ export default function EventForm({
   selectedEvent,
   setSelectedEvent,
   type = "add",
+  nextStep,
 }) {
   const [open, setOpen] = useState(false);
   const { auth } = useAuth();
@@ -181,6 +182,7 @@ export default function EventForm({
     onSuccess: () => {
       toast.success(type === "add" ? "Event Created 🎉" : "Event Updated 🎉");
       queryClient.invalidateQueries({ queryKey: ["events"] });
+      nextStep && nextStep(); // Move to the next step on success
     },
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {

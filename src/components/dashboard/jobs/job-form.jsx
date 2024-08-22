@@ -56,6 +56,7 @@ export default function JobForm({
   selectedJob,
   setSelectedJob,
   type = "add",
+  nextStep,
 }) {
   const [open, setOpen] = useState(false);
   const { auth } = useAuth();
@@ -102,6 +103,7 @@ export default function JobForm({
         toast.success("Job Updated 🎉");
       }
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      nextStep && nextStep(); // Move to the next step on success
     },
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {

@@ -16,6 +16,7 @@ import FundForm from "@/components/dashboard/funding/fund-form";
 import EventForm from "@/components/dashboard/events/event-form";
 import GroupForm from "@/components/dashboard/groups/group-form";
 import { useNavigate } from "react-router-dom";
+import { cloneElement } from "react";
 
 const steps = [
   {
@@ -152,54 +153,31 @@ export default function RegisterFlow() {
 }
 
 const Footer = ({ actionComp }) => {
-  const {
-    nextStep,
-    prevStep,
-    resetSteps,
-    isDisabledStep,
-    hasCompletedAllSteps,
-    isLastStep,
-    isOptionalStep,
-  } = useStepper();
+  const { nextStep, prevStep, isDisabledStep, isLastStep, isOptionalStep } =
+    useStepper();
   const navigate = useNavigate();
   return (
-    <>
-      {hasCompletedAllSteps && (
-        <div className="h-40 flex items-center justify-center my-2 border bg-secondary text-primary rounded-md">
-          <h1 className="text-xl">Woohoo! You&apos;re ready to go! 🎉</h1>
-        </div>
-      )}
-      <div className="w-full flex justify-between items-center">
-        <div className="flex gap-2">
-          {hasCompletedAllSteps ? (
-            <Button size="sm" onClick={resetSteps}>
-              Reset
-            </Button>
-          ) : (
-            <>
-              <Button
-                disabled={isDisabledStep}
-                onClick={prevStep}
-                size="sm"
-                variant="secondary"
-              >
-                Prev
-              </Button>
-              <Button
-                size="sm"
-                onClick={
-                  isLastStep
-                    ? () => navigate("/home", { replace: true })
-                    : nextStep
-                }
-              >
-                {isLastStep ? "Finish" : isOptionalStep ? "Skip" : "Next"}
-              </Button>
-            </>
-          )}
-        </div>
-        {actionComp}
+    <div className="w-full flex justify-between items-center">
+      <div className="flex gap-2">
+        <Button
+          disabled={isDisabledStep}
+          onClick={prevStep}
+          size="sm"
+          variant="secondary"
+        >
+          Prev
+        </Button>
+        <Button
+          size="sm"
+          onClick={
+            isLastStep ? () => navigate("/home", { replace: true }) : nextStep
+          }
+        >
+          {isLastStep ? "Finish" : isOptionalStep ? "Skip" : "Next"}
+        </Button>
       </div>
-    </>
+      {/* Pass nextStep to actionComp */}
+      {cloneElement(actionComp, { nextStep })}
+    </div>
   );
 };

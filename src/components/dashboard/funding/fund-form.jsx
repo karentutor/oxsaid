@@ -54,6 +54,7 @@ export default function FundForm({
   setSelectedFund,
   type = "add",
   isSeeking = false,
+  nextStep,
 }) {
   const [open, setOpen] = useState(false);
   const { auth } = useAuth();
@@ -109,6 +110,7 @@ export default function FundForm({
         toast.success("Fund Updated 🎉");
       }
       queryClient.invalidateQueries({ queryKey: ["fundings"] });
+      nextStep && nextStep(); // Move to the next step on success
     },
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {

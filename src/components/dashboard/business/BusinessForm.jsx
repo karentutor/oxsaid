@@ -88,6 +88,7 @@ export default function BusinessForm({
   selectedBusiness,
   setSelectedBusiness,
   type = "add",
+  nextStep,
 }) {
   const [open, setOpen] = useState(false);
   const { auth } = useAuth();
@@ -145,6 +146,7 @@ export default function BusinessForm({
         type === "add" ? "Business Created 🎉" : "Business Updated 🎉"
       );
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
+      nextStep && nextStep(); // Move to the next step on success
     },
     onError: () => toast.error("Something went wrong"),
     onSettled: () => {
