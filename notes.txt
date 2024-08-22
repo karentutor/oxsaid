@@ -1,5 +1,4 @@
 CURRENT SPRINT			DETAIL					CATEGORY		DUE DATE	ASSIGNED
-register-progress		progress to next step on submission	USER INTERFACE		25 Aug 2024	Yousef
 
 
 BACKLOG
@@ -13,5 +12,6 @@ MOBILE
 Karen - building out 
 
 COMPLETED													COMPLETED	BY
-1. folder uploads for images	images to be put into oxsaid/category	DATA STORAGE		25 AUG 2025	21 Aug 2024	Karen		
+1. folder uploads for images	images to be put into oxsaid/category	DATA STORAGE		25 AUG 2024	21 Aug 2024	Karen		
+2. register-progress		progress to next step on submission	USER INTERFACE		      25 AUG 2024	22 Aug 2024 Yousef
 
