@@ -4,17 +4,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./App.jsx";
 import { AuthProvider } from "./context/index.jsx";
+import NotificationProvider from "./components/notification-provider.jsx";
 
 import "./index.css";
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <AuthProvider>
+    <NotificationProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </NotificationProvider>
+  </AuthProvider>
 );

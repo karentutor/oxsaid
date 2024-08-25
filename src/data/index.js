@@ -1,29 +1,44 @@
 import { ChartIcon, WalletIcon } from "@/components/icons";
-import { DrawingPinIcon, LightningBoltIcon, PersonIcon, RocketIcon, RulerSquareIcon, Share1Icon} from "@radix-ui/react-icons";
-import { BriefcaseBusiness, Building2, CalendarCheck2, CircleDollarSign, Home, UserRoundSearch, Users } from "lucide-react";
-import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
+import {
+  DrawingPinIcon,
+  LightningBoltIcon,
+  PersonIcon,
+  RocketIcon,
+  RulerSquareIcon,
+  Share1Icon,
+} from "@radix-ui/react-icons";
+import {
+  BriefcaseBusiness,
+  Building2,
+  CalendarCheck2,
+  CircleDollarSign,
+  Home,
+  UserRoundSearch,
+  Users,
+} from "lucide-react";
+import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export const socialMediaLinks = [
   {
     id: 1,
-    name: 'facebook',
-    url: 'https://www.facebook.com/profile.php?id=100093809678820',
+    name: "facebook",
+    url: "https://www.facebook.com/profile.php?id=100093809678820",
     icon: FaFacebookF,
   },
   {
     id: 2,
-    name: 'twitter',
-    url: 'https://twitter.com/i/lists/1666911876943421440',
+    name: "twitter",
+    url: "https://twitter.com/i/lists/1666911876943421440",
     icon: FaXTwitter,
   },
   {
     id: 3,
-    name: 'linkedin',
-    url: 'https://www.linkedin.com/company/alefteam/about',
+    name: "linkedin",
+    url: "https://www.linkedin.com/company/alefteam/about",
     icon: FaLinkedinIn,
   },
-]
+];
 
 export const navLinks = [
   {
@@ -60,37 +75,44 @@ export const dashboardNavLinks = [
   {
     href: "/home",
     label: "Home",
-    icon: Home
+    type: "home",
+    icon: Home,
   },
   {
     href: "/user-search",
     label: "Users",
-    icon: UserRoundSearch
+    type: "user",
+    icon: UserRoundSearch,
   },
   {
     href: "/business",
     label: "Business",
-    icon: Building2
+    type: "business",
+    icon: Building2,
   },
   {
     href: "/jobs",
     label: "Jobs",
-    icon: BriefcaseBusiness
+    type: "job",
+    icon: BriefcaseBusiness,
   },
   {
     href: "/funding",
     label: "Funding",
-    icon: CircleDollarSign
+    type: "funding",
+    icon: CircleDollarSign,
   },
   {
     href: "/events",
     label: "Events",
-    icon: CalendarCheck2
+    type: "event",
+    icon: CalendarCheck2,
   },
   {
     href: "/groups",
     label: "Groups",
-    icon: Users
+    type: "group",
+    icon: Users,
   },
   // {
   //   href: "/messages",
@@ -145,103 +167,113 @@ export const events = [
   {
     id: 1,
     title: "Startup Pitch Night",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-06-15T19:00:00Z",
     location: "Main Hall, University Campus",
     zoom_link: null,
     type: "inPerson",
-    image: "https://example.com/images/startup-pitch-night.jpg"
+    image: "https://example.com/images/startup-pitch-night.jpg",
   },
   {
     id: 2,
     title: "Remote Coding Bootcamp",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-06-20T14:00:00Z",
     location: "Online",
     zoom_link: "https://zoom.us/j/1234567890",
     type: "remote",
-    image: "https://example.com/images/remote-coding-bootcamp.jpg"
+    image: "https://example.com/images/remote-coding-bootcamp.jpg",
   },
   {
     id: 3,
     title: "Alumni Networking Event",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-07-05T18:00:00Z",
     location: "City Conference Center",
     zoom_link: null,
     type: "inPerson",
-    image: "https://example.com/images/alumni-networking-event.jpg"
+    image: "https://example.com/images/alumni-networking-event.jpg",
   },
   {
     id: 4,
     title: "Virtual Career Fair",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-07-10T10:00:00Z",
     location: "Online",
     zoom_link: "https://zoom.us/j/0987654321",
     type: "remote",
-    image: "https://example.com/images/virtual-career-fair.jpg"
+    image: "https://example.com/images/virtual-career-fair.jpg",
   },
   {
     id: 5,
     title: "Entrepreneurship Workshop",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-07-15T09:00:00Z",
     location: "Innovation Lab, University Campus",
     zoom_link: null,
     type: "inPerson",
-    image: "https://example.com/images/entrepreneurship-workshop.jpg"
+    image: "https://example.com/images/entrepreneurship-workshop.jpg",
   },
   {
     id: 6,
     title: "Remote Marketing Seminar",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-08-01T16:00:00Z",
     location: "Online",
     zoom_link: "https://zoom.us/j/1122334455",
     type: "remote",
-    image: "https://example.com/images/remote-marketing-seminar.jpg"
+    image: "https://example.com/images/remote-marketing-seminar.jpg",
   },
   {
     id: 7,
     title: "Tech Conference 2024",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-08-15T09:00:00Z",
     location: "Grand Auditorium, City Center",
     zoom_link: null,
     type: "inPerson",
-    image: "https://example.com/images/tech-conference-2024.jpg"
+    image: "https://example.com/images/tech-conference-2024.jpg",
   },
   {
     id: 8,
     title: "Remote Leadership Webinar",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-08-25T11:00:00Z",
     location: "Online",
     zoom_link: "https://zoom.us/j/2233445566",
     type: "remote",
-    image: "https://example.com/images/remote-leadership-webinar.jpg"
+    image: "https://example.com/images/remote-leadership-webinar.jpg",
   },
   {
     id: 9,
     title: "Graduate Mixer",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-09-10T18:00:00Z",
     location: "Alumni Hall, University Campus",
     zoom_link: null,
     type: "inPerson",
-    image: "https://example.com/images/graduate-mixer.jpg"
+    image: "https://example.com/images/graduate-mixer.jpg",
   },
   {
     id: 10,
     title: "Virtual Product Design Workshop",
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     date: "2024-09-15T13:00:00Z",
     location: "Online",
     zoom_link: "https://zoom.us/j/3344556677",
     type: "remote",
-    image: "https://example.com/images/virtual-product-design-workshop.jpg"
-  }
+    image: "https://example.com/images/virtual-product-design-workshop.jpg",
+  },
 ];
 
 export const fundingServices = [
@@ -268,119 +300,125 @@ export const fundingServices = [
 export const businesses = [
   {
     id: 1,
-    name: 'b1',
-    description: 'b1 description',
-    size: 'test',
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    visibility: 'visibility',
-    address: 'address',
-    phone: '15353113541853',
-    email: 'example@email.com',
+    name: "b1",
+    description: "b1 description",
+    size: "test",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    visibility: "visibility",
+    address: "address",
+    phone: "15353113541853",
+    email: "example@email.com",
     less_than: true,
     almuni_share: true,
-    date: 'Thu Jun 13 2024',
-    labels: ['label1', 'label2']
+    date: "Thu Jun 13 2024",
+    labels: ["label1", "label2"],
   },
   {
     id: 2,
-    name: 'b2',
-    description: 'b2 description',
-    size: 'size',
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    visibility: 'visibility',
-    address: 'address',
-    phone: '15353113541853',
-    email: 'example@email.com',
+    name: "b2",
+    description: "b2 description",
+    size: "size",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    visibility: "visibility",
+    address: "address",
+    phone: "15353113541853",
+    email: "example@email.com",
     less_than: true,
     almuni_share: true,
-    date: 'Thu Jun 13 2024',
-    labels: ['label1', 'label2']
+    date: "Thu Jun 13 2024",
+    labels: ["label1", "label2"],
   },
   {
     id: 3,
-    name: 'b3',
-    description: 'b3 description',
-    size: 'size',
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    visibility: 'visibility',
-    address: 'address',
-    phone: '15353113541853',
-    email: 'example@email.com',
+    name: "b3",
+    description: "b3 description",
+    size: "size",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    visibility: "visibility",
+    address: "address",
+    phone: "15353113541853",
+    email: "example@email.com",
     less_than: true,
     almuni_share: true,
-    date: 'Thu Jun 13 2024',
-    labels: ['label1', 'label2']
+    date: "Thu Jun 13 2024",
+    labels: ["label1", "label2"],
   },
-]
+];
 
 export const jobs = [
   {
     id: 1,
-    title: 'job 1',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    country: 'Canada',
-    city: 'Ontario',
-    salary: '30$ per hour',
-    date: 'Thu Jun 13 2024',
+    title: "job 1",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    country: "Canada",
+    city: "Ontario",
+    salary: "30$ per hour",
+    date: "Thu Jun 13 2024",
   },
   {
     id: 2,
-    title: 'job 2',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    country: 'Canada',
-    city: 'Ontario',
-    salary: '30$ per hour',
-    date: 'Thu Jun 13 2024',
+    title: "job 2",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    country: "Canada",
+    city: "Ontario",
+    salary: "30$ per hour",
+    date: "Thu Jun 13 2024",
   },
   {
     id: 3,
-    title: 'job 3',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    country: 'Canada',
-    city: 'Ontario',
-    salary: '30$ per hour',
-    date: 'Thu Jun 13 2024',
+    title: "job 3",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    country: "Canada",
+    city: "Ontario",
+    salary: "30$ per hour",
+    date: "Thu Jun 13 2024",
   },
-]
+];
 
 export const fundings = [
   {
     id: 1,
-    business: 'InnovateEdge Solutions',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    amount: '45000$',
-    date: 'Thu Jun 13 2024',
+    business: "InnovateEdge Solutions",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    amount: "45000$",
+    date: "Thu Jun 13 2024",
   },
   {
     id: 2,
-    business: 'Visionary Ventures',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    amount: '8000$',
-    date: 'Thu Jun 13 2024',
+    business: "Visionary Ventures",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    amount: "8000$",
+    date: "Thu Jun 13 2024",
   },
   {
     id: 3,
-    business: 'SynergyWorks Group',
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
-    occupation: 'occupation',
-    subOccupation: 'subOccupation',
-    amount: '2000$',
-    date: 'Thu Jun 13 2024',
+    business: "SynergyWorks Group",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets",
+    occupation: "occupation",
+    subOccupation: "subOccupation",
+    amount: "2000$",
+    date: "Thu Jun 13 2024",
   },
-]
+];
 
 export const sidebarNavItems = [
   // {
@@ -415,568 +453,563 @@ export const sidebarNavItems = [
     title: "Change Password",
     href: "change-password",
   },
-]
+];
 
 export const companysizeData = [
   {
     id: 1,
-    name: '1-10'
+    name: "1-10",
   },
   {
     id: 2,
-    name: '11-50'
+    name: "11-50",
   },
   {
     id: 3,
-    name: '51-200'
+    name: "51-200",
   },
   {
     id: 4,
-    name: '201-500'
+    name: "201-500",
   },
   {
     id: 5,
-    name: '501-1000'
+    name: "501-1000",
   },
   {
     id: 6,
-    name: '1000+'
-  }
+    name: "1000+",
+  },
 ];
 
 export const OCCUPATION_DATA = [
   {
-    name: 'information technology',
+    name: "information technology",
     sublist: [
       {
-        name: 'network administration'
+        name: "network administration",
       },
       {
-        name: 'software development'
+        name: "software development",
       },
       {
-        name: 'database administration'
+        name: "database administration",
       },
       {
-        name: 'cloud computing'
+        name: "cloud computing",
       },
       {
-        name: 'cybersecurity'
+        name: "cybersecurity",
       },
       {
-        name: 'artificial intelligence'
+        name: "artificial intelligence",
       },
       {
-        name: 'web development'
+        name: "web development",
       },
       {
-        name: 'data analysis'
-      }
-    ]
+        name: "data analysis",
+      },
+    ],
   },
   {
-    name: 'finance',
+    name: "finance",
     sublist: [
       {
-        name: 'investment banking'
+        name: "investment banking",
       },
       {
-        name: 'corporate finance'
+        name: "corporate finance",
       },
       {
-        name: 'financial planning'
+        name: "financial planning",
       },
       {
-        name: 'insurance'
+        name: "insurance",
       },
       {
-        name: 'accounting'
+        name: "accounting",
       },
       {
-        name: 'taxation'
+        name: "taxation",
       },
       {
-        name: 'venture capital'
-      }
-    ]
+        name: "venture capital",
+      },
+    ],
   },
   {
-    name: 'healthcare',
+    name: "healthcare",
     sublist: [
       {
-        name: 'nursing'
+        name: "nursing",
       },
       {
-        name: 'physician'
+        name: "physician",
       },
       {
-        name: 'physical therapy'
+        name: "physical therapy",
       },
       {
-        name: 'medical research'
+        name: "medical research",
       },
       {
-        name: 'occupational therapy'
+        name: "occupational therapy",
       },
       {
-        name: 'pharmacy'
+        name: "pharmacy",
       },
       {
-        name: 'healthcare administration'
-      }
-    ]
+        name: "healthcare administration",
+      },
+    ],
   },
   {
-    name: 'education',
+    name: "education",
     sublist: [
       {
-        name: 'teaching'
+        name: "teaching",
       },
       {
-        name: 'curriculum development'
+        name: "curriculum development",
       },
       {
-        name: 'educational administration'
+        name: "educational administration",
       },
       {
-        name: 'special education'
+        name: "special education",
       },
       {
-        name: 'instructional design'
+        name: "instructional design",
       },
       {
-        name: 'education technology'
-      }
-    ]
+        name: "education technology",
+      },
+    ],
   },
   {
-    name: 'engineering',
+    name: "engineering",
     sublist: [
       {
-        name: 'civil engineering'
+        name: "civil engineering",
       },
       {
-        name: 'mechanical engineering'
+        name: "mechanical engineering",
       },
       {
-        name: 'electrical engineering'
+        name: "electrical engineering",
       },
       {
-        name: 'chemical engineering'
+        name: "chemical engineering",
       },
       {
-        name: 'software engineering'
+        name: "software engineering",
       },
       {
-        name: 'aerospace engineering'
+        name: "aerospace engineering",
       },
       {
-        name: 'biomedical engineering'
+        name: "biomedical engineering",
       },
       {
-        name: 'environmental engineering'
-      }
-    ]
+        name: "environmental engineering",
+      },
+    ],
   },
   {
-    name: 'marketing',
+    name: "marketing",
     sublist: [
       {
-        name: 'digital marketing'
+        name: "digital marketing",
       },
       {
-        name: 'brand management'
+        name: "brand management",
       },
       {
-        name: 'public relations'
+        name: "public relations",
       },
       {
-        name: 'market research'
+        name: "market research",
       },
       {
-        name: 'social media management'
+        name: "social media management",
       },
       {
-        name: 'product management'
-      }
-    ]
+        name: "product management",
+      },
+    ],
   },
   {
-    name: 'human resources',
+    name: "human resources",
     sublist: [
       {
-        name: 'talent acquisition'
+        name: "talent acquisition",
       },
       {
-        name: 'employee relations'
+        name: "employee relations",
       },
       {
-        name: 'compensation and benefits'
+        name: "compensation and benefits",
       },
       {
-        name: 'training and development'
+        name: "training and development",
       },
       {
-        name: 'organizational development'
+        name: "organizational development",
       },
       {
-        name: 'diversity and inclusion'
-      }
-    ]
+        name: "diversity and inclusion",
+      },
+    ],
   },
   {
-    name: 'sales',
+    name: "sales",
     sublist: [
       {
-        name: 'inside sales'
+        name: "inside sales",
       },
       {
-        name: 'outside sales'
+        name: "outside sales",
       },
       {
-        name: 'key account management'
+        name: "key account management",
       },
       {
-        name: 'retail sales'
+        name: "retail sales",
       },
       {
-        name: 'sales operations'
+        name: "sales operations",
       },
       {
-        name: 'business development'
+        name: "business development",
       },
       {
-        name: 'channel sales'
+        name: "channel sales",
       },
       {
-        name: 'sales engineering'
-      }
-    ]
+        name: "sales engineering",
+      },
+    ],
   },
   {
-    name: 'health and fitness',
+    name: "health and fitness",
     sublist: [
       {
-        name: 'personal training'
+        name: "personal training",
       },
       {
-        name: 'yoga instruction'
+        name: "yoga instruction",
       },
       {
-        name: 'group fitness instruction'
+        name: "group fitness instruction",
       },
       {
-        name: 'pilates instruction'
+        name: "pilates instruction",
       },
       {
-        name: 'physical therapy'
+        name: "physical therapy",
       },
       {
-        name: 'nutrition counseling'
+        name: "nutrition counseling",
       },
       {
-        name: 'sports coaching'
+        name: "sports coaching",
       },
       {
-        name: 'massage therapy'
-      }
-    ]
+        name: "massage therapy",
+      },
+    ],
   },
   {
-    name: 'arts and entertainment',
+    name: "arts and entertainment",
     sublist: [
       {
-        name: 'performing arts'
+        name: "performing arts",
       },
       {
-        name: 'fine arts'
+        name: "fine arts",
       },
       {
-        name: 'film and television'
+        name: "film and television",
       },
       {
-        name: 'music'
+        name: "music",
       },
       {
-        name: 'photography'
+        name: "photography",
       },
       {
-        name: 'writing and editing'
+        name: "writing and editing",
       },
       {
-        name: 'graphic design'
+        name: "graphic design",
       },
       {
-        name: 'animation and gaming'
-      }
-    ]
+        name: "animation and gaming",
+      },
+    ],
   },
   {
-    name: 'legal',
+    name: "legal",
     sublist: [
       {
-        name: 'lawyer'
+        name: "lawyer",
       },
       {
-        name: 'paralegal'
+        name: "paralegal",
       },
       {
-        name: 'legal secretary'
+        name: "legal secretary",
       },
       {
-        name: 'court reporter'
+        name: "court reporter",
       },
       {
-        name: 'legal consultant'
+        name: "legal consultant",
       },
       {
-        name: 'mediation and arbitration'
+        name: "mediation and arbitration",
       },
       {
-        name: 'intellectual property'
+        name: "intellectual property",
       },
       {
-        name: 'compliance and ethics'
-      }
-    ]
+        name: "compliance and ethics",
+      },
+    ],
   },
   {
-    name: 'customer service',
+    name: "customer service",
     sublist: [
       {
-        name: 'technical support'
+        name: "technical support",
       },
       {
-        name: 'customer success'
+        name: "customer success",
       },
       {
-        name: 'call center operations'
+        name: "call center operations",
       },
       {
-        name: 'customer experience'
-      }
-    ]
+        name: "customer experience",
+      },
+    ],
   },
   {
-    name: 'Operations',
+    name: "Operations",
     sublist: [
       {
-        name: 'Supply chain management'
+        name: "Supply chain management",
       },
       {
-        name: 'Logistics'
+        name: "Logistics",
       },
       {
-        name: 'Procurement'
+        name: "Procurement",
       },
       {
-        name: 'Project management'
+        name: "Project management",
       },
       {
-        name: 'Quality control'
-      }
-    ]
+        name: "Quality control",
+      },
+    ],
   },
   {
-    name: 'Creative',
+    name: "Creative",
     sublist: [
       {
-        name: 'Graphic design'
+        name: "Graphic design",
       },
       {
-        name: 'Video production'
+        name: "Video production",
       },
       {
-        name: 'Photography'
+        name: "Photography",
       },
       {
-        name: 'Animation'
+        name: "Animation",
       },
       {
-        name: 'Writing and editing'
-      }
-    ]
+        name: "Writing and editing",
+      },
+    ],
   },
   {
-    name: 'Media and Communications',
+    name: "Media and Communications",
     sublist: [
       {
-        name: 'Journalism'
+        name: "Journalism",
       },
       {
-        name: 'Public relations'
+        name: "Public relations",
       },
       {
-        name: 'Broadcasting'
+        name: "Broadcasting",
       },
       {
-        name: 'Advertising'
+        name: "Advertising",
       },
       {
-        name: 'Content creation'
-      }
-    ]
+        name: "Content creation",
+      },
+    ],
   },
   {
-    name: 'Manufacturing',
+    name: "Manufacturing",
     sublist: [
       {
-        name: 'Production Planning'
+        name: "Production Planning",
       },
       {
-        name: 'Quality Assurance'
+        name: "Quality Assurance",
       },
       {
-        name: 'Process Engineering'
+        name: "Process Engineering",
       },
       {
-        name: 'Assembly'
+        name: "Assembly",
       },
       {
-        name: 'Machining'
+        name: "Machining",
       },
       {
-        name: 'Packaging'
+        name: "Packaging",
       },
       {
-        name: 'Maintenance and Repair'
-      }
-    ]
-  }
+        name: "Maintenance and Repair",
+      },
+    ],
+  },
 ];
 
-export const VISIBILITY_DATA = ["public", "private", "hidden"]
-
-
+export const VISIBILITY_DATA = ["public", "private", "hidden"];
 
 export const COLLEGE_DATA = [
   {
-    "name": "All Souls College"
+    name: "All Souls College",
   },
   {
-    "name": "Balliol College"
+    name: "Balliol College",
   },
   {
-    "name": "Brasenose College"
+    name: "Brasenose College",
   },
   {
-    "name": "Christ Church"
+    name: "Christ Church",
   },
   {
-    "name": "Corpus Christi College"
+    name: "Corpus Christi College",
   },
   {
-    "name": "Exeter College"
+    name: "Exeter College",
   },
   {
-    "name": "Green Templeton College"
+    name: "Green Templeton College",
   },
   {
-    "name": "Harris Manchester College"
+    name: "Harris Manchester College",
   },
   {
-    "name": "Hertford College"
+    name: "Hertford College",
   },
   {
-    "name": "Jesus College"
+    name: "Jesus College",
   },
   {
-    "name": "Keble College"
+    name: "Keble College",
   },
   {
-    "name": "Kellogg College"
+    name: "Kellogg College",
   },
   {
-    "name": "Lady Margaret Hall"
+    name: "Lady Margaret Hall",
   },
   {
-    "name": "Linacre College"
+    name: "Linacre College",
   },
   {
-    "name": "Lincoln College"
+    name: "Lincoln College",
   },
   {
-    "name": "Magdalen College"
+    name: "Magdalen College",
   },
   {
-    "name": "Mansfield College"
+    name: "Mansfield College",
   },
   {
-    "name": "Merton College"
+    name: "Merton College",
   },
   {
-    "name": "New College"
+    name: "New College",
   },
   {
-    "name": "Nuffield College"
+    name: "Nuffield College",
   },
   {
-    "name": "Oriel College"
+    name: "Oriel College",
   },
   {
-    "name": "Pembroke College"
+    name: "Pembroke College",
   },
   {
-    "name": "The Queen's College"
+    name: "The Queen's College",
   },
   {
-    "name": "Regent's Park College"
+    name: "Regent's Park College",
   },
   {
-    "name": "St Anne's College"
+    name: "St Anne's College",
   },
   {
-    "name": "St Antony's College"
+    name: "St Antony's College",
   },
   {
-    "name": "St Catherine's College"
+    name: "St Catherine's College",
   },
   {
-    "name": "St Cross College"
+    name: "St Cross College",
   },
   {
-    "name": "St Edmund Hall"
+    name: "St Edmund Hall",
   },
   {
-    "name": "St Hilda's College"
+    name: "St Hilda's College",
   },
   {
-    "name": "St Hugh's College"
+    name: "St Hugh's College",
   },
   {
-    "name": "St John's College"
+    name: "St John's College",
   },
   {
-    "name": "St Peter's College"
+    name: "St Peter's College",
   },
   {
-    "name": "Somerville College"
+    name: "Somerville College",
   },
   {
-    "name": "Trinity College"
+    name: "Trinity College",
   },
   {
-    "name": "University College"
+    name: "University College",
   },
   {
-    "name": "Wadham College"
+    name: "Wadham College",
   },
   {
-    "name": "Wolfson College"
+    name: "Wolfson College",
   },
   {
-    "name": "Worcester College"
-  }
-]
-
+    name: "Worcester College",
+  },
+];
 
 export const MATRICULATION_YEAR_DATA = [
-  1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959,
-  1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969,
-  1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979,
-  1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,
-  1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-  2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
-  2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
-  2020, 2021, 2022, 2023, 2024
-]
+  1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960, 1961, 1962,
+  1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1974, 1975,
+  1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988,
+  1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+  2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
+  2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+];

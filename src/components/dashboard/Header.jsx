@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import { CircleUser, Menu } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +15,32 @@ import ModeToggle from "../ModeToggle";
 import useAuth from "@/hooks/useAuth";
 import useLogout from "@/hooks/useLogout";
 import { UserAvatar } from "./UserAvatar";
+import { useNotifications } from "@/context/NotificationProvider";
 
 export default function Header() {
   const { auth } = useAuth();
   const logout = useLogout();
+  const { notifications, markAsRead } = useNotifications();
+
+  const hasUnreadNotifications = (type) => {
+    return notifications.some(
+      (notification) => notification.type === type && !notification.read
+    );
+  };
+
+  const handleLinkClick = async (type) => {
+    // Filter unread notifications for the selected type
+    const unreadNotifications = notifications.filter(
+      (notification) => notification.type === type && !notification.read
+    );
+
+    const unreadIds = unreadNotifications.map((n) => n._id);
+
+    if (unreadIds.length > 0) {
+      await markAsRead(unreadIds); // Mark them as read
+    }
+  };
+
   return (
     <header className="sticky z-10 top-0 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 lg:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium max-w-[1600px] mx-auto lg:flex lg:flex-row lg:justify-between lg:w-full lg:items-center md:gap-5 lg:text-sm lg:gap-6">
@@ -50,20 +71,24 @@ export default function Header() {
           <span className="sr-only">Oxsaid</span>
         </Link>
         <div>
-          {dashboardNavLinks.map(({ href, label, icon: Icon }) => (
+          {dashboardNavLinks.map(({ href, label, type, icon: Icon }) => (
             <NavLink
               key={label}
               to={href}
               className={({ isActive }) =>
-                `flex items-center gap-1.5 ${
+                `flex items-center relative gap-1.5 ${
                   isActive ? "!text-accent" : "!text-foreground"
                 } ${buttonVariants({
                   variant: "link",
                 })}`
               }
+              onClick={() => handleLinkClick(type)}
             >
               <Icon size={20} />
               <span>{label}</span>
+              {hasUnreadNotifications(type) && (
+                <span className="absolute right-2 top-1 ml-2 inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              )}
             </NavLink>
           ))}
         </div>
@@ -119,7 +144,7 @@ export default function Header() {
               <span className="sr-only">Oxsaid</span>
             </Link>
             <div className="flex flex-col gap-6 font-medium text-lg">
-              {dashboardNavLinks.map(({ href, label, icon: Icon }) => (
+              {dashboardNavLinks.map(({ href, label, type, icon: Icon }) => (
                 <NavLink
                   key={label}
                   to={href}
@@ -128,9 +153,13 @@ export default function Header() {
                       isActive ? "text-accent" : "text-foreground"
                     }`
                   }
+                  onClick={() => handleLinkClick(type)}
                 >
                   <Icon size={20} />
                   {label}
+                  {hasUnreadNotifications(type) && (
+                    <span className="ml-2 inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                  )}
                 </NavLink>
               ))}
             </div>
