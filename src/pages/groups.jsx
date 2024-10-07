@@ -144,10 +144,10 @@ export default function Groups() {
                   </div>
                 </Card>
               ))
-            ) : groups.filter((j) => j.userId._id === auth.user._id).length >
+            ) : groups.filter((j) => j.userId?._id === auth.user?._id).length >
               0 ? (
               groups
-                .filter((j) => j.userId._id === auth.user._id)
+                .filter((j) => j.userId?._id === auth.user?._id)
                 .map((item) => (
                   <GroupCard
                     key={item._id}

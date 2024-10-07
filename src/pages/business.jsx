@@ -108,31 +108,44 @@ export default function Business() {
         </div>
         <TabsContent value="all">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 pt-0">
-            {isPending
-              ? Array.from(Array(2).keys()).map((item) => (
-                  <Card key={item}>
-                    <div className="flex flex-col gap-6 p-6">
-                      <div className="flex items-center justify-between space-x-4">
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-60" />
-                          <Skeleton className="h-4 w-24" />
-                        </div>
-                        <Skeleton className="w-16 h-6 rounded-lg" />
+            {isPending ? (
+              Array.from(Array(2).keys()).map((item) => (
+                <Card key={item}>
+                  <div className="flex flex-col gap-6 p-6">
+                    <div className="flex items-center justify-between space-x-4">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-60" />
+                        <Skeleton className="h-4 w-24" />
                       </div>
-                      <div className="flex flex-col space-y-3">
-                        <div className="space-y-2">
-                          <Skeleton className="h-4" />
-                          <Skeleton className="h-4" />
-                          <Skeleton className="h-4" />
-                          <Skeleton className="h-4" />
-                        </div>
+                      <Skeleton className="w-16 h-6 rounded-lg" />
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
+                        <Skeleton className="h-4" />
                       </div>
                     </div>
-                  </Card>
-                ))
-              : businesses?.map((item) => (
-                  <BusinessCard key={item._id} item={item} />
-                ))}
+                  </div>
+                </Card>
+              ))
+            ) : businesses?.length > 0 ? (
+              businesses.map((item) => (
+                <BusinessCard key={item._id} item={item} />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center md:col-span-2 lg:col-span-3 text-center gap-4 py-16">
+                <h3 className="text-3xl lg:text-4xl font-semibold">
+                  No Businesses Found
+                </h3>
+                <p className="text-black/70">
+                  {searchTerm
+                    ? "Try adjusting your search terms."
+                    : "There are no businesses to display at the moment."}
+                </p>
+              </div>
+            )}
           </div>
         </TabsContent>
         <TabsContent value="mine">

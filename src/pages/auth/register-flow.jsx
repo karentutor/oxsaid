@@ -1,19 +1,9 @@
 /* eslint-disable react/prop-types */
-import {
-  BriefcaseBusiness,
-  Building2,
-  CalendarCheck2,
-  CircleDollarSign,
-  CirclePlus,
-  Users,
-} from "lucide-react";
+import { Building2, CirclePlus, Users } from "lucide-react";
 
 import { Step, Stepper, useStepper } from "@/components/stepper";
 import { Button } from "@/components/ui/button";
 import BusinessForm from "@/components/dashboard/business/BusinessForm";
-import JobForm from "@/components/dashboard/jobs/job-form";
-import FundForm from "@/components/dashboard/funding/fund-form";
-import EventForm from "@/components/dashboard/events/event-form";
 import GroupForm from "@/components/dashboard/groups/group-form";
 import { useNavigate } from "react-router-dom";
 import { cloneElement } from "react";
@@ -38,64 +28,64 @@ const steps = [
     subtitle:
       "Create and manage your business profile, connect with alums, and grow your brand.",
   },
-  {
-    label: "Jobs",
-    icon: BriefcaseBusiness,
-    optional: true,
-    actionComp: (
-      <JobForm
-        type="add"
-        trigger={
-          <Button className="flex items-center gap-2" size="sm">
-            <CirclePlus size={14} /> Create Job
-          </Button>
-        }
-      />
-    ),
-    img: "/imgs/jobs.svg",
-    title: "Find the Perfect Job",
-    subtitle:
-      "Explore job opportunities, apply to positions, and advance your career.",
-  },
-  {
-    label: "Funding",
-    icon: CircleDollarSign,
-    optional: true,
-    actionComp: (
-      <FundForm
-        type="add"
-        isSeeking
-        trigger={
-          <Button className="flex items-center gap-2">
-            <CirclePlus size={14} /> Apply for Fund
-          </Button>
-        }
-      />
-    ),
-    img: "/imgs/funding.svg",
-    title: "Secure Your Funding",
-    subtitle:
-      "Access funding opportunities, submit applications, and manage your finances.",
-  },
-  {
-    label: "Events",
-    icon: CalendarCheck2,
-    optional: true,
-    actionComp: (
-      <EventForm
-        type="add"
-        trigger={
-          <Button className="flex items-center gap-2">
-            <CirclePlus size={14} /> Create Event
-          </Button>
-        }
-      />
-    ),
-    img: "/imgs/events.svg",
-    title: "Host and Attend Events",
-    subtitle:
-      "Create events, invite participants, and engage with your community.",
-  },
+  // {
+  //   label: "Jobs",
+  //   icon: BriefcaseBusiness,
+  //   optional: true,
+  //   actionComp: (
+  //     <JobForm
+  //       type="add"
+  //       trigger={
+  //         <Button className="flex items-center gap-2" size="sm">
+  //           <CirclePlus size={14} /> Create Job
+  //         </Button>
+  //       }
+  //     />
+  //   ),
+  //   img: "/imgs/jobs.svg",
+  //   title: "Find the Perfect Job",
+  //   subtitle:
+  //     "Explore job opportunities, apply to positions, and advance your career.",
+  // },
+  // {
+  //   label: "Funding",
+  //   icon: CircleDollarSign,
+  //   optional: true,
+  //   actionComp: (
+  //     <FundForm
+  //       type="add"
+  //       isSeeking
+  //       trigger={
+  //         <Button className="flex items-center gap-2">
+  //           <CirclePlus size={14} /> Apply for Fund
+  //         </Button>
+  //       }
+  //     />
+  //   ),
+  //   img: "/imgs/funding.svg",
+  //   title: "Secure Your Funding",
+  //   subtitle:
+  //     "Access funding opportunities, submit applications, and manage your finances.",
+  // },
+  // {
+  //   label: "Events",
+  //   icon: CalendarCheck2,
+  //   optional: true,
+  //   actionComp: (
+  //     <EventForm
+  //       type="add"
+  //       trigger={
+  //         <Button className="flex items-center gap-2">
+  //           <CirclePlus size={14} /> Create Event
+  //         </Button>
+  //       }
+  //     />
+  //   ),
+  //   img: "/imgs/events.svg",
+  //   title: "Host and Attend Events",
+  //   subtitle:
+  //     "Create events, invite participants, and engage with your community.",
+  // },
   {
     label: "Groups",
     icon: Users,

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
@@ -25,7 +26,7 @@ const MyProfileHeader = ({ user }) => (
     <div className="flex justify-center">
       <UserAvatar
         className="w-16 h-16 rounded-full overflow-hidden border-white border-2 mt-[-32px] z-1"
-        imageUrl={user.picturePath}
+        imageUrl={user?.picturePath}
       />
     </div>
   </div>
@@ -167,10 +168,10 @@ const SidebarDesktopLayout = ({ user, auth }) => (
         target="_blank"
       >
         <div className="text-md font-medium hover:underline cursor-pointer">
-          {user.firstName} {user.lastName}
+          {user?.firstName} {user?.lastName}
         </div>
-        <div className="text-xs text-zinc-500 mt-1">{user.subOccupation}</div>
-        <div className="text-xs mt-1">{user.location}</div>
+        <div className="text-xs text-zinc-500 mt-1">{user?.subOccupation}</div>
+        <div className="text-xs mt-1">{user?.location}</div>
       </a>
       <div>
         <div className="py-3 border-b">
@@ -198,21 +199,23 @@ const SidebarMobileLayout = ({ user, auth }) => {
           target="_blank"
         >
           <div className="text-md font-medium hover:underline cursor-pointer">
-            {user.firstName} {user.lastName}
+            {user?.firstName} {user?.lastName}
           </div>
-          <div className="text-xs text-zinc-500 mt-1">{user.subOccupation}</div>
-          <div className="text-xs mt-1">{user.location}</div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {user?.subOccupation}
+          </div>
+          <div className="text-xs mt-1">{user?.location}</div>
         </a>
         {isShowingAllMobile && (
           <div>
             <div className="py-3 border-b">
               <MyProfileStats
                 text="Who's viewed your profile"
-                count={user.viewedProfile}
+                count={user?.viewedProfile}
               />
               <MyProfileStats
                 text="Impressions of your post"
-                count={user.impressions}
+                count={user?.impressions}
               />
             </div>
             <MyItems user={user} auth={auth} />

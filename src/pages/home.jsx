@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { axiosBase } from "@/services/BaseService";
 import { Main } from "@/components/dashboard/Main";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import Activities from "@/components/dashboard/activities/Activities"
+import Activities from "@/components/dashboard/activities/Activities";
 
 const OwnProfile = ({ user, auth }) => (
   <main className="pt-4 grid gap-6 index-grid">
@@ -36,10 +37,9 @@ const OtherProfile = ({ userId, auth }) => {
 
   return (
     <main className="pt-4 grid gap-6 index-grid">
-
       <Sidebar user={userData} auth={auth} />
       <Main user={userData} auth={auth} />
-      <Activities user={userData} auth={auth} /> 
+      <Activities user={userData} auth={auth} />
     </main>
   );
 };

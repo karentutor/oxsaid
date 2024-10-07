@@ -66,14 +66,14 @@ export default function GroupCard({
           <p className="text-xs text-muted font-semibold">
             created by:{" "}
             <span className="font-medium">
-              {item.userId.firstName} {item.userId.lastName}
+              {item.userId?.firstName} {item.userId?.lastName}
             </span>
           </p>
           <p className="line-clamp-2 text-xs text-muted">
             {item.description.substring(0, 300)}
           </p>
           <div className="flex items-center justify-between w-full">
-            {item.isPrivate ? <Badge>Private</Badge> : <Badge>Public</Badge>}
+            {item?.isPrivate ? <Badge>Private</Badge> : <Badge>Public</Badge>}
             {isAdmin ? (
               <div className="flex items-center">
                 <Button size="icon" variant="outline">

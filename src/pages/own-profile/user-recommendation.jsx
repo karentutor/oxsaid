@@ -1,5 +1,10 @@
-import React from "react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+/* eslint-disable react/prop-types */
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosBase } from "@/services/BaseService";
 import useAuth from "@/hooks/useAuth";
@@ -8,7 +13,14 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { UserAvatar } from "@/components/dashboard/UserAvatar";
 
-const UserRecommendation = ({ firstName, lastName, picturePath, occupation, location, _id }) => {
+const UserRecommendation = ({
+  firstName,
+  lastName,
+  picturePath,
+  occupation,
+  location,
+  _id,
+}) => {
   const { auth, setAuth } = useAuth();
   const queryClient = useQueryClient();
 

@@ -7,15 +7,7 @@ import {
   RulerSquareIcon,
   Share1Icon,
 } from "@radix-ui/react-icons";
-import {
-  BriefcaseBusiness,
-  Building2,
-  CalendarCheck2,
-  CircleDollarSign,
-  Home,
-  UserRoundSearch,
-  Users,
-} from "lucide-react";
+import { Building2, Home, UserRoundSearch, Users } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -49,26 +41,26 @@ export const navLinks = [
     href: "#services",
     label: "Services",
   },
-  {
-    href: "#events",
-    label: "Events",
-  },
+  // {
+  //   href: "#events",
+  //   label: "Events",
+  // },
   {
     href: "#groups",
     label: "Groups",
   },
-  {
-    href: "#funding",
-    label: "Funding",
-  },
+  // {
+  //   href: "#funding",
+  //   label: "Funding",
+  // },
   {
     href: "#business",
     label: "Business",
   },
-  {
-    href: "#jobs",
-    label: "Jobs",
-  },
+  // {
+  //   href: "#jobs",
+  //   label: "Jobs",
+  // },
 ];
 
 export const dashboardNavLinks = [
@@ -90,24 +82,24 @@ export const dashboardNavLinks = [
     type: "business",
     icon: Building2,
   },
-  {
-    href: "/jobs",
-    label: "Jobs",
-    type: "job",
-    icon: BriefcaseBusiness,
-  },
-  {
-    href: "/funding",
-    label: "Funding",
-    type: "funding",
-    icon: CircleDollarSign,
-  },
-  {
-    href: "/events",
-    label: "Events",
-    type: "event",
-    icon: CalendarCheck2,
-  },
+  // {
+  //   href: "/jobs",
+  //   label: "Jobs",
+  //   type: "job",
+  //   icon: BriefcaseBusiness,
+  // },
+  // {
+  //   href: "/funding",
+  //   label: "Funding",
+  //   type: "funding",
+  //   icon: CircleDollarSign,
+  // },
+  // {
+  //   href: "/events",
+  //   label: "Events",
+  //   type: "event",
+  //   icon: CalendarCheck2,
+  // },
   {
     href: "/groups",
     label: "Groups",
