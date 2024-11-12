@@ -6,7 +6,7 @@ export default function NotificationProvider({ children }) {
   const { auth } = useAuth();
 
   return (
-    <NotificationsProvider userId={auth?.user._id}>
+    <NotificationsProvider userId={auth?.user?._id || ""}>
       {children}
     </NotificationsProvider>
   );

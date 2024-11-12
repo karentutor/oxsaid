@@ -18,7 +18,7 @@ const steps = [
         type="add"
         trigger={
           <Button className="flex items-center gap-2" size="sm">
-            <CirclePlus size={14} /> List Business
+            <CirclePlus size={14} /> Create Business
           </Button>
         }
       />
